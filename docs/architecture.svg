@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Helvetica, Arial, sans-serif" role="img" aria-label="PACT architecture">
+  <style>
+    .box { fill: #fffcf5; stroke: #ddd4c1; stroke-width: 1.5; }
+    .hd { font-size: 15px; font-weight: 700; fill: #161a23; }
+    .tx { font-size: 12px; fill: #2b3140; }
+    .mu { font-size: 11px; fill: #646a76; }
+    .ar { stroke: #1d2b4f; stroke-width: 1.6; fill: none; marker-end: url(#a); }
+    @media (prefers-color-scheme: dark) {
+      .box { fill: #181c24; stroke: #2b313c; } .hd { fill: #ece6d9; } .tx { fill: #d4cebf; } .mu { fill: #9aa0ab; } .ar { stroke: #8fa3df; }
+      .bg { fill: #0f1217; }
+    }
+  </style>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#b97a12"/></marker></defs>
+  <rect class="bg" width="960" height="520" fill="#f4efe4"/>
+
+  <rect class="box" x="20" y="30" width="180" height="110" rx="14"/>
+  <text class="hd" x="36" y="58">People</text>
+  <text class="tx" x="36" y="80">Buyer approves once</text>
+  <text class="tx" x="36" y="98">in PayPal · reviewer</text>
+  <text class="tx" x="36" y="116">handles appeals</text>
+
+  <rect class="box" x="20" y="200" width="180" height="120" rx="14"/>
+  <text class="hd" x="36" y="228">AI agents</text>
+  <text class="tx" x="36" y="250">Buyer + seller agents</text>
+  <text class="tx" x="36" y="268">(Muse), Claude, ChatGPT…</text>
+  <text class="mu" x="36" y="292">MCP · Streamable HTTP</text>
+
+  <rect class="box" x="260" y="20" width="400" height="150" rx="14"/>
+  <text class="hd" x="278" y="48">Web — Next.js</text>
+  <text class="tx" x="278" y="72">Pact composer · pact room · admin</text>
+  <text class="tx" x="278" y="92">Control Tower: AG Studio, PACT theme,</text>
+  <text class="tx" x="278" y="110">9 custom widgets, live via SSE</text>
+  <text class="tx" x="278" y="130">PACT Auditor agent → delegates to Studio agents</text>
+  <text class="mu" x="278" y="154">/api/ai/responses → Muse proxy (record / replay)</text>
+
+  <rect class="box" x="260" y="210" width="400" height="190" rx="14"/>
+  <text class="hd" x="278" y="238">API — Fastify</text>
+  <text class="tx" x="278" y="262">REST (Zod → OpenAPI 3.1) · SSE · MCP server</text>
+  <text class="tx" x="278" y="282">PactService + XState machine (guarded)</text>
+  <text class="tx" x="278" y="302">Verifier: pre-checks → describe → judge</text>
+  <text class="tx" x="278" y="322">Arbiter · reputation · idempotency keys</text>
+  <text class="tx" x="278" y="342">Jobs: reauthorize, expire, reconcile</text>
+  <text class="tx" x="278" y="362">Webhooks (signature-verified)</text>
+  <text class="mu" x="278" y="386">SHA-256 hash-chained audit log</text>
+
+  <rect class="box" x="260" y="430" width="400" height="70" rx="14"/>
+  <text class="hd" x="278" y="458">SQLite file + evidence store</text>
+  <text class="mu" x="278" y="480">./data/pact.db · ./data/evidence (sha256-addressed)</text>
+
+  <rect class="box" x="720" y="40" width="220" height="130" rx="14"/>
+  <text class="hd" x="736" y="68">Meta Model API</text>
+  <text class="tx" x="736" y="90">Muse (muse-spark-1.3)</text>
+  <text class="tx" x="736" y="108">Parser · Verifier · Arbiter</text>
+  <text class="tx" x="736" y="126">agents · Studio agent</text>
+  <text class="mu" x="736" y="150">OpenAI-compatible</text>
+
+  <rect class="box" x="720" y="230" width="220" height="190" rx="14"/>
+  <text class="hd" x="736" y="258">PayPal sandbox</text>
+  <text class="tx" x="736" y="280">Orders v2 AUTHORIZE</text>
+  <text class="tx" x="736" y="298">Partial / final capture</text>
+  <text class="tx" x="736" y="316">Void · reauthorize · refund</text>
+  <text class="tx" x="736" y="334">Payouts · webhooks</text>
+  <text class="tx" x="736" y="352">Transaction Search</text>
+  <text class="mu" x="736" y="380">or the labelled</text>
+  <text class="mu" x="736" y="396">SIMULATED adapter</text>
+
+  <path class="ar" d="M200 85 H258"/>
+  <path class="ar" d="M200 260 H258"/>
+  <path class="ar" d="M460 170 V208"/>
+  <path class="ar" d="M460 400 V428"/>
+  <path class="ar" d="M660 95 H718"/>
+  <path class="ar" d="M660 300 C690 300 690 140 718 130"/>
+  <path class="ar" d="M660 320 H718"/>
+</svg>

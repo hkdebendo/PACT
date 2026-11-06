@@ -282,7 +282,7 @@ export function ReputationLeaderboardWidget(params: AgWidgetParams<any>) {
   );
   return (
     <div style={{ ...W.root, gap: 6 }}>
-      <div style={{ fontSize: 11.5, color: 'var(--pact-muted)' }}>Bayesian-smoothed: new parties start at the prior (~80) instead of 0 or 100. See docs/REPUTATION.md.</div>
+      <div style={{ fontSize: 11.5, color: 'var(--pact-muted)' }}>Bayesian-smoothed: new parties start at the prior (83.5) instead of 0 or 100. See docs/REPUTATION.md.</div>
       <div style={{ flex: 1, minHeight: 0 }}>
         <AgGridReact theme={studioGridTheme} rowData={(rows ?? []).filter((r) => r.kind !== undefined)} columnDefs={cols} rowHeight={42} tooltipShowDelay={300} />
       </div>

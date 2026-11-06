@@ -210,7 +210,7 @@ export function buildMcpServer(ctx: AppContext, pacts: PactService, agent: strin
     const board = leaderboard(ctx);
     if (!a.partyName) return { leaderboard: board.map((r) => ({ name: r.party.name, score: r.score, tier: r.tier })) };
     const hit = board.find((r) => r.party.name.toLowerCase() === a.partyName!.toLowerCase());
-    if (!hit) return { found: false, note: 'No history yet: a new party starts at the prior (about 80/100).' };
+    if (!hit) return { found: false, note: 'No history yet: a new party starts at the prior (83.5/100).' };
     const r = getReputation(ctx, hit.party.id);
     return { found: true, name: r.party.name, score: r.score, tier: r.tier, completionRate: r.completionRate, onTimeRate: r.onTimeRate, disputeRate: r.disputeRate, refundRate: r.refundRate, confidence: r.confidence };
   });
