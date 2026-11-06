@@ -11,18 +11,18 @@ me — I will restart the install. Until it finishes I write code but cannot run
 
 ## Blocking now (credentials)
 
-Status checked 2026-11-06: **`.env.local` does not exist yet → every variable below is "not set".**
+Status checked 2026-11-06 19:15: `.env.local` present; everything set except the two optional ones below.
 
 | Variable | Needed for | Status |
 |---|---|---|
-| `PAYPAL_CLIENT_ID` | all real sandbox calls (Tier 1) | not set |
-| `PAYPAL_CLIENT_SECRET` | all real sandbox calls (Tier 1) | not set |
-| `DEMO_BUYER_EMAIL` | Playwright sandbox approval (demo + e2e) | not set |
-| `DEMO_BUYER_PASSWORD` | Playwright sandbox approval (demo + e2e) | not set |
-| `META_API_KEY` | live Muse calls; recording the replay cache (Tier 2) | not set |
-| `AG_STUDIO_LICENSE_KEY` | watermark-free Studio dashboard (Tier 3) | not set |
-| `AGENT_API_KEYS` | MCP demo agents (any random strings, e.g. two UUIDs) | not set |
-| `PAYPAL_WEBHOOK_ID` | optional, only with a public URL | not set |
+| `PAYPAL_CLIENT_ID` | all real sandbox calls (Tier 1) | ✅ set |
+| `PAYPAL_CLIENT_SECRET` | all real sandbox calls (Tier 1) | ✅ set |
+| `DEMO_BUYER_EMAIL` | Playwright sandbox approval (demo + e2e) | ✅ set |
+| `DEMO_BUYER_PASSWORD` | Playwright sandbox approval (demo + e2e) | ✅ set |
+| `META_API_KEY` | live Muse calls; recording the replay cache (Tier 2) | ✅ set |
+| `AG_STUDIO_LICENSE_KEY` | watermark-free Studio dashboard (Tier 3) | ✅ set |
+| `AGENT_API_KEYS` | optional — you invent them: `buyer-agent:<guid>,seller-agent:<guid>` (PowerShell `[guid]::NewGuid()`); empty = local demo keys | not set (fine) |
+| `PAYPAL_WEBHOOK_ID` | optional, only with a public tunnel URL (developer dashboard → app → Webhooks → Add webhook → copy the ID) | not set (fine: poller) |
 
 Steps:
 1. `copy .env.example .env.local` (Windows) and fill in the values.
@@ -30,8 +30,9 @@ Steps:
 
 ## PayPal developer dashboard (sandbox app settings)
 
-- [ ] Enable **Transaction search** on the sandbox REST app (needed for the reconciliation view).
-- [ ] Enable **Payouts** on the sandbox REST app (if the option is shown). If it is not available, tell me; a clearly labelled simulated adapter is used instead.
+- [x] **Transaction search** works on the sandbox app (verified 2026-11-06).
+- [x] Payouts scope present on the token (verified 2026-11-06); a real payout run is still to be tested.
+- The sandbox **business** account is the seller/merchant behind the REST app: not needed in `.env.local`; use it to log in to sandbox.paypal.com during the video to show captures arriving.
 
 ## Assets
 

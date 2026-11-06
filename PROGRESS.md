@@ -7,13 +7,18 @@ Deadline: **2026-11-12 12:00 PT (21:00 Cotonou)**. Started 2026-11-06.
 - Node v24.16.0, npm 11.13.0, git 2.54, gh 2.101 (logged in as `hkdebendo`); Chrome + Edge installed (Playwright uses `channel: chrome`, no browser download)
 - Repo: https://github.com/hkdebendo/PACT (public, MIT LICENSE)
 - **Network ≈ 4 KB/s** to registry.npmjs.org → `npm install` takes hours. better-sqlite3 13 verified to install from bundled prebuilds (no compiler) and run (SQLite 3.53.4).
-- `.env.local`: **missing** → all credentials not set (see HUMAN_TODO.md). The app falls back to SIMULATED PayPal; AI needs a key or recorded answers.
+- `.env.local`: present (2026-11-06 19:15). All set except optional PAYPAL_WEBHOOK_ID and AGENT_API_KEYS (local demo keys used).
 
 ## Verified facts (external docs)
 - Meta Model API: base `https://api.meta.ai/v1`; `/chat/completions` and `/responses`; `muse-spark-1.3` (text+image+video+PDF, tools, structured output); `reasoning_effort` minimal|low|medium|high|xhigh; images: Chat `image_url` data URL, Responses `input_image`; strict JSON schema subset (root object, additionalProperties false, all props required, no oneOf/allOf); $1.25 in / $4.25 out per 1M. *Not yet verified live (no key).*
 - Boilerplate: Next 16.3.6, React 19.2.8, ag-studio 3.0.0, ag-grid 36.2.0; Studio wired with `createAiHarness` + OpenAI Responses adapter via server proxy; PayPal via plain fetch (no SDK).
 - AG Studio 3.0.0 docs downloaded (markdown) and used: custom widgets (getSchema/getData/onDataUpdated, cross-filter), Agent Framework (directLlmRunner, defineAiTool, delegateTo, builtIn planning/data/page/widget, getAiContext), theme modes, sync-data reload.
 - PayPal Agent Toolkit evaluated (README v1.11.0): no authorize/capture/void/reauthorize tools; heavy deps. Documented as an optional companion MCP server in docs/MCP.md, not bundled.
+
+## Live checks (2026-11-06 ~19:20, scratchpad probe, no deps)
+- PayPal sandbox: OAuth 200 (scope includes payouts + reporting); `POST /v2/checkout/orders` intent AUTHORIZE with payment_source → 200 `PAYER_ACTION_REQUIRED` + `payer-action` link; Transaction Search 200 (enabled); balances 200 (USD); payouts endpoint reachable.
+- Meta Model API: `muse-spark-1.3` chat completions with strict json_schema → valid JSON; image_url data URL accepted; `/v1/responses` non-streaming with a strict function tool → reasoning + message + function_call items (ids + call_id present); Responses streaming also supported (SSE). reasoning_effort=low still spends ~250 reasoning tokens.
+- npm install attempt 2 failed (two concurrent npm processes + ECONNRESET); cache now ~958 MB; attempt 3 running with --prefer-offline.
 
 ## Status by tier
 Legend: ✅ written & verified · 🟡 written, NOT yet run (deps not installed) · ⬜ not started
