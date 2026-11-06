@@ -2,7 +2,8 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { Contract, EvidenceType } from '@pact/core';
 import { desc, tables } from '@pact/db';
-import { parseContract } from '@pact/llm';
+import { costOf, parseContract } from '@pact/llm';
+import { newId } from '../context';
 import type { AppContext } from '../context';
 import { listAudit, verifyAudit } from '../services/audit';
 import { ServiceError } from '../services/errors';
@@ -244,6 +245,28 @@ export function registerRoutes(app: FastifyInstance, ctx: AppContext, pacts: Pac
         byRole,
         recent: rows.slice(0, 50),
       };
+    },
+  });
+  r({
+    method: 'POST',
+    url: '/api/admin/llm-usage',
+    summary: 'Record token usage of the AG Studio PACT Auditor (called by the web app proxy)',
+    tags: ['admin'],
+    body: z.object({
+      role: z.string().max(60),
+      model: z.string().max(60),
+      mode: z.enum(['live', 'replay']),
+      cacheHit: z.boolean(),
+      inputTokens: z.number().int().min(0),
+      outputTokens: z.number().int().min(0),
+      reasoningTokens: z.number().int().min(0).default(0),
+      cachedTokens: z.number().int().min(0).default(0),
+      latencyMs: z.number().int().min(0).default(0),
+    }),
+    handler: ({ body }) => {
+      const costUsd = body.cacheHit ? 0 : costOf(body.model, body);
+      ctx.db.insert(tables.llmUsage).values({ id: newId('llm'), ...body, costUsd, createdAt: ctx.now().toISOString() }).run();
+      return { ok: true, costUsd };
     },
   });
   r({ method: 'GET', url: '/api/admin/paypal-calls', summary: 'Recent PayPal API calls (sandbox mode; never includes tokens)', tags: ['admin'], handler: () => ctx.paypalCalls });

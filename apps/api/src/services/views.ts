@@ -105,6 +105,8 @@ export function buildPactView(ctx: AppContext, row: PactRow): PactView {
     };
   });
   const auth = pay.filter((p) => p.kind === 'authorization' || p.kind === 'reauthorization').at(-1);
+  const machine = JSON.parse(row.machineJson) as { context: { sellerAccepted: boolean } };
+  const disputes = ctx.db.select().from(tables.disputes).where(eq(tables.disputes.pactId, row.id)).orderBy(asc(tables.disputes.createdAt)).all();
   return {
     id: row.id,
     status: row.status as PactView['status'],
@@ -124,6 +126,18 @@ export function buildPactView(ctx: AppContext, row: PactRow): PactView {
     milestones,
     payments: pay.map(paymentView),
     paymentMode: row.paymentMode as PactView['paymentMode'],
+    sellerAccepted: machine.context.sellerAccepted,
+    disputes: disputes.map((d) => ({
+      id: d.id,
+      milestoneId: d.milestoneId,
+      openedBy: d.openedBy as 'buyer' | 'seller',
+      buyerStatement: d.buyerStatement,
+      sellerStatement: d.sellerStatement,
+      status: d.status as 'open' | 'resolved',
+      verdictId: d.verdictId,
+      createdAt: d.createdAt,
+      resolvedAt: d.resolvedAt,
+    })),
     approvalUrl: row.approvalUrl,
     orderId: row.orderId,
     authorizationId: auth?.paypalId ?? row.authorizationId,

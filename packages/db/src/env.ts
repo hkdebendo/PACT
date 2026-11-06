@@ -63,20 +63,33 @@ export function getConfig() {
       baseUrl: str('APP_BASE_URL', 'http://localhost:3000'),
       apiPort: Number(str('API_PORT', '4000')),
       databaseUrl: str('DATABASE_URL', 'file:./data/pact.db'),
-      agentKeys: str('AGENT_API_KEYS')
-        .split(',')
-        .map((p) => p.trim())
-        .filter(Boolean)
-        .map((pair) => {
-          const i = pair.indexOf(':');
-          return i > 0 ? { name: pair.slice(0, i), key: pair.slice(i + 1) } : { name: `agent-${pair.slice(0, 4)}`, key: pair };
-        }),
+      agentKeys: parseAgentKeys(str('AGENT_API_KEYS')),
+      // Without AGENT_API_KEYS, two well-known LOCAL demo keys are used. The API only listens on
+      // 127.0.0.1, so they are not reachable from the network; set real keys before exposing it.
+      agentKeysAreLocalDefaults: !str('AGENT_API_KEYS'),
     },
     agStudioLicenseSet: !!str('AG_STUDIO_LICENSE_KEY'),
   };
 }
 
 export type AppConfig = ReturnType<typeof getConfig>;
+
+export const LOCAL_DEMO_AGENT_KEYS = [
+  { name: 'buyer-agent', key: 'local-demo-buyer' },
+  { name: 'seller-agent', key: 'local-demo-seller' },
+];
+
+function parseAgentKeys(raw: string) {
+  if (!raw) return LOCAL_DEMO_AGENT_KEYS;
+  return raw
+    .split(',')
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((pair) => {
+      const i = pair.indexOf(':');
+      return i > 0 ? { name: pair.slice(0, i), key: pair.slice(i + 1) } : { name: `agent-${pair.slice(0, 4)}`, key: pair };
+    });
+}
 
 export function databasePath(cfg = getConfig()): string {
   const url = cfg.app.databaseUrl;

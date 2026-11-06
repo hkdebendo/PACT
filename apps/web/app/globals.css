@@ -1,63 +1,174 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-mono: var(--font-geist-mono);
-}
-
-body {
-  background: var(--pp-canvas);
-  color: var(--pp-ink);
-  font-family: var(--pp-font);
-}
-
 /*
- * PayPal design tokens: the single source of truth for the dashboard shell (through the
- * Tailwind colours below, e.g. bg-pp-blue), for AG Studio (app/dashboard/studio/theme.ts)
- * and for AG Grid (app/(endpoints)/data-grid.tsx), whose themes reference these variables directly.
+ * PACT design tokens — single source of truth for the app shell (Tailwind colours below),
+ * the AG Studio theme (app/control-tower/studio/theme.ts) and every custom widget.
+ * Visual language: a notary's ledger. Warm paper, ink navy, wax-seal vermilion for disputes,
+ * amber for money held in escrow, green for money released.
  */
 :root {
-  --pp-navy: #001c64;
-  --pp-blue: #0070e0;
-  --pp-blue-dark: #003087;
-  --pp-sky: #009cde;
-  --pp-highlight: #e6f0fc;
-  --pp-canvas: #f5f7fa;
-  --pp-surface: #ffffff;
-  --pp-border: #dbe1e8;
-  --pp-gridline: #e9edf2;
-  --pp-ink: #001435;
-  --pp-muted: #545d68;
-  --pp-success: #00875a;
-  --pp-warning: #b45309;
-  --pp-danger: #c4122f;
-  --pp-font: "PayPal Open", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --pact-paper: #f4efe4;
+  --pact-paper-2: #ebe4d4;
+  --pact-surface: #fffcf5;
+  --pact-ink: #161a23;
+  --pact-ink-2: #2b3140;
+  --pact-muted: #646a76;
+  --pact-line: #ddd4c1;
+  --pact-line-2: #e9e2d2;
+  --pact-navy: #1d2b4f;
+  --pact-navy-2: #2d4074;
+  --pact-held: #b97a12;
+  --pact-held-soft: #f6e7c8;
+  --pact-released: #1b7a50;
+  --pact-released-soft: #d8efe2;
+  --pact-refund: #c0432b;
+  --pact-refund-soft: #f7ddd5;
+  --pact-void: #8a8f99;
+  --pact-focus: #2f5bea;
+  --pact-shadow: 0 1px 0 rgba(22, 26, 35, 0.04), 0 8px 24px -12px rgba(22, 26, 35, 0.18);
+  --pact-font: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
+  --pact-display: var(--font-display), Georgia, serif;
+  --pact-mono: var(--font-mono), ui-monospace, monospace;
 
-  /* Chart series, PayPal blue and navy first. */
-  --pp-chart-1: #0070e0;
-  --pp-chart-2: #001c64;
-  --pp-chart-3: #00a8a8;
-  --pp-chart-4: #f5a623;
-  --pp-chart-5: #7b61ff;
-  --pp-chart-6: #e8615a;
-  --pp-chart-7: #60cdff;
-  --pp-chart-8: #2e9e6a;
-  --pp-chart-9: #b47cd8;
-  --pp-chart-10: #8a94a6;
+  --pact-chart-1: #1d2b4f;
+  --pact-chart-2: #b97a12;
+  --pact-chart-3: #1b7a50;
+  --pact-chart-4: #c0432b;
+  --pact-chart-5: #5b7bd5;
+  --pact-chart-6: #8a6bbf;
+  --pact-chart-7: #3c9aa5;
+  --pact-chart-8: #d29a4a;
+  --pact-chart-9: #7a8597;
+  --pact-chart-10: #a65f84;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --pact-paper: #0f1217;
+    --pact-paper-2: #151920;
+    --pact-surface: #181c24;
+    --pact-ink: #ece6d9;
+    --pact-ink-2: #d4cebf;
+    --pact-muted: #9aa0ab;
+    --pact-line: #2b313c;
+    --pact-line-2: #232832;
+    --pact-navy: #b9c6ec;
+    --pact-navy-2: #8fa3df;
+    --pact-held: #e3a63c;
+    --pact-held-soft: #3a2c12;
+    --pact-released: #44b884;
+    --pact-released-soft: #143224;
+    --pact-refund: #ea6d52;
+    --pact-refund-soft: #3c1d16;
+    --pact-void: #7d838e;
+    --pact-focus: #8aa6ff;
+    --pact-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 10px 30px -14px rgba(0, 0, 0, 0.6);
+    --pact-chart-1: #8fa3df;
+    --pact-chart-2: #e3a63c;
+    --pact-chart-3: #44b884;
+    --pact-chart-4: #ea6d52;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --pact-paper: #0f1217;
+  --pact-paper-2: #151920;
+  --pact-surface: #181c24;
+  --pact-ink: #ece6d9;
+  --pact-ink-2: #d4cebf;
+  --pact-muted: #9aa0ab;
+  --pact-line: #2b313c;
+  --pact-line-2: #232832;
+  --pact-navy: #b9c6ec;
+  --pact-navy-2: #8fa3df;
+  --pact-held: #e3a63c;
+  --pact-held-soft: #3a2c12;
+  --pact-released: #44b884;
+  --pact-released-soft: #143224;
+  --pact-refund: #ea6d52;
+  --pact-refund-soft: #3c1d16;
+  --pact-void: #7d838e;
+  --pact-focus: #8aa6ff;
+  --pact-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 10px 30px -14px rgba(0, 0, 0, 0.6);
+  --pact-chart-1: #8fa3df;
+  --pact-chart-2: #e3a63c;
+  --pact-chart-3: #44b884;
+  --pact-chart-4: #ea6d52;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-pp-navy: var(--pp-navy);
-  --color-pp-blue: var(--pp-blue);
-  --color-pp-blue-dark: var(--pp-blue-dark);
-  --color-pp-sky: var(--pp-sky);
-  --color-pp-highlight: var(--pp-highlight);
-  --color-pp-canvas: var(--pp-canvas);
-  --color-pp-surface: var(--pp-surface);
-  --color-pp-border: var(--pp-border);
-  --color-pp-ink: var(--pp-ink);
-  --color-pp-muted: var(--pp-muted);
-  --color-pp-success: var(--pp-success);
-  --color-pp-warning: var(--pp-warning);
-  --color-pp-danger: var(--pp-danger);
-  --font-paypal: var(--pp-font);
+  --color-paper: var(--pact-paper);
+  --color-paper-2: var(--pact-paper-2);
+  --color-surface: var(--pact-surface);
+  --color-ink: var(--pact-ink);
+  --color-ink-2: var(--pact-ink-2);
+  --color-muted: var(--pact-muted);
+  --color-line: var(--pact-line);
+  --color-line-2: var(--pact-line-2);
+  --color-navy: var(--pact-navy);
+  --color-navy-2: var(--pact-navy-2);
+  --color-held: var(--pact-held);
+  --color-held-soft: var(--pact-held-soft);
+  --color-released: var(--pact-released);
+  --color-released-soft: var(--pact-released-soft);
+  --color-refund: var(--pact-refund);
+  --color-refund-soft: var(--pact-refund-soft);
+  --color-void: var(--pact-void);
+  --color-focus: var(--pact-focus);
+  --font-display: var(--pact-display);
+  --font-sans: var(--pact-font);
+  --font-mono: var(--pact-mono);
+  --shadow-card: var(--pact-shadow);
+}
+
+html,
+body {
+  background: var(--pact-paper);
+  color: var(--pact-ink);
+  font-family: var(--pact-font);
+}
+
+/* Subtle paper grain: two layered gradients, no image request. */
+body {
+  background-image:
+    radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--pact-paper-2) 70%, transparent) 0, transparent 45%),
+    radial-gradient(circle at 100% 30%, color-mix(in srgb, var(--pact-paper-2) 50%, transparent) 0, transparent 40%);
+  background-attachment: fixed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--pact-focus);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.font-display {
+  font-family: var(--pact-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.01em;
+}
+
+.hash {
+  font-family: var(--pact-mono);
+  font-size: 0.78em;
+  letter-spacing: 0.02em;
+}
+
+/* Ledger rule: a double hairline used under section headings. */
+.ledger-rule {
+  height: 4px;
+  border-top: 1px solid var(--pact-line);
+  border-bottom: 1px solid var(--pact-line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }

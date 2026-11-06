@@ -110,3 +110,15 @@ describe('client', () => {
     expect(costOf('muse-spark-1.3', { inputTokens: 1e6, cachedTokens: 0, outputTokens: 1e6 })).toBeCloseTo(5.5);
   });
 });
+
+describe('volatile normalisation for replay', () => {
+  it('maps ids and dates by position and shifts derived dates', async () => {
+    const { normaliseVolatile, normaliseOutput, denormaliseOutput } = await import('../src/cache');
+    const recIn = normaliseVolatile({ m: 'TODAY: 2026-11-06 pact pact_0123456789abcdef order SIM-ORDER-ABCDEF123456' });
+    const nowIn = normaliseVolatile({ m: 'TODAY: 2026-12-01 pact pact_fedcba9876543210 order SIM-ORDER-999999999999' });
+    expect(recIn.text).toBe(nowIn.text);
+    const out = normaliseOutput({ pactId: 'pact_0123456789abcdef', deadline: '2026-11-13', today: '2026-11-06' }, recIn.values);
+    const replayed = denormaliseOutput(out, nowIn.values, '2026-11-06', '2026-12-01') as Record<string, string>;
+    expect(replayed).toEqual({ pactId: 'pact_fedcba9876543210', deadline: '2026-12-08', today: '2026-12-01' });
+  });
+});

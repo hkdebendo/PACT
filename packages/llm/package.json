@@ -3,6 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "dependencies": { "@pact/core": "0.1.0", "openai": "latest", "zod": "^4" }
+  "exports": {
+    ".": "./src/index.ts",
+    "./cache": "./src/cache.ts"
+  },
+  "dependencies": {
+    "@pact/core": "0.1.0",
+    "openai": "latest",
+    "zod": "^4"
+  }
 }

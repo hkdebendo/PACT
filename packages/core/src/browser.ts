@@ -3,3 +3,4 @@ export * from './schemas';
 export * from './money';
 export * from './reputation';
 export * from './types';
+export type { AuditEntry, ChainVerification } from './audit';

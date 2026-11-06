@@ -6,7 +6,7 @@
 //   - per-call token usage and cost accounting
 import OpenAI from 'openai';
 import { z } from 'zod';
-import { ReplayCache, cacheKey } from './cache';
+import { ReplayCache, cacheKey, denormaliseOutput, normaliseOutput, normaliseVolatile } from './cache';
 
 export type LlmMode = 'live' | 'replay';
 export type ReasoningEffort = 'minimal' | 'low' | 'medium' | 'high' | 'xhigh';
@@ -86,6 +86,8 @@ export interface StructuredRequest<T extends z.ZodType> {
   reasoningEffort?: ReasoningEffort;
   maxOutputTokens?: number;
   pactId?: string | null;
+  /** Reference date the prompt is relative to; replayed answers are date-shifted to it. */
+  today?: string;
 }
 
 export interface StructuredResult<T> {
@@ -155,17 +157,12 @@ export class LlmClient {
   async structured<T extends z.ZodType>(req: StructuredRequest<T>): Promise<StructuredResult<z.infer<T>>> {
     const jsonSchema = z.toJSONSchema(req.schema, { target: 'draft-2020-12' }) as Record<string, unknown>;
     delete jsonSchema.$schema;
-    const key = cacheKey({
-      model: this.config.model,
-      role: req.role,
-      schemaName: req.schemaName,
-      schema: jsonSchema,
-      messages: cacheableMessages(req.messages),
-    });
+    const norm = normaliseVolatile(cacheableMessages(req.messages));
+    const key = cacheKey({ model: this.config.model, role: req.role, schemaName: req.schemaName, schema: jsonSchema, messages: norm.text });
 
     const cached = this.cache.get(key);
     if (cached) {
-      const value = this.validate(req, cached.output);
+      const value = this.validate(req, denormaliseOutput(cached.output, norm.values, cached.today, req.today));
       const usage: UsageRecord = { ...cached.usage, role: req.role, mode: this.config.mode, cacheHit: true, costUsd: 0, latencyMs: 0 };
       this.emit(usage, req.pactId);
       return { value, usage, model: cached.model, mode: this.config.mode, cacheKey: key };
@@ -208,7 +205,7 @@ export class LlmClient {
       throw new LlmOutputError(`${req.role}: model output is not valid JSON`, text);
     }
     const value = this.validate(req, parsed);
-    this.cache.put(key, { role: req.role, model: usage.model, output: parsed, usage, recordedAt: new Date().toISOString() });
+    this.cache.put(key, { role: req.role, model: usage.model, output: normaliseOutput(parsed, norm.values), usage, recordedAt: new Date().toISOString(), today: req.today ?? null });
     this.emit(usage, req.pactId);
     return { value, usage, model: usage.model, mode: 'live', cacheKey: key };
   }
@@ -226,12 +223,13 @@ export class LlmClient {
     tools: OpenAI.Chat.Completions.ChatCompletionTool[];
     pactId?: string | null;
   }): Promise<{ message: OpenAI.Chat.Completions.ChatCompletionMessage; usage: UsageRecord }> {
-    const key = cacheKey({ model: this.config.model, role: req.role, messages: req.messages, tools: req.tools });
+    const norm = normaliseVolatile({ messages: req.messages, tools: req.tools });
+    const key = cacheKey({ model: this.config.model, role: req.role, prompt: norm.text });
     const cached = this.cache.get(key);
     if (cached) {
       const usage: UsageRecord = { ...cached.usage, role: req.role, mode: this.config.mode, cacheHit: true, costUsd: 0, latencyMs: 0 };
       this.emit(usage, req.pactId);
-      return { message: cached.output as OpenAI.Chat.Completions.ChatCompletionMessage, usage };
+      return { message: denormaliseOutput(cached.output, norm.values) as OpenAI.Chat.Completions.ChatCompletionMessage, usage };
     }
     if (this.config.mode === 'replay') throw new LlmReplayMissError(req.role, key);
     if (!this.openai) throw new LlmConfigError('LLM_MODE=live but META_API_KEY is not set.');
@@ -262,7 +260,7 @@ export class LlmClient {
     };
     usage.costUsd = costOf(this.config.model, usage);
     const clean = { role: message.role, content: message.content, tool_calls: message.tool_calls } as OpenAI.Chat.Completions.ChatCompletionMessage;
-    this.cache.put(key, { role: req.role, model: usage.model, output: clean, usage, recordedAt: new Date().toISOString() });
+    this.cache.put(key, { role: req.role, model: usage.model, output: normaliseOutput(clean, norm.values), usage, recordedAt: new Date().toISOString() });
     this.emit(usage, req.pactId);
     return { message: clean, usage };
   }

@@ -28,6 +28,7 @@ export async function parseContract(llm: LlmClient, input: ParseInput): Promise<
     schema: ParseResult,
     schemaName: 'pact_contract_parse',
     reasoningEffort: 'medium',
+    today: input.today,
     messages: [
       { role: 'system', content: PARSER_PROMPT },
       {

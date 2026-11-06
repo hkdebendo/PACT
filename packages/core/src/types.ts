@@ -93,12 +93,26 @@ export interface PactView {
   milestones: MilestoneView[];
   payments: PaymentView[];
   paymentMode: PaymentMode;
+  sellerAccepted: boolean;
+  disputes: DisputeView[];
   approvalUrl: string | null;
   orderId: string | null;
   authorizationId: string | null;
   authorizationExpiresAt: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface DisputeView {
+  id: string;
+  milestoneId: string;
+  openedBy: 'buyer' | 'seller';
+  buyerStatement: string | null;
+  sellerStatement: string | null;
+  status: 'open' | 'resolved';
+  verdictId: string | null;
+  createdAt: string;
+  resolvedAt: string | null;
 }
 
 export interface ReputationView extends ReputationScore {
