@@ -1,0 +1,31 @@
+{
+  "role": "agent.seller-agent",
+  "model": "muse-spark-1.3",
+  "output": {
+    "role": "assistant",
+    "content": "Wrong batch — submitting correct photo.",
+    "tool_calls": [
+      {
+        "id": "call_9ac75fd4-f96b-4191-aabc-a8433ab1c35d",
+        "type": "function",
+        "function": {
+          "name": "submit_evidence",
+          "arguments": "{\"fixture\":\"order_conforming.jpg\",\"milestoneId\":\"m1\",\"pactId\":\"⟦v2⟧\",\"type\":\"photo\"}"
+        }
+      }
+    ]
+  },
+  "usage": {
+    "role": "agent.seller-agent",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 5640,
+    "outputTokens": 143,
+    "reasoningTokens": 15,
+    "cachedTokens": 4721,
+    "costUsd": 0.00246465,
+    "latencyMs": 2731
+  },
+  "recordedAt": "2026-11-06T19:52:40.722Z"
+}

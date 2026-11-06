@@ -36,7 +36,12 @@ Steps:
 
 ## Assets
 
-- [ ] Two photos of a plain object with **no brand or logo** (e.g. a stack of plain white t-shirts): one conforming to the deal, one wrong item. Save them as `fixtures/evidence/order_conforming.jpg` and `fixtures/evidence/order_wrong_item.jpg` (they replace generated placeholders).
+- [ ] **Most important now.** Real photos are required: Muse correctly rejects the generated placeholders because they are drawings, not photographs (verified 2026-11-06). Please provide, with **no brand or logo** visible, saved in `fixtures/evidence/` with exactly these names:
+  - `order_conforming.jpg` — a pile/stack of plain **white** t-shirts with a small **blue star** drawn/embroidered/stuck on the chest (a few shirts is fine if you also show a paper note "QTY 50"); the parser's criteria are "at least 50 plain white t-shirts visible or counted" and "small blue star on the chest".
+  - `order_wrong_item.jpg` — the wrong item: e.g. a few plain grey/white mugs or bowls, no t-shirts.
+  - `delivery_partial.jpg` — (dispute variant) an open box with about 12 plain canvas/cloth tote bags (or any plain bags), clearly fewer than 20.
+  Then tell me "photos added": I re-record the Muse answers and re-run the demo.
+- [ ] (old item, kept for reference) Two photos of a plain object with **no brand or logo** (e.g. a stack of plain white t-shirts): one conforming to the deal, one wrong item. Save them as `fixtures/evidence/order_conforming.jpg` and `fixtures/evidence/order_wrong_item.jpg` (they replace generated placeholders).
 
 ## Submission (do not do before the end)
 

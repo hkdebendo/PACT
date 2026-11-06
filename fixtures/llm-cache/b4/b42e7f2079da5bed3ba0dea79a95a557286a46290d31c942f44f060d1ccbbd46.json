@@ -1,0 +1,38 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.95,
+    "criteria": [
+      {
+        "confidence": 0.97,
+        "criterionId": "c1",
+        "passed": false,
+        "reasoning": "Description reports 12 tote bag icons, not 20, and describes them as cream flat illustration uniform shape rather than real plain canvas bags, so 20 bags are not visible or counted."
+      },
+      {
+        "confidence": 0.85,
+        "criterionId": "c2",
+        "passed": true,
+        "reasoning": "Description lists the 12 bag icons with only cream color and handle outline and reports no logo on the bags themselves, with visible text DELIVERY BOX and TOTE BAGS attributed to the box and label background."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The photo description shows a flat illustration of only 12 bag icons, not 20 real canvas tote bags. Because the count is 12 instead of 20 and the items are drawings rather than actual bags for delivery, the delivery requirement fails even though no logo is shown on the icons.",
+    "status": "rejected"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 779,
+    "outputTokens": 2963,
+    "reasoningTokens": 2733,
+    "cachedTokens": 0,
+    "costUsd": 0.0135665,
+    "latencyMs": 30689
+  },
+  "recordedAt": "2026-11-06T19:54:41.470Z",
+  "today": null
+}

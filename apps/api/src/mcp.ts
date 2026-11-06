@@ -19,6 +19,7 @@ import { getReputation, leaderboard } from './services/reputation';
 const summary = (p: PactView) => ({
   id: p.id,
   status: p.status,
+  sellerAccepted: p.sellerAccepted,
   title: p.title,
   currency: p.currency,
   total: p.totalMinor / 100,
@@ -46,9 +47,8 @@ function nextSteps(p: PactView): string[] {
     case 'draft':
       return ['Buyer: call propose_pact.'];
     case 'proposed':
-      return p.orderId
-        ? [`Buyer: approve the PayPal order at ${p.approvalUrl ?? '(approval URL)'}; then call fund_pact again to confirm the authorization.`]
-        : ['Seller: call accept_pact.', 'Buyer (after acceptance): call fund_pact to get the PayPal approval URL.'];
+      if (p.orderId) return [`A human buyer approves the PayPal order at ${p.approvalUrl ?? '(approval URL)'}; then the buyer calls fund_pact again to confirm the authorization.`];
+      return p.sellerAccepted ? ['The seller accepted. Buyer: call fund_pact to get the PayPal approval URL.'] : ['Seller: review with get_pact and call accept_pact.'];
     case 'funded':
     case 'in_progress':
     case 'disputed': {

@@ -170,7 +170,7 @@ function Milestone({ pact, m, index, role, focused }: { pact: PactView; m: Miles
               .reverse()
               .map((v, i) => (
                 <div key={v.id} className={cx(i > 0 && 'opacity-70')}>
-                  <VerdictCard verdict={v} criteria={m.criteria} canAppeal={i === 0 && role !== 'reviewer'} party={role === 'buyer' ? 'buyer' : 'seller'} compact={i > 0} />
+                  <VerdictCard verdict={v} criteria={m.criteria} canAppeal={i === 0 && role !== 'reviewer' && v.kind !== 'human'} party={role === 'buyer' ? 'buyer' : 'seller'} compact={i > 0} />
                   {role === 'reviewer' && v.appealStatus === 'requested' && <ReviewBox verdictId={v.id} kind={v.kind} />}
                 </div>
               ))}

@@ -29,6 +29,7 @@ if (existsSync(envPath)) {
     const sensitive = /(SECRET|PASSWORD|KEY|TOKEN|EMAIL|CLIENT_ID|WEBHOOK_ID)/.test(m[1]);
     if (!value || (!sensitive && (value.length < 12 || /^(https?:|file:)/.test(value))) || /^(MUSE_MODEL|LLM_MODE|PAYPAL_ENV|MUSE_REASONING_EFFORT)$/.test(m[1])) continue;
     if (sensitive && value.length < 4) continue;
+    if (/<[^>]+>/.test(value)) continue; // unfilled template such as <guid>, not a secret
     secrets.push({ name: m[1], value });
   }
 }

@@ -50,9 +50,9 @@ function printEvent(e: AgentEvent) {
   else if (e.kind === 'tool_result') {
     const short = e.text.replace(/\s+/g, ' ').slice(0, 160);
     log(`${who}   ${c.dim}${short}${c.reset}`);
-  } else if (e.kind === 'thought' || e.kind === 'done') {
+  } else if (e.kind === 'thought') {
     if (e.text) log(`${who} 💬 ${e.text.replace(/\s+/g, ' ').slice(0, 220)}`);
-  } else log(`${who} ${c.red}${e.text}${c.reset}`);
+  } else if (e.kind === 'error') log(`${who} ${c.red}${e.text}${c.reset}`);
 }
 
 async function restScenario(llm: LlmClient) {

@@ -1,0 +1,32 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.93,
+    "criteria": [
+      {
+        "confidence": 0.93,
+        "criterionId": "c1",
+        "passed": true,
+        "reasoning": "Tracking screen is legible and shows status DELIVERED with timeline step Delivered to recipient, tracking number PX 4815 1623 42, contents 1 parcel 50 x t-shirt white matching the deal quantity, and recipient Ada — Cafe front desk signed by A. M."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The tracking image clearly shows a DELIVERED status for 50 white t-shirts to Ada Cafe with a signature. The contents match the deal and the timeline confirms delivery. No contradictory information was found.",
+    "status": "approved"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 816,
+    "outputTokens": 1494,
+    "reasoningTokens": 1329,
+    "cachedTokens": 0,
+    "costUsd": 0.0073695,
+    "latencyMs": 15437
+  },
+  "recordedAt": "2026-11-06T19:53:34.018Z",
+  "today": null
+}

@@ -1,0 +1,38 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.9,
+    "criteria": [
+      {
+        "confidence": 0.9,
+        "criterionId": "c1",
+        "passed": false,
+        "reasoning": "Description states 50 t-shirt illustrations in flat illustration style with uniform appearance on a tan background, not 50 real physical t-shirts. The QTY: 50 PCS label does not show actual production."
+      },
+      {
+        "confidence": 0.9,
+        "criterionId": "c2",
+        "passed": false,
+        "reasoning": "Description states small blue star on chest but only as part of flat illustration style with uniform appearance. No embroidery texture or stitching detail is described, so a blue embroidered star is not established."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The image does not show real shirts. It shows 50 drawings in flat illustration style on a tan background with a quantity label. A drawing cannot prove that 50 physical shirts with embroidered stars were produced.",
+    "status": "rejected"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 775,
+    "outputTokens": 2547,
+    "reasoningTokens": 2327,
+    "cachedTokens": 0,
+    "costUsd": 0.0117935,
+    "latencyMs": 30204
+  },
+  "recordedAt": "2026-11-06T19:53:12.777Z",
+  "today": null
+}
