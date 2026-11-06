@@ -110,6 +110,8 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
   const ai = useMemo(() => (aiEnabled ? buildAi(() => ctxRef.current!) : undefined), [aiEnabled]);
   const modules = useMemo(() => (aiEnabled ? [AgStudioAiModule] : undefined), [aiEnabled]);
   const style = useMemo(() => ({ height: '100%', width: '100%' }), []);
+  // Every non-primitive Studio prop must keep its reference between renders.
+  const layout = useMemo(() => ({ widgetBorderEnabled: true }), []);
 
   const goTo = (id: string) => {
     const a = apiRef.current;
@@ -190,7 +192,7 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
               ai={ai}
               initialState={initialState}
               mode={mode}
-              layout={{ widgetBorderEnabled: true }}
+              layout={layout}
               onApiReady={(e) => {
                 apiRef.current = e.api;
               }}

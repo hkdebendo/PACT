@@ -100,6 +100,28 @@ export interface StructuredResult<T> {
 
 export type UsageSink = (u: UsageRecord & { pactId?: string | null }) => void;
 
+/**
+ * Zod → JSON Schema in the strict subset Meta's Model API (and OpenAI strict mode) accept: every
+ * object closed (additionalProperties false) with all properties required. Optional values are
+ * modelled as nullable in the Zod schemas themselves.
+ */
+export function toStrictJsonSchema(schema: z.ZodType): Record<string, unknown> {
+  const json = z.toJSONSchema(schema, { target: 'draft-2020-12' }) as Record<string, unknown>;
+  delete json.$schema;
+  const walk = (node: unknown): void => {
+    if (Array.isArray(node)) return node.forEach(walk);
+    if (!node || typeof node !== 'object') return;
+    const n = node as Record<string, unknown>;
+    if (n.type === 'object' && n.properties && typeof n.properties === 'object') {
+      n.additionalProperties = false;
+      n.required = Object.keys(n.properties as object);
+    }
+    Object.values(n).forEach(walk);
+  };
+  walk(json);
+  return json;
+}
+
 /** Converts our message format to OpenAI chat messages; images become data URLs. */
 export function toChatMessages(messages: ChatMessage[]): OpenAI.Chat.Completions.ChatCompletionMessageParam[] {
   return messages.map((m) => {
@@ -155,8 +177,7 @@ export class LlmClient {
   }
 
   async structured<T extends z.ZodType>(req: StructuredRequest<T>): Promise<StructuredResult<z.infer<T>>> {
-    const jsonSchema = z.toJSONSchema(req.schema, { target: 'draft-2020-12' }) as Record<string, unknown>;
-    delete jsonSchema.$schema;
+    const jsonSchema = toStrictJsonSchema(req.schema);
     const norm = normaliseVolatile(cacheableMessages(req.messages));
     const key = cacheKey({ model: this.config.model, role: req.role, schemaName: req.schemaName, schema: jsonSchema, messages: norm.text });
 
@@ -176,11 +197,11 @@ export class LlmClient {
       messages: toChatMessages(req.messages),
       response_format: { type: 'json_schema', json_schema: { name: req.schemaName, schema: jsonSchema, strict: true } },
       // Meta's Model API accepts reasoning_effort minimal|low|medium|high|xhigh.
-      reasoning_effort: (req.reasoningEffort ?? this.config.reasoningEffort) as OpenAI.ReasoningEffort,
+      reasoning_effort: req.reasoningEffort ?? this.config.reasoningEffort,
       ...(req.maxOutputTokens && { max_completion_tokens: req.maxOutputTokens }),
       temperature: 0,
       seed: 7,
-    } as OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming);
+    } as unknown as OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming);
     const latencyMs = Date.now() - started;
     const text = completion.choices[0]?.message?.content ?? '';
     const u = completion.usage;
@@ -242,8 +263,8 @@ export class LlmClient {
       parallel_tool_calls: true,
       temperature: 0,
       seed: 7,
-      reasoning_effort: 'low' as OpenAI.ReasoningEffort,
-    } as OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming);
+      reasoning_effort: 'low',
+    } as unknown as OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming);
     const message = completion.choices[0].message;
     const u = completion.usage;
     const usage: UsageRecord = {
