@@ -1,0 +1,31 @@
+{
+  "role": "agent.seller-agent",
+  "model": "muse-spark-1.3",
+  "output": {
+    "role": "assistant",
+    "content": "Evidence submitted — now verifying.",
+    "tool_calls": [
+      {
+        "id": "call_0a6ee3f0-7b59-4ad3-acee-810debcd4749",
+        "type": "function",
+        "function": {
+          "name": "verify_milestone",
+          "arguments": "{\"milestoneId\":\"m1\",\"pactId\":\"⟦v2⟧\"}"
+        }
+      }
+    ]
+  },
+  "usage": {
+    "role": "agent.seller-agent",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 4667,
+    "outputTokens": 107,
+    "reasoningTokens": 8,
+    "cachedTokens": 0,
+    "costUsd": 0.0062885,
+    "latencyMs": 1996
+  },
+  "recordedAt": "2026-11-06T23:26:05.097Z"
+}

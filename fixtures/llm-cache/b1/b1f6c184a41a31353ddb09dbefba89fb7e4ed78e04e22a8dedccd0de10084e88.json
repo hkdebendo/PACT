@@ -1,0 +1,30 @@
+{
+  "role": "arbiter",
+  "model": "muse-spark-1.3",
+  "output": {
+    "citedEvidence": [
+      {
+        "evidenceId": "⟦v2⟧",
+        "why": "Shows 4 stacks of folded off-white bags but individual bags cannot be counted to 20, so c1 not proven. Shows no visible logo or text, supporting c2 for visible portions but surfaces are mostly hidden."
+      }
+    ],
+    "confidence": 0.7,
+    "decision": "partial",
+    "reasoning": "Criterion c1 requires 20 bags visible or counted. The single photo shows only 4 folded stacks with no countable 20 and buyer disputes count, so full delivery is not proven. Criterion c2 is met for visible portions as no logo or text is visible. Partial delivery is established by the photo and buyer admission of 12 bags, so full refund would be unfair and full release is unsupported. 12 of 20 equals 60 percent. Appeal could change this with a clear count photo of 20 unfolded plain bags for release, or proof of non-delivery for refund.",
+    "releasePercent": 60
+  },
+  "usage": {
+    "role": "arbiter",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 1174,
+    "outputTokens": 1509,
+    "reasoningTokens": 1288,
+    "cachedTokens": 0,
+    "costUsd": 0.00788075,
+    "latencyMs": 13958
+  },
+  "recordedAt": "2026-11-06T22:10:26.080Z",
+  "today": null
+}

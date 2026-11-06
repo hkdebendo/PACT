@@ -1,0 +1,38 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.99,
+    "criteria": [
+      {
+        "confidence": 0.99,
+        "criterionId": "c1",
+        "passed": false,
+        "reasoning": "Evidence lists 1 striped ceramic mug, 1 speckled ceramic mug and 3 woven baskets, with no t-shirts and no visible text showing 50, so about 50 white t-shirts are not shown."
+      },
+      {
+        "confidence": 0.99,
+        "criterionId": "c2",
+        "passed": false,
+        "reasoning": "Evidence describes only green-beige striped and off-white speckled mugs on baskets, with no shirts and no small blue star described, so the star on the chest is not visible."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The photo shows two ceramic mugs on woven baskets, not t-shirts. There are no white shirts, no quantity of 50, and no blue star visible. This is the wrong item for the order.",
+    "status": "rejected"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 908,
+    "outputTokens": 1012,
+    "reasoningTokens": 798,
+    "cachedTokens": 0,
+    "costUsd": 0.005436,
+    "latencyMs": 15526
+  },
+  "recordedAt": "2026-11-06T22:17:29.385Z",
+  "today": null
+}

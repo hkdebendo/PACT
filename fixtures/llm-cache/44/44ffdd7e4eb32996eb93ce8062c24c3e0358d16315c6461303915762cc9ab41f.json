@@ -1,0 +1,31 @@
+{
+  "role": "agent.seller-agent",
+  "model": "muse-spark-1.3",
+  "output": {
+    "role": "assistant",
+    "content": null,
+    "tool_calls": [
+      {
+        "id": "call_d0bffa0a-0ad9-4b81-8902-ecd22f49cdc0",
+        "type": "function",
+        "function": {
+          "name": "accept_pact",
+          "arguments": "{\"pactId\":\"⟦v2⟧\"}"
+        }
+      }
+    ]
+  },
+  "usage": {
+    "role": "agent.seller-agent",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 3606,
+    "outputTokens": 74,
+    "reasoningTokens": 9,
+    "cachedTokens": 0,
+    "costUsd": 0.004822,
+    "latencyMs": 2046
+  },
+  "recordedAt": "2026-11-06T22:58:21.131Z"
+}

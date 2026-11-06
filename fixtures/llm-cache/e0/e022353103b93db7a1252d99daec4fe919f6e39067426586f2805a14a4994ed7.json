@@ -1,0 +1,31 @@
+{
+  "role": "agent.seller-agent",
+  "model": "muse-spark-1.3",
+  "output": {
+    "role": "assistant",
+    "content": "Delivered — submitting tracking for verification.",
+    "tool_calls": [
+      {
+        "id": "call_40d8f071-462c-4b32-89ce-8f56250c098e",
+        "type": "function",
+        "function": {
+          "name": "submit_evidence",
+          "arguments": "{\"fixture\":\"tracking_valid.png\",\"milestoneId\":\"m2\",\"pactId\":\"⟦v2⟧\",\"type\":\"tracking\"}"
+        }
+      }
+    ]
+  },
+  "usage": {
+    "role": "agent.seller-agent",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 7091,
+    "outputTokens": 145,
+    "reasoningTokens": 16,
+    "cachedTokens": 7025,
+    "costUsd": 0.0017525,
+    "latencyMs": 1981
+  },
+  "recordedAt": "2026-11-06T23:26:48.658Z"
+}

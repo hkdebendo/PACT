@@ -1,0 +1,86 @@
+{
+  "role": "parser",
+  "model": "muse-spark-1.3",
+  "output": {
+    "assumptions": [
+      "Dispute window set to 72 hours"
+    ],
+    "contract": {
+      "buyer": {
+        "email": null,
+        "name": "Ada"
+      },
+      "currency": "USD",
+      "deadline": "2026-11-13",
+      "description": "50 plain white t-shirts with a small blue star on the chest, delivered within 7 days for 450 USD.",
+      "disputePolicy": {
+        "notes": null,
+        "resolution": "ai_arbiter_with_human_appeal",
+        "windowHours": 72
+      },
+      "milestones": [
+        {
+          "criteria": [
+            {
+              "id": "c1",
+              "text": "About 50 t-shirts are shown, or a quantity label shows 50"
+            },
+            {
+              "id": "c2",
+              "text": "Shirts appear plain white"
+            },
+            {
+              "id": "c3",
+              "text": "A small blue star is visible on the chest of the shirts"
+            }
+          ],
+          "deadline": null,
+          "evidenceTypes": [
+            "photo"
+          ],
+          "id": "m1",
+          "percent": 30,
+          "title": "Production complete"
+        },
+        {
+          "criteria": [
+            {
+              "id": "c1",
+              "text": "Tracking shows the package as delivered"
+            }
+          ],
+          "deadline": null,
+          "evidenceTypes": [
+            "tracking"
+          ],
+          "id": "m2",
+          "percent": 70,
+          "title": "Delivery"
+        }
+      ],
+      "seller": {
+        "email": null,
+        "name": "Kofi Textiles"
+      },
+      "subcontractors": [],
+      "title": "50 embroidered t-shirts",
+      "totalAmount": 450
+    },
+    "questions": [],
+    "status": "ok"
+  },
+  "usage": {
+    "role": "parser",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 1302,
+    "outputTokens": 1864,
+    "reasoningTokens": 1533,
+    "cachedTokens": 0,
+    "costUsd": 0.0095495,
+    "latencyMs": 27091
+  },
+  "recordedAt": "2026-11-06T22:23:21.689Z",
+  "today": "2026-11-06"
+}

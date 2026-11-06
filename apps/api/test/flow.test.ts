@@ -194,6 +194,20 @@ describe('PACT money flow (simulated PayPal, scripted Muse)', () => {
     expect(arb.body.pact).toMatchObject({ status: 'completed', releasedMinor: 45000 - 9450, refundedMinor: 9450 });
   });
 
+  it('confirms funding once when the poller and the buyer race', async () => {
+    const created = await api('POST', '/api/pacts', { contract, buyer: { name: 'Ada (buyer)' }, seller: { name: 'Kofi Textiles' } });
+    const id = created.body.id as string;
+    await api('POST', `/api/pacts/${id}/propose`);
+    await api('POST', `/api/pacts/${id}/accept`);
+    await api('POST', `/api/pacts/${id}/fund`);
+    built.pacts.approveSimulated(id, 'test');
+    const results = await Promise.all([api('POST', `/api/pacts/${id}/fund/confirm`), api('POST', `/api/pacts/${id}/fund/confirm`), api('POST', '/api/admin/reconcile')]);
+    expect(results.map((r) => r.status)).toEqual([200, 200, 200]);
+    const pact = (await api('GET', `/api/pacts/${id}`)).body;
+    expect(pact.status).toBe('funded');
+    expect(pact.payments.filter((p: { kind: string }) => p.kind === 'authorization')).toHaveLength(1);
+  });
+
   it('honours Idempotency-Key on mutations', async () => {
     const body = { contract, buyer: { name: 'Ada (buyer)' }, seller: { name: 'Kofi Textiles' } };
     const a = await api('POST', '/api/pacts', body, { 'idempotency-key': 'k1' });

@@ -1,0 +1,72 @@
+{
+  "role": "parser",
+  "model": "muse-spark-1.3",
+  "output": {
+    "assumptions": [
+      "Dispute window set to 72 hours"
+    ],
+    "contract": {
+      "buyer": {
+        "email": null,
+        "name": "Bea"
+      },
+      "currency": "USD",
+      "deadline": "2026-11-11",
+      "description": "Seller to provide 20 plain canvas tote bags with no logo for 200 USD, with 100% payment on delivery within 5 days.",
+      "disputePolicy": {
+        "notes": null,
+        "resolution": "ai_arbiter_with_human_appeal",
+        "windowHours": 72
+      },
+      "milestones": [
+        {
+          "criteria": [
+            {
+              "id": "c1",
+              "text": "About 20 tote bags are shown, or a quantity label shows 20"
+            },
+            {
+              "id": "c2",
+              "text": "No logo is visible on the bags shown"
+            },
+            {
+              "id": "c3",
+              "text": "Tracking shows delivered to buyer"
+            }
+          ],
+          "deadline": null,
+          "evidenceTypes": [
+            "photo",
+            "tracking"
+          ],
+          "id": "m1",
+          "percent": 100,
+          "title": "Delivery of 20 plain tote bags"
+        }
+      ],
+      "seller": {
+        "email": null,
+        "name": "Nia Crafts"
+      },
+      "subcontractors": [],
+      "title": "Logo-free tote bags",
+      "totalAmount": 200
+    },
+    "questions": [],
+    "status": "ok"
+  },
+  "usage": {
+    "role": "parser",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 1282,
+    "outputTokens": 2060,
+    "reasoningTokens": 1776,
+    "cachedTokens": 0,
+    "costUsd": 0.0103575,
+    "latencyMs": 30036
+  },
+  "recordedAt": "2026-11-06T22:26:23.721Z",
+  "today": "2026-11-06"
+}

@@ -6,7 +6,9 @@
 //   3. A short dispute variant (REST): contested delivery → Arbiter decision → refund/void.
 //
 // With LLM_MODE=replay every model answer comes from fixtures/llm-cache/ (no Meta key needed).
-// Flags: --no-agents (drive the main scenario over REST instead), --no-dispute, --api=http://...
+// Flags: --no-agents (main scenario over REST), --no-dispute, --only-dispute, --headed (visible
+//        browser for the PayPal approval), --manual (you approve in your own browser), --force,
+//        --api=http://...
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { getConfig, repoRoot } from '@pact/db';
@@ -39,6 +41,20 @@ async function approve(approvalUrl: string, pactId: string) {
     await api('POST', `/api/pacts/${pactId}/simulated-approve`, undefined, 'buyer:Ada');
     return;
   }
+  if (args.has('--manual')) {
+    // The human approves in their own browser; the demo waits for PACT to see the authorization.
+    log(`${c.yellow}  Approve the payment in PayPal (sandbox buyer account), then come back here:${c.reset}
+  ${approvalUrl}`);
+    const { exec } = await import('node:child_process');
+    exec(process.platform === 'win32' ? `start "" "${approvalUrl}"` : process.platform === 'darwin' ? `open "${approvalUrl}"` : `xdg-open "${approvalUrl}"`);
+    for (let i = 0; i < 200; i++) {
+      const r = await api<{ funded: boolean }>('POST', `/api/pacts/${pactId}/fund/confirm`, undefined, 'buyer:human');
+      if (r.funded) break;
+      await new Promise((res) => setTimeout(res, 3000));
+    }
+    log(`${c.green}  Buyer approved in PayPal sandbox.${c.reset}`);
+    return;
+  }
   log(`${c.yellow}  Opening PayPal sandbox checkout with the sandbox buyer test account…${c.reset}`);
   await approveSandboxOrder(approvalUrl, { headless: !args.has('--headed') });
   log(`${c.green}  Buyer approved in PayPal sandbox.${c.reset}`);
@@ -64,7 +80,7 @@ async function restScenario(llm: LlmClient) {
   await api('POST', `/api/pacts/${pact.id}/accept`, undefined, 'agent:seller-agent');
   const fund = await api('POST', `/api/pacts/${pact.id}/fund`, undefined, 'agent:buyer-agent');
   await approve(fund.approvalUrl, pact.id);
-  await api('POST', `/api/pacts/${pact.id}/fund/confirm`, undefined, 'agent:buyer-agent');
+  await confirmUntilFunded(pact.id, 'agent:buyer-agent');
   const [m1, m2] = pact.milestones.map((m: { id: string }) => m.id);
   for (const [mid, file, type] of [
     [m1, 'order_wrong_item.jpg', 'photo'],
@@ -76,6 +92,16 @@ async function restScenario(llm: LlmClient) {
     log(`  ${mid} ${file}: ${v.verdict.status} (${v.verdict.confidence}) ${c.dim}${v.verdict.reasoning.slice(0, 120)}${c.reset}`);
   }
   return { pactId: pact.id as string };
+}
+
+/** PayPal can take a few seconds after the redirect to report the order as approved. */
+async function confirmUntilFunded(pactId: string, actor: string) {
+  for (let i = 0; i < 20; i++) {
+    const r = await api<{ funded: boolean }>('POST', `/api/pacts/${pactId}/fund/confirm`, undefined, actor);
+    if (r.funded) return;
+    await new Promise((res) => setTimeout(res, 3000));
+  }
+  throw new Error(`Pact ${pactId} is still not funded: the PayPal order was not approved.`);
 }
 
 async function submit(pactId: string, mid: string, file: string, type: string) {
@@ -93,7 +119,7 @@ async function disputeVariant(llm: LlmClient) {
   await api('POST', `/api/pacts/${pact.id}/accept`, undefined, 'seller:Nia');
   const fund = await api('POST', `/api/pacts/${pact.id}/fund`, undefined, 'buyer:Bea');
   await approve(fund.approvalUrl, pact.id);
-  await api('POST', `/api/pacts/${pact.id}/fund/confirm`, undefined, 'buyer:Bea');
+  await confirmUntilFunded(pact.id, 'buyer:Bea');
   const mid = pact.milestones[0].id;
   await submit(pact.id, mid, 'delivery_partial.jpg', 'photo');
   const v = await api('POST', `/api/pacts/${pact.id}/milestones/${mid}/verify`, {}, 'seller:Nia');
@@ -112,11 +138,29 @@ async function main() {
   });
   log(`${c.bold}PACT demo${c.reset}  API ${API}`);
   log(`  PayPal: ${status.paymentMode === 'sandbox' ? c.green + 'REAL sandbox' : c.yellow + 'SIMULATED (not real PayPal)'}${c.reset}   LLM: ${status.llmModel} ${status.llmMode === 'replay' ? c.yellow + '(replay: recorded responses)' : c.green + '(live)'}${c.reset}`);
+  // Pre-flight: PACT rejects evidence that is byte-identical to evidence used in another pact (a
+  // fraud check). Re-running the demo on the same database would trip it, so stop with a clear hint.
+  const { createHash } = await import('node:crypto');
+  const fixtureHashes = new Set(
+    ['order_wrong_item.jpg', 'order_conforming.jpg', 'tracking_valid.png', 'delivery_partial.jpg'].map((f) =>
+      createHash('sha256').update(readFileSync(resolve(repoRoot, 'fixtures', 'evidence', f))).digest('hex'),
+    ),
+  );
+  const existing = await api<{ milestones: { evidence: { sha256: string }[] }[] }[]>('GET', '/api/pacts');
+  const used = existing.some((p) => p.milestones.some((m) => m.evidence.some((e) => fixtureHashes.has(e.sha256))));
+  if (used && !args.has('--force')) {
+    log(`${c.yellow}The demo photos were already submitted in this database, and PACT rejects byte-identical evidence reused across pacts (anti-fraud pre-check).${c.reset}`);
+    log(`Start from a fresh database: stop "npm run dev", run "npm run seed -- --reset", start "npm run dev" again, then "npm run demo". (--force runs anyway.)`);
+    process.exit(1);
+  }
+
   // The demo script itself also calls the parser (REST paths); it shares the API's cache directory.
   const llm = new LlmClient({ mode: cfg.llm.mode, apiKey: cfg.llm.apiKey, baseUrl: cfg.llm.baseUrl, model: cfg.llm.model, reasoningEffort: cfg.llm.reasoningEffort, cacheDir: resolve(repoRoot, 'fixtures', 'llm-cache') });
 
-  let main: { pactId: string };
-  if (args.has('--no-agents')) {
+  let main: { pactId: string } | null = null;
+  if (args.has('--only-dispute')) {
+    // Main scenario skipped.
+  } else if (args.has('--no-agents')) {
     main = await restScenario(llm);
   } else {
     const keys = cfg.app.agentKeys.length ? cfg.app.agentKeys : null;
@@ -124,8 +168,10 @@ async function main() {
     const sellerKey = keys?.find((k) => k.name === 'seller-agent')?.key ?? 'local-demo-seller';
     main = await runScenario({ llm, mcpUrl: `${API}/mcp`, buyerKey, sellerKey, approveFunding: approve, onEvent: printEvent });
   }
-  const pact = await api('GET', `/api/pacts/${main.pactId}`);
-  log(`\n${c.green}Main pact ${pact.id}: ${pact.status}. Released ${pact.releasedMinor / 100} ${pact.currency}, held ${pact.heldMinor / 100}.${c.reset}`);
+  if (main) {
+    const pact = await api('GET', `/api/pacts/${main.pactId}`);
+    log(`\n${c.green}Main pact ${pact.id}: ${pact.status}. Released ${pact.releasedMinor / 100} ${pact.currency}, held ${pact.heldMinor / 100}.${c.reset}`);
+  }
   if (!args.has('--no-dispute')) await disputeVariant(llm);
   const chain = await api('GET', '/api/audit/verify');
   log(`\nAudit chain: ${chain.ok ? c.green + 'verified' : c.red + 'BROKEN'}${c.reset} (${chain.count} entries, head ${chain.headHash.slice(0, 16)}…)`);

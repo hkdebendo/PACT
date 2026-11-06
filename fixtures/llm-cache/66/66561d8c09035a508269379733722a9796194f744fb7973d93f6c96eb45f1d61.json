@@ -1,0 +1,21 @@
+{
+  "role": "agent.seller-agent",
+  "model": "muse-spark-1.3",
+  "output": {
+    "role": "assistant",
+    "content": "Delivery verified. Order complete."
+  },
+  "usage": {
+    "role": "agent.seller-agent",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 8618,
+    "outputTokens": 20,
+    "reasoningTokens": 5,
+    "cachedTokens": 7665,
+    "costUsd": 0.002426,
+    "latencyMs": 2538
+  },
+  "recordedAt": "2026-11-06T23:27:11.491Z"
+}

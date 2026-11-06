@@ -101,7 +101,11 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
         llmMode: dash.llmMode,
         audit: dash.audit,
         reconciliation: rec && { asOf: rec.asOf, caveat: rec.caveat, balances: rec.balances, errors: rec.errors, pending: rec.notYetInTransactionSearch.length },
-        openPact: (pactId, milestoneId) => router.push(`/pacts/${pactId}${milestoneId ? `?milestone=${milestoneId}` : ''}`),
+        openPact: (pactId, milestoneId, opts) => {
+          const url = `/pacts/${pactId}${milestoneId ? `?milestone=${milestoneId}` : ''}`;
+          if (opts?.newTab) window.open(url, '_blank', 'noopener');
+          else router.push(url);
+        },
         appeal: async (verdictId) => {
           await api('POST', `/api/verdicts/${verdictId}/appeal`, { party: 'buyer', note: 'Appeal requested from the Control Tower.' });
         },

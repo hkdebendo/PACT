@@ -13,7 +13,7 @@ export interface TowerContext {
   llmMode: 'live' | 'replay';
   audit: { ok: boolean; count: number; headHash: string; verifiedAt: string };
   reconciliation: { asOf: string; caveat: string; balances: Record<string, unknown>[]; errors: string[]; pending: number } | null;
-  openPact: (pactId: string, milestoneId?: string) => void;
+  openPact: (pactId: string, milestoneId?: string, opts?: { newTab?: boolean }) => void;
   appeal: (verdictId: string) => Promise<void>;
 }
 

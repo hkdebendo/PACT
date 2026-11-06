@@ -37,6 +37,9 @@ export interface PartyInput {
 const DAY = 24 * 3600 * 1000;
 
 export class PactService {
+  /** One in-flight confirmation per pact: the reconciliation poller, webhooks and the buyer can race. */
+  private readonly confirming = new Map<string, Promise<{ funded: boolean; status: string; authorizationId?: string; approvalUrl?: string | null }>>();
+
   constructor(private readonly ctx: AppContext) {}
 
   private now() {
@@ -266,7 +269,15 @@ export class PactService {
   }
 
   /** After buyer approval: authorize the order (funds held, not charged). Safe to call repeatedly. */
-  async confirmFunding(pactId: string, actor: string) {
+  confirmFunding(pactId: string, actor: string) {
+    const running = this.confirming.get(pactId);
+    if (running) return running;
+    const p = this.confirmFundingOnce(pactId, actor).finally(() => this.confirming.delete(pactId));
+    this.confirming.set(pactId, p);
+    return p;
+  }
+
+  private async confirmFundingOnce(pactId: string, actor: string): Promise<{ funded: boolean; status: string; authorizationId?: string; approvalUrl?: string | null }> {
     const row = this.row(pactId);
     if (row.authorizationId) return { funded: true, status: row.status, authorizationId: row.authorizationId };
     if (!row.orderId) throw new ServiceError('NO_ORDER', 'Call fund first to create the PayPal order', 409);

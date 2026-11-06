@@ -1,0 +1,31 @@
+{
+  "role": "agent.seller-agent",
+  "model": "muse-spark-1.3",
+  "output": {
+    "role": "assistant",
+    "content": "That submit didn't go through — rechecking status.",
+    "tool_calls": [
+      {
+        "id": "call_d98a5b38-d4c0-4195-a844-a12737f2d725",
+        "type": "function",
+        "function": {
+          "name": "get_pact",
+          "arguments": "{\"pactId\":\"⟦v2⟧\"}"
+        }
+      }
+    ]
+  },
+  "usage": {
+    "role": "agent.seller-agent",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 4306,
+    "outputTokens": 100,
+    "reasoningTokens": 17,
+    "cachedTokens": 3953,
+    "costUsd": 0.0014592,
+    "latencyMs": 1575
+  },
+  "recordedAt": "2026-11-06T23:01:59.421Z"
+}

@@ -76,10 +76,10 @@ function pactTools(api: AgStudioApi, ctx: () => TowerContext) {
 
   const drill = api.defineAiTool({
     name: 'open_pact_drilldown',
-    description: "Open a pact's room (timeline, evidence, verdicts, audit trail) for the user, optionally scrolled to one milestone.",
+    description: "Open a pact's room (timeline, evidence, verdicts, audit trail) in a new browser tab, optionally scrolled to one milestone. Only when the user asks to open or see a pact or its evidence.",
     params: (s: any) => s.object({ pactId: s.string({ description: 'Pact id (pact_...)' }), milestoneId: s.string({ description: 'Milestone id, e.g. m2' }).optional() }),
     execute: async (args: any, c: any) => {
-      ctx().openPact(args.pactId, args.milestoneId);
+      ctx().openPact(args.pactId, args.milestoneId, { newTab: true });
       return c.success(`Opened pact ${args.pactId}${args.milestoneId ? ` at ${args.milestoneId}` : ''}.`);
     },
   });
@@ -151,7 +151,7 @@ export function buildAi(getContext: () => TowerContext): AgAiHarnessSetup {
                 'How to work:',
                 '- "Why was X refused/approved?": call list_refused_milestones or get_verdict to find the verdict, then explain_decision. Quote the failed criterion and the facts from the evidence description. Mention the confidence and that the decision can be appealed.',
                 '- "Show/list/add ..." for refused milestones: call add_refused_milestones_widget. For any other new chart or widget, delegate to the built-in agents with delegate_to (page to place widgets, widget to configure one, data for numeric questions, planning for multi-widget layouts).',
-                '- To let the user inspect evidence, call open_pact_drilldown.',
+                '- Call open_pact_drilldown only when the user asks to open or see a pact or its evidence; otherwise mention that the evidence can be opened.',
                 '- Never invent ids, amounts or reasons: everything you state must come from a tool result.',
                 'Answer in plain English, 2-5 short sentences, no markdown tables.',
               ].join('\n');

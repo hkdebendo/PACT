@@ -1,0 +1,58 @@
+{
+  "role": "verifier.describe",
+  "model": "muse-spark-1.3",
+  "output": {
+    "dates": [],
+    "objects": [
+      {
+        "attributes": [
+          "brown corrugated cardboard",
+          "open with four flaps folded outward",
+          "in foreground centered"
+        ],
+        "count": 1,
+        "name": "open cardboard box"
+      },
+      {
+        "attributes": [
+          "off-white to beige fabric",
+          "folded flat",
+          "handles visible at top edge of each stack",
+          "no visible markings or text on visible surfaces",
+          "arranged as four stacks inside open box"
+        ],
+        "count": 4,
+        "name": "stacks of folded tote bags"
+      },
+      {
+        "attributes": [
+          "brown cardboard",
+          "closed",
+          "out of focus in background on wooden floor and shelving"
+        ],
+        "count": null,
+        "name": "background cardboard boxes"
+      }
+    ],
+    "quality": {
+      "issues": [],
+      "legible": true
+    },
+    "summary": "An open cardboard box containing four stacks of folded off-white fabric tote bags sits on a wooden floor with additional cardboard boxes in the background.",
+    "visibleText": []
+  },
+  "usage": {
+    "role": "verifier.describe",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 1890,
+    "outputTokens": 794,
+    "reasoningTokens": 593,
+    "cachedTokens": 0,
+    "costUsd": 0.005737,
+    "latencyMs": 12535
+  },
+  "recordedAt": "2026-11-06T23:23:27.550Z",
+  "today": null
+}
