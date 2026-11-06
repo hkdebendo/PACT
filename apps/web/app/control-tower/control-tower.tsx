@@ -19,6 +19,9 @@ import type { TowerContext } from './studio/widgets/common';
 if (process.env.NODE_ENV !== 'production') enableStudioDevValidations();
 
 const STORAGE_KEY = 'pact-control-tower-report-v1';
+
+// The PACT Auditor's tools read the latest context lazily (one Control Tower per page).
+let liveContext: TowerContext | null = null;
 const loadSaved = (): AgReportState | null => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -89,7 +92,6 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
   const data = useMemo(() => (dash ? buildStudioData(dash, rec) : undefined), [dash, rec]);
   const widgets = useMemo(() => buildWidgets(), []);
 
-  const ctxRef = useRef<TowerContext | null>(null);
   const context = useMemo<TowerContext | null>(
     () =>
       dash && {
@@ -106,8 +108,10 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
       },
     [dash, rec, router],
   );
-  ctxRef.current = context;
-  const ai = useMemo(() => (aiEnabled ? buildAi(() => ctxRef.current!) : undefined), [aiEnabled]);
+  useEffect(() => {
+    liveContext = context;
+  }, [context]);
+  const ai = useMemo(() => (aiEnabled ? buildAi(() => liveContext!) : undefined), [aiEnabled]);
   const modules = useMemo(() => (aiEnabled ? [AgStudioAiModule] : undefined), [aiEnabled]);
   const style = useMemo(() => ({ height: '100%', width: '100%' }), []);
   // Every non-primitive Studio prop must keep its reference between renders.

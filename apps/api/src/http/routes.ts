@@ -24,7 +24,7 @@ const PartyIn = z.object({ name: z.string().min(1).max(80), kind: z.enum(['human
 const Party = z.enum(['buyer', 'seller']);
 
 export function registerRoutes(app: FastifyInstance, ctx: AppContext, pacts: PactService, jobs: JobRunner) {
-  const r = <P extends z.ZodType = z.ZodObject<{}>, Q extends z.ZodType = z.ZodObject<{}>, B extends z.ZodType = z.ZodObject<{}>>(
+  const r = <P extends z.ZodType = z.ZodObject<Record<string, never>>, Q extends z.ZodType = z.ZodObject<Record<string, never>>, B extends z.ZodType = z.ZodObject<Record<string, never>>>(
     spec: Parameters<typeof defineRoute<P, Q, B>>[2],
   ) => defineRoute<P, Q, B>(app, ctx, spec);
 

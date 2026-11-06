@@ -27,7 +27,7 @@ async function api<T = any>(method: 'GET' | 'POST', path: string, body?: unknown
     headers: { 'content-type': 'application/json', 'x-pact-actor': actor },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  const json = await res.json().catch(() => ({}));
+  const json = (await res.json().catch(() => ({}))) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
   if (!res.ok) throw new Error(`${method} ${path} → ${res.status} ${json.error ?? ''}: ${json.message ?? ''}`);
   return json as T;
 }

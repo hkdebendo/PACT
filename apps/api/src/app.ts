@@ -50,10 +50,11 @@ export async function buildApp(ctx: AppContext, opts: { logger?: boolean } = {})
   await app.register(multipart, { limits: { fileSize: 8 * 1024 * 1024, files: 1 } });
   await app.register(rateLimit, { global: false });
 
-  app.setErrorHandler((err, req, reply) => {
+  app.setErrorHandler((error, req, reply) => {
+    const err = error as Error & { statusCode?: number };
     if (err instanceof ServiceError) return reply.code(err.status).send({ error: err.code, message: err.message, details: err.details ?? null });
     if (err instanceof PayPalError) return reply.code(502).send({ error: 'PAYPAL_ERROR', message: err.message, details: err.toJSON() });
-    const status = (err as { statusCode?: number }).statusCode ?? 500;
+    const status = err.statusCode ?? 500;
     if (status >= 500) req.log.error({ err: { message: err.message, stack: err.stack } }, 'unhandled error');
     return reply.code(status).send({ error: status >= 500 ? 'INTERNAL_ERROR' : 'BAD_REQUEST', message: err.message });
   });

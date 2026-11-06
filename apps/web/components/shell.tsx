@@ -2,7 +2,7 @@
 // App chrome: brand seal, navigation, the honest runtime-mode banner and the theme toggle.
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { useLive, useLiveConnection } from '@/lib/api';
 import { cx } from './ui';
 
@@ -35,18 +35,21 @@ const NAV = [
   { href: '/admin', label: 'Admin' },
 ];
 
+const readTheme = (): 'light' | 'dark' =>
+  (document.documentElement.dataset.theme as 'light' | 'dark' | undefined) ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+const subscribeTheme = (cb: () => void) => {
+  window.addEventListener('pact-theme', cb);
+  const mq = matchMedia('(prefers-color-scheme: dark)');
+  mq.addEventListener('change', cb);
+  return () => {
+    window.removeEventListener('pact-theme', cb);
+    mq.removeEventListener('change', cb);
+  };
+};
+
 function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark' | null>(null);
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('pact-theme') as 'light' | 'dark' | null;
-      const t = saved ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      document.documentElement.dataset.theme = t;
-      setTheme(t);
-    } catch {
-      setTheme('light');
-    }
-  }, []);
+  // The saved theme is applied before paint by the inline script in app/layout.tsx.
+  const theme = useSyncExternalStore(subscribeTheme, readTheme, () => null);
   const flip = () => {
     const t = theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = t;
@@ -55,7 +58,6 @@ function ThemeToggle() {
     } catch {
       /* private mode */
     }
-    setTheme(t);
     window.dispatchEvent(new CustomEvent('pact-theme', { detail: t }));
   };
   return (

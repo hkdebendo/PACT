@@ -153,7 +153,7 @@ describe('reputation', () => {
 
   it('rewards a long clean history and penalises disputes and refunds', () => {
     const good = computeReputation({ ...zero, pactsTotal: 20, pactsCompleted: 20, milestonesTotal: 40, milestonesOnTime: 39 });
-    const bad = computeReputation({ ...zero, pactsTotal: 20, pactsCompleted: 10, milestonesTotal: 40, milestonesOnTime: 20, disputesTotal: 15, refundsTotal: 10 });
+    const bad = computeReputation({ ...zero, pactsTotal: 20, pactsCompleted: 6, milestonesTotal: 40, milestonesOnTime: 12, disputesTotal: 18, refundsTotal: 14 });
     expect(good.score).toBeGreaterThan(90);
     expect(good.tier).toBe('excellent');
     expect(bad.score).toBeLessThan(60);

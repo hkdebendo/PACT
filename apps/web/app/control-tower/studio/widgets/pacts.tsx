@@ -339,7 +339,7 @@ export function ReconciliationWidget(params: AgWidgetParams<any>) {
 export function RefusedListWidget(params: AgWidgetParams<any>) {
   const rows = useTableRows(params, 'verdicts', ['id', 'pactId', 'pactTitle', 'milestoneTitle', 'milestoneKey', 'kind', 'status', 'confidence', 'reasoning', 'appealStatus', 'createdAt']);
   const ctx = ctxOf(params);
-  const since = Date.now() - 7 * 864e5;
+  const [since] = useState(() => Date.now() - 7 * 864e5);
   const refused = (rows ?? []).filter((r) => ['rejected', 'refund'].includes(r.status) && new Date(r.createdAt).getTime() >= since);
   const cols = useMemo<ColDef[]>(
     () => [

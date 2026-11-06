@@ -29,7 +29,7 @@ export function actorOf(req: FastifyRequest): string {
   return raw.replace(/[^A-Za-z0-9:_@.\- ]/g, '').slice(0, 80) || 'web:anonymous';
 }
 
-export function defineRoute<P extends z.ZodType = z.ZodObject<{}>, Q extends z.ZodType = z.ZodObject<{}>, B extends z.ZodType = z.ZodObject<{}>>(
+export function defineRoute<P extends z.ZodType = z.ZodObject<Record<string, never>>, Q extends z.ZodType = z.ZodObject<Record<string, never>>, B extends z.ZodType = z.ZodObject<Record<string, never>>>(
   app: FastifyInstance,
   ctx: AppContext,
   spec: RouteSpec<P, Q, B>,

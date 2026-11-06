@@ -50,7 +50,7 @@ Tiers: `new` (< 3 settled milestones), `at_risk` (< 60), `emerging` (< 75), `tru
 | nothing | 83.5 (`new`) |
 | 1 pact, 1 milestone, on time | < 90 — one pact is not enough to look excellent |
 | 20 pacts completed, 39/40 milestones on time, no disputes | > 90 (`excellent`) |
-| 10/20 completed, 20/40 on time, 15 disputes, 10 refunds | < 60 (`at_risk`) |
+| 6/20 completed, 12/40 on time, 18 disputes, 14 refunds | < 60 (`at_risk`) |
 
 A score snapshot is stored whenever a pact settles, which feeds the sparkline in the Control Tower's Reputation Leaderboard.
 

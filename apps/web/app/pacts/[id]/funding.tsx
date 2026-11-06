@@ -49,7 +49,7 @@ export function Funding({ pact, paypalClientId }: { pact: PactView; paypalClient
         {pact.paymentMode === 'sandbox' && paypalClientId ? (
           <div className="max-w-sm">
             <PayPalScriptProvider options={{ clientId: paypalClientId, intent: 'authorize', currency: pact.currency, components: 'buttons' }}>
-              <PayPalButtons style={{ layout: 'horizontal', shape: 'pill', label: 'paypal', tagline: false }} createOrder={createOrder} onApprove={confirm} onError={(e) => setErr(new ApiError(0, 'PAYPAL_SDK', String((e as Error)?.message ?? e)))} />
+              <PayPalButtons style={{ layout: 'horizontal', shape: 'pill', label: 'paypal', tagline: false }} createOrder={createOrder} onApprove={confirm} onError={(e) => setErr(new ApiError(0, 'PAYPAL_SDK', String((e as unknown as Error)?.message ?? e)))} />
             </PayPalScriptProvider>
             <p className="mt-2 text-[12px] text-muted">
               Sandbox only. Or {pact.approvalUrl ? <a className="underline" href={pact.approvalUrl}>open the PayPal approval page</a> : <button className="underline" onClick={() => createOrder().then(() => location.reload())}>create the approval link</button>} and come back.

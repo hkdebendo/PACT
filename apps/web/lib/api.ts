@@ -81,7 +81,9 @@ function ensureSource() {
 
 export function useEvents(listener: Listener) {
   const ref = useRef(listener);
-  ref.current = listener;
+  useEffect(() => {
+    ref.current = listener;
+  });
   useEffect(() => {
     ensureSource();
     const l: Listener = (e) => ref.current(e);
