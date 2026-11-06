@@ -24,7 +24,11 @@ if (existsSync(envPath)) {
     if (!m) continue;
     const value = m[2].replace(/^['"]|['"]$/g, '');
     // Short or obviously non-secret values (URLs, modes, model ids, ports) are not checked.
-    if (value.length < 12 || /^(https?:|file:)/.test(value) || /^(MUSE_MODEL|LLM_MODE|PAYPAL_ENV)$/.test(m[1])) continue;
+    // Credentials are always checked, whatever their length; other values only when long enough
+    // to be distinctive (URLs, modes, model ids and ports are not secrets).
+    const sensitive = /(SECRET|PASSWORD|KEY|TOKEN|EMAIL|CLIENT_ID|WEBHOOK_ID)/.test(m[1]);
+    if (!value || (!sensitive && (value.length < 12 || /^(https?:|file:)/.test(value))) || /^(MUSE_MODEL|LLM_MODE|PAYPAL_ENV|MUSE_REASONING_EFFORT)$/.test(m[1])) continue;
+    if (sensitive && value.length < 4) continue;
     secrets.push({ name: m[1], value });
   }
 }
