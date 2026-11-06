@@ -48,7 +48,7 @@ export function useTableRows(params: AgWidgetParams<any>, table: string, names: 
     };
     widgetApi.setDisplayState('loading', { prominent: !loaded.current });
     widgetApi
-      .getData({ kind: 'flat', fields, limit: { count: opts.limit ?? 1000 } } as any, { onDataUpdated: apply, ...(opts.crossFilter && { crossFilter: opts.crossFilter }) } as any)
+      .getData({ kind: 'flat', fields, limit: { count: opts.limit ?? 1000 } } as any, { queryId: `${table}:${namesKey}`, onDataUpdated: apply, ...(opts.crossFilter && { crossFilter: opts.crossFilter }) } as any)
       .then(apply)
       .catch(() => !cancelled && widgetApi.setDisplayState('noData'));
     return () => {

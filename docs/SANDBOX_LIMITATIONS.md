@@ -38,7 +38,21 @@ Every write sends a deterministic `PayPal-Request-Id` (e.g. `pact-<id>-cap-<mile
 
 ## Verified against the live sandbox
 
-> Status: **not yet verified** — sandbox credentials have not been provided yet (see `HUMAN_TODO.md`). This section will record the exact observed behaviour of: multiple partial captures on one authorization, the auto-void after a final capture, void after a partial capture, reauthorization inside / after the honor period, Payouts availability, and Transaction Search latency.
+Observed on 2026-11-06 with the project's sandbox app (pact `pact_888b7b6b9fe345fa`, USD 450):
+
+| Check | Result |
+|---|---|
+| OAuth2 client credentials | ✅ 200; token scopes include payouts and reporting |
+| Create order `intent: AUTHORIZE` with `payment_source.paypal.experience_context` | ✅ status `PAYER_ACTION_REQUIRED`, approval link has `rel: "payer-action"` (not `approve`) |
+| Buyer approval in sandbox checkout, automated with Playwright + the sandbox personal account | ✅ worked (approval page load is slow on a slow connection: up to several minutes) |
+| Authorize the approved order | ✅ authorization `CREATED`, `expiration_time` = authorization time + 29 days |
+| Partial capture 315.00 with `final_capture: false` | ✅ `COMPLETED` |
+| Second capture 135.00 with `final_capture: true` on the same authorization | ✅ `COMPLETED`; authorization then reads `CAPTURED` (two captures, one authorization) |
+| Partial refund 10.00 on the first capture | ✅ `COMPLETED` |
+| Transaction Search, balances | ✅ 200 (feature enabled on the app) |
+| Void of an un-captured authorization (cancel path) | ⏳ not yet observed: the sandbox checkout page did not finish loading on the connection available that evening; the call is implemented and covered by mocked/simulated tests |
+| Reauthorization after the honor period | ⏳ needs a 4-day-old authorization; covered by the simulated adapter and the job logic |
+| Payouts batch | ⏳ endpoint reachable, real payout not yet sent |
 
 ## Webhooks vs. the reconciliation poller
 

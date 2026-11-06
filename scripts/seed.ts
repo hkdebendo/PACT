@@ -40,7 +40,8 @@ const approved = (ids: string[]) => ({ status: 'approved', confidence: 0.9, crit
 const rejected = { status: 'rejected', confidence: 0.92, criteria: [{ criterionId: 'c1', passed: false, confidence: 0.92, reasoning: 'Seed fixture.' }], reasoning: 'Seeded rejection (fixture): evidence did not match the criteria.', missing: [] };
 
 const day = 24 * 3600 * 1000;
-let clock = Date.now() - 34 * day;
+// Spread the history over the past ~7 weeks; every timestamp stays in the past.
+let clock = Date.now() - 50 * day;
 const sim = new SimulatedGateway({ now: () => new Date(clock), statePath: resolve(repoRoot, 'data', 'simulated-paypal.json') });
 const llm = new SeedAnswers();
 const ctx = createContext({ db: openDb(), gateway: sim, simulated: sim, llm, now: () => new Date(clock), config: { ...getConfig() } });
@@ -75,7 +76,7 @@ const plans: Plan[] = [
   { seller: 'Nia Crafts', buyer: 'Bea (buyer)', title: '40 plain notebooks', total: 240, split: [50, 50], outcomes: ['ok', 'dispute_partial'] },
   { seller: 'Lumen Prints', buyer: 'Cafe Lumiere', title: '200 menu cards', total: 180, split: [100], outcomes: ['dispute_refund'] },
   { seller: 'Kofi Textiles', buyer: 'Bea (buyer)', title: '25 tote bags', total: 275, split: [30, 70], outcomes: ['ok', 'ok'] },
-  { seller: 'Atlas Code Studio', buyer: 'Cafe Lumiere', title: 'Booking widget', total: 1200, split: [20, 30, 50], outcomes: ['ok', 'ok', 'late'] },
+  { seller: 'Atlas Code Studio', buyer: 'Cafe Lumiere', title: 'Booking widget', total: 1200, split: [20, 30, 50], outcomes: ['ok', 'ok', 'late'], cancel: true },
   { seller: 'Lumen Prints', buyer: 'Bea (buyer)', title: '50 posters', total: 150, split: [100], outcomes: ['reject_then_ok'], cancel: false },
   { seller: 'Nia Crafts', buyer: 'Ada (buyer agent)', title: '10 ceramic bowls', total: 220, split: [100], outcomes: ['ok'] },
   { seller: 'Lumen Prints', buyer: 'Ada (buyer agent)', title: '300 flyers', total: 90, split: [50, 50], outcomes: ['ok'], cancel: true },
@@ -85,7 +86,7 @@ let n = 0;
 const note = (pactId: string, mid: string) => Buffer.from(`Seed delivery note #${++n} for ${pactId}/${mid}\nGenerated fixture, not a real document.\n`);
 
 for (const plan of plans) {
-  clock += 2.5 * day;
+  clock = Math.min(clock + 3 * day, Date.now() - 2 * day);
   const deadline = new Date(clock + 6 * day).toISOString().slice(0, 10);
   const p = pacts.create({ contract: contract(plan.title, plan.total, deadline, plan.split, plan.seller, plan.buyer), sourceText: null, buyer: { name: plan.buyer }, seller: { name: plan.seller }, actor: 'seed' });
   pacts.propose(p.id, 'seed');
@@ -117,6 +118,8 @@ for (const plan of plans) {
       llm.queue.push(approved(['c1']));
       await pacts.verifyMilestone(p.id, mid, 'seed');
     }
+    // A pre-check rejection (e.g. late evidence) consumes no fixture answer: drop leftovers.
+    llm.queue.length = 0;
   }
   if (plan.cancel) await pacts.cancel(p.id, 'seed', 'Buyer cancelled (seeded)');
   const v = pacts.view(p.id);

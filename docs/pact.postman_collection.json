@@ -1,0 +1,1125 @@
+{
+  "info": {
+    "name": "PACT API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Generated from docs/openapi.json by npm run openapi."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    }
+  ],
+  "item": [
+    {
+      "name": "system",
+      "item": [
+        {
+          "name": "Runtime modes (PayPal sandbox vs simulated, LLM live vs replay) for honest UI labelling",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "status"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "contracts",
+      "item": [
+        {
+          "name": "Contract Parser: natural language → structured contract (or clarification questions)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts/parse",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "parse"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "pacts",
+      "item": [
+        {
+          "name": "Create a pact (draft) from a structured contract",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "List pacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get one pact with milestones, evidence, verdicts and payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buyer proposes the pact to the seller",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/propose",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "propose"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Seller accepts the proposed pact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/accept",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "accept"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel the pact and void the remaining authorization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "cancel"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Close a completed pact (ends the dispute window)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/close",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "close"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "payments",
+      "item": [
+        {
+          "name": "Create the PayPal order (intent AUTHORIZE); returns the buyer approval URL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/fund",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "fund"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Authorize the approved order: funds held, buyer not charged",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/fund/confirm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "fund",
+                "confirm"
+              ]
+            }
+          }
+        },
+        {
+          "name": "SIMULATED mode only: stand-in for the buyer approving in PayPal checkout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/simulated-approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "simulated-approve"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "milestones",
+      "item": [
+        {
+          "name": "Submit evidence (multipart field \"file\", or JSON with base64 content)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/milestones/:mid/evidence",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "milestones",
+                ":mid",
+                "evidence"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Run the two-step AI Verifier on the submitted evidence; approved → automatic partial capture",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/milestones/:mid/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "milestones",
+                ":mid",
+                "verify"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Capture an approved milestone (partial or final capture)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/milestones/:mid/release",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "milestones",
+                ":mid",
+                "release"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "disputes",
+      "item": [
+        {
+          "name": "Open a dispute on a milestone",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/milestones/:mid/dispute",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "milestones",
+                ":mid",
+                "dispute"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Add a party statement to an open dispute",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/milestones/:mid/statement",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "milestones",
+                ":mid",
+                "statement"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "AI Arbiter decides the dispute (release / partial / refund) and PACT moves the money",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/milestones/:mid/arbitrate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "milestones",
+                ":mid",
+                "arbitrate"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "verdicts",
+      "item": [
+        {
+          "name": "List AI and human verdicts (filter by status, kind, since)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/verdicts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "verdicts"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get one verdict",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/verdicts/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "verdicts",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Appeal an AI decision to a human reviewer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/verdicts/:id/appeal",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "verdicts",
+                ":id",
+                "appeal"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Human reviewer decides an appeal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/verdicts/:id/review",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "verdicts",
+                ":id",
+                "review"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "reputation",
+      "item": [
+        {
+          "name": "Reputation leaderboard (Bayesian-smoothed)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reputation",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reputation"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reputation of one party",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reputation/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reputation",
+                ":id"
+              ]
+            }
+          }
+        },
+        {
+          "name": "List parties",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/parties",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "parties"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "audit",
+      "item": [
+        {
+          "name": "Hash-chained audit log",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/audit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "audit"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Recompute every hash and report whether the chain is intact",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/audit/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "audit",
+                "verify"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "dashboard",
+      "item": [
+        {
+          "name": "Flattened tables for the AG Studio Control Tower",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PayPal Transaction Search + balances vs. PACT ledger (as-of timestamp, 3-hour caveat)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reconciliation",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reconciliation"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "admin",
+      "item": [
+        {
+          "name": "Muse token usage and cost",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/usage",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "usage"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Record token usage of the AG Studio PACT Auditor (called by the web app proxy)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/llm-usage",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "llm-usage"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Recent PayPal API calls (sandbox mode; never includes tokens)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/paypal-calls",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "paypal-calls"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Scheduled jobs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/jobs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "jobs"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Run due jobs now",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/jobs/run",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "jobs",
+                "run"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Run the PayPal reconciliation poller now",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/reconcile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "reconcile"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

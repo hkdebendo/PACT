@@ -1,0 +1,50 @@
+{
+  "role": "verifier.describe",
+  "model": "muse-spark-1.3",
+  "output": {
+    "dates": [],
+    "objects": [
+      {
+        "attributes": [
+          "white with small blue star on chest",
+          "flat illustration style",
+          "uniform appearance"
+        ],
+        "count": 50,
+        "name": "t-shirt illustrations"
+      },
+      {
+        "attributes": [
+          "white paper",
+          "black typewritten text",
+          "tilted placement in bottom right corner"
+        ],
+        "count": 1,
+        "name": "paper label"
+      }
+    ],
+    "quality": {
+      "issues": [],
+      "legible": true
+    },
+    "summary": "The image shows 50 white t-shirt illustrations with blue stars arranged in five rows of ten on a tan background with a quantity label in the corner.",
+    "visibleText": [
+      "QTY: 50 PCS",
+      "WHITE / BLUE STAR"
+    ]
+  },
+  "usage": {
+    "role": "verifier.describe",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 1614,
+    "outputTokens": 542,
+    "reasoningTokens": 391,
+    "cachedTokens": 369,
+    "costUsd": 0.0039150999999999995,
+    "latencyMs": 6541
+  },
+  "recordedAt": "2026-11-06T19:06:41.620Z",
+  "today": null
+}

@@ -1,0 +1,32 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.96,
+    "criteria": [
+      {
+        "confidence": 0.96,
+        "criterionId": "c1",
+        "passed": true,
+        "reasoning": "Tracking screen shows status badge with text DELIVERED and timeline step Delivered to recipient. Visible text lists Tracking number PX 4815 1623 42, Recipient Ada — Cafe, front desk Signed by A. M., and Contents 1 parcel, 50 x t-shirt (white). Image is marked legible with no quality issues."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The tracking image clearly shows DELIVERED status for a parcel of 50 white t-shirts addressed to Ada. The delivery timeline confirms it reached the recipient and was signed for. This directly satisfies the requirement that carrier tracking shows the shipment as delivered.",
+    "status": "approved"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 836,
+    "outputTokens": 1233,
+    "reasoningTokens": 1047,
+    "cachedTokens": 0,
+    "costUsd": 0.00628525,
+    "latencyMs": 9729
+  },
+  "recordedAt": "2026-11-06T19:07:21.867Z",
+  "today": null
+}

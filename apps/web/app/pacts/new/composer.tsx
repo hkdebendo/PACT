@@ -6,7 +6,7 @@ import { api, ApiError, setActor } from '@/lib/api';
 import { Badge, Button, Card, ErrorNote, cx, money } from '@/components/ui';
 
 const DEMO_DEAL =
-  'I want 50 embroidered t-shirts (plain white, small blue embroidered star on the chest) delivered before Friday. Total price 450 USD: 30% when production is done, 70% at delivery.';
+  'I want 50 embroidered t-shirts (plain white, small blue embroidered star on the chest) delivered within 7 days. Total price 450 USD: 30% when production is done, 70% at delivery.';
 
 const today = () => new Date().toISOString().slice(0, 10);
 const plusDays = (n: number) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);

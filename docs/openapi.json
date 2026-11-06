@@ -1,0 +1,2421 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "PACT API",
+    "version": "0.1.0",
+    "description": "Programmable escrow for the agent economy: natural-language contracts, PayPal-held funds, AI-verified milestones, hash-chained audit.",
+    "license": {
+      "name": "MIT",
+      "identifier": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000"
+    }
+  ],
+  "paths": {
+    "/api/status": {
+      "get": {
+        "summary": "Runtime modes (PayPal sandbox vs simulated, LLM live vs replay) for honest UI labelling",
+        "tags": [
+          "system"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contracts/parse": {
+      "post": {
+        "summary": "Contract Parser: natural language → structured contract (or clarification questions)",
+        "tags": [
+          "contracts"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 4000
+                  },
+                  "today": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "buyerName": {
+                    "type": "string",
+                    "maxLength": 80
+                  },
+                  "sellerName": {
+                    "type": "string",
+                    "maxLength": 80
+                  }
+                },
+                "required": [
+                  "text"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts": {
+      "post": {
+        "summary": "Create a pact (draft) from a structured contract",
+        "tags": [
+          "pacts"
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contract": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "One or two sentences restating the deal"
+                      },
+                      "buyer": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "email"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "seller": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "email"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "currency": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{3}$"
+                      },
+                      "totalAmount": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "description": "Total in major units, e.g. 450.00"
+                      },
+                      "deadline": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                      },
+                      "milestones": {
+                        "minItems": 1,
+                        "maxItems": 10,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "Short id, e.g. \"m1\""
+                            },
+                            "title": {
+                              "type": "string"
+                            },
+                            "percent": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 100,
+                              "description": "Share of the total released when this milestone is approved"
+                            },
+                            "criteria": {
+                              "minItems": 1,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "Short id, unique inside the milestone, e.g. \"c1\""
+                                  },
+                                  "text": {
+                                    "type": "string",
+                                    "description": "One objectively checkable condition, e.g. \"50 t-shirts are visible or counted\""
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "text"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "evidenceTypes": {
+                              "minItems": 1,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "photo",
+                                  "document",
+                                  "code",
+                                  "tracking"
+                                ]
+                              },
+                              "description": "Evidence the seller may submit for this milestone"
+                            },
+                            "deadline": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ],
+                              "description": "YYYY-MM-DD, or null to use the contract deadline"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "title",
+                            "percent",
+                            "criteria",
+                            "evidenceTypes",
+                            "deadline"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "subcontractors": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "description": "PayPal email that receives the payout",
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "milestoneId": {
+                              "type": "string"
+                            },
+                            "percentOfMilestone": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 100
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "email",
+                            "milestoneId",
+                            "percentOfMilestone"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "disputePolicy": {
+                        "type": "object",
+                        "properties": {
+                          "windowHours": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 720,
+                            "description": "Hours after a verdict during which either party may dispute"
+                          },
+                          "resolution": {
+                            "type": "string",
+                            "enum": [
+                              "ai_arbiter_with_human_appeal"
+                            ]
+                          },
+                          "notes": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "windowHours",
+                          "resolution",
+                          "notes"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "title",
+                      "description",
+                      "buyer",
+                      "seller",
+                      "currency",
+                      "totalAmount",
+                      "deadline",
+                      "milestones",
+                      "subcontractors",
+                      "disputePolicy"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "sourceText": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 4000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "buyer": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      },
+                      "kind": {
+                        "default": "human",
+                        "type": "string",
+                        "enum": [
+                          "human",
+                          "agent"
+                        ]
+                      },
+                      "email": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "email",
+                            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "kind"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "seller": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                      },
+                      "kind": {
+                        "default": "human",
+                        "type": "string",
+                        "enum": [
+                          "human",
+                          "agent"
+                        ]
+                      },
+                      "email": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "email",
+                            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "kind"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "contract",
+                  "buyer",
+                  "seller"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List pacts",
+        "tags": [
+          "pacts"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partyId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}": {
+      "get": {
+        "summary": "Get one pact with milestones, evidence, verdicts and payments",
+        "tags": [
+          "pacts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/propose": {
+      "post": {
+        "summary": "Buyer proposes the pact to the seller",
+        "tags": [
+          "pacts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/accept": {
+      "post": {
+        "summary": "Seller accepts the proposed pact",
+        "tags": [
+          "pacts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/fund": {
+      "post": {
+        "summary": "Create the PayPal order (intent AUTHORIZE); returns the buyer approval URL",
+        "description": "Funds are only held after the buyer approves in PayPal checkout and PACT authorizes the order (POST /fund/confirm, or the reconciliation poller).",
+        "tags": [
+          "payments"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/fund/confirm": {
+      "post": {
+        "summary": "Authorize the approved order: funds held, buyer not charged",
+        "tags": [
+          "payments"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/simulated-approve": {
+      "post": {
+        "summary": "SIMULATED mode only: stand-in for the buyer approving in PayPal checkout",
+        "tags": [
+          "payments"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/cancel": {
+      "post": {
+        "summary": "Cancel the pact and void the remaining authorization",
+        "tags": [
+          "pacts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "default": "cancelled",
+                    "type": "string",
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/close": {
+      "post": {
+        "summary": "Close a completed pact (ends the dispute window)",
+        "tags": [
+          "pacts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/milestones/{mid}/evidence": {
+      "post": {
+        "summary": "Submit evidence (multipart field \"file\", or JSON with base64 content)",
+        "tags": [
+          "milestones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "contentBase64": {
+                    "type": "string",
+                    "maxLength": 12000000
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "photo",
+                      "document",
+                      "code",
+                      "tracking"
+                    ]
+                  },
+                  "note": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 500
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "filename",
+                  "contentBase64",
+                  "type"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/milestones/{mid}/verify": {
+      "post": {
+        "summary": "Run the two-step AI Verifier on the submitted evidence; approved → automatic partial capture",
+        "tags": [
+          "milestones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "autoRelease": {
+                    "default": true,
+                    "type": "boolean"
+                  },
+                  "async": {
+                    "default": false,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "autoRelease",
+                  "async"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/milestones/{mid}/release": {
+      "post": {
+        "summary": "Capture an approved milestone (partial or final capture)",
+        "tags": [
+          "milestones"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/milestones/{mid}/dispute": {
+      "post": {
+        "summary": "Open a dispute on a milestone",
+        "tags": [
+          "disputes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "party": {
+                    "type": "string",
+                    "enum": [
+                      "buyer",
+                      "seller"
+                    ]
+                  },
+                  "statement": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "party",
+                  "statement"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/milestones/{mid}/statement": {
+      "post": {
+        "summary": "Add a party statement to an open dispute",
+        "tags": [
+          "disputes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "party": {
+                    "type": "string",
+                    "enum": [
+                      "buyer",
+                      "seller"
+                    ]
+                  },
+                  "statement": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "party",
+                  "statement"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pacts/{id}/milestones/{mid}/arbitrate": {
+      "post": {
+        "summary": "AI Arbiter decides the dispute (release / partial / refund) and PACT moves the money",
+        "tags": [
+          "disputes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/verdicts": {
+      "get": {
+        "summary": "List AI and human verdicts (filter by status, kind, since)",
+        "tags": [
+          "verdicts"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "kind",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "verifier",
+                "arbiter",
+                "human"
+              ]
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pactId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/verdicts/{id}": {
+      "get": {
+        "summary": "Get one verdict",
+        "tags": [
+          "verdicts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/verdicts/{id}/appeal": {
+      "post": {
+        "summary": "Appeal an AI decision to a human reviewer",
+        "tags": [
+          "verdicts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Replays the stored response for a repeated key"
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "party": {
+                    "type": "string",
+                    "enum": [
+                      "buyer",
+                      "seller"
+                    ]
+                  },
+                  "note": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 1000
+                  }
+                },
+                "required": [
+                  "party",
+                  "note"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/verdicts/{id}/review": {
+      "post": {
+        "summary": "Human reviewer decides an appeal",
+        "tags": [
+          "verdicts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reviewer": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "outcome": {
+                    "type": "string",
+                    "enum": [
+                      "upheld",
+                      "overturned"
+                    ]
+                  },
+                  "note": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 1000
+                  },
+                  "decision": {
+                    "type": "object",
+                    "properties": {
+                      "outcome": {
+                        "type": "string",
+                        "enum": [
+                          "release",
+                          "partial",
+                          "refund"
+                        ]
+                      },
+                      "releasePercent": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 99
+                      }
+                    },
+                    "required": [
+                      "outcome"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "reviewer",
+                  "outcome",
+                  "note"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reputation": {
+      "get": {
+        "summary": "Reputation leaderboard (Bayesian-smoothed)",
+        "tags": [
+          "reputation"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reputation/{id}": {
+      "get": {
+        "summary": "Reputation of one party",
+        "tags": [
+          "reputation"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/parties": {
+      "get": {
+        "summary": "List parties",
+        "tags": [
+          "reputation"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/audit": {
+      "get": {
+        "summary": "Hash-chained audit log",
+        "tags": [
+          "audit"
+        ],
+        "parameters": [
+          {
+            "name": "pactId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5000
+            }
+          },
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/audit/verify": {
+      "get": {
+        "summary": "Recompute every hash and report whether the chain is intact",
+        "tags": [
+          "audit"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard": {
+      "get": {
+        "summary": "Flattened tables for the AG Studio Control Tower",
+        "tags": [
+          "dashboard"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reconciliation": {
+      "get": {
+        "summary": "PayPal Transaction Search + balances vs. PACT ledger (as-of timestamp, 3-hour caveat)",
+        "tags": [
+          "dashboard"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/usage": {
+      "get": {
+        "summary": "Muse token usage and cost",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/llm-usage": {
+      "post": {
+        "summary": "Record token usage of the AG Studio PACT Auditor (called by the web app proxy)",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "maxLength": 60
+                  },
+                  "model": {
+                    "type": "string",
+                    "maxLength": 60
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "live",
+                      "replay"
+                    ]
+                  },
+                  "cacheHit": {
+                    "type": "boolean"
+                  },
+                  "inputTokens": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "outputTokens": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "reasoningTokens": {
+                    "default": 0,
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "cachedTokens": {
+                    "default": 0,
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "latencyMs": {
+                    "default": 0,
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "role",
+                  "model",
+                  "mode",
+                  "cacheHit",
+                  "inputTokens",
+                  "outputTokens",
+                  "reasoningTokens",
+                  "cachedTokens",
+                  "latencyMs"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/paypal-calls": {
+      "get": {
+        "summary": "Recent PayPal API calls (sandbox mode; never includes tokens)",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/jobs": {
+      "get": {
+        "summary": "Scheduled jobs",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/jobs/run": {
+      "post": {
+        "summary": "Run due jobs now",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/reconcile": {
+      "post": {
+        "summary": "Run the PayPal reconciliation poller now",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {}
+        },
+        "required": [
+          "error",
+          "message"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "role": "parser",
+  "model": "muse-spark-1.3",
+  "output": {
+    "assumptions": [
+      "Delivery deadline calculated as TODAY ⟦v1⟧ + 7 days = 2026-11-13",
+      "Dispute window set to default 72 hours",
+      "Buyer and seller emails not provided, set to null",
+      "Milestone deadlines default to contract deadline"
+    ],
+    "contract": {
+      "buyer": {
+        "email": null,
+        "name": "Ada"
+      },
+      "currency": "USD",
+      "deadline": "2026-11-13",
+      "description": "Kofi Textiles to produce and deliver 50 plain white t-shirts with a small blue embroidered star on the chest to buyer Ada for 450 USD by 2026-11-13.",
+      "disputePolicy": {
+        "notes": null,
+        "resolution": "ai_arbiter_with_human_appeal",
+        "windowHours": 72
+      },
+      "milestones": [
+        {
+          "criteria": [
+            {
+              "id": "c1",
+              "text": "At least 50 plain white t-shirts are visible or counted"
+            },
+            {
+              "id": "c2",
+              "text": "Visible t-shirts show a small blue embroidered star on the chest"
+            }
+          ],
+          "deadline": null,
+          "evidenceTypes": [
+            "photo"
+          ],
+          "id": "m1",
+          "percent": 30,
+          "title": "Production complete"
+        },
+        {
+          "criteria": [
+            {
+              "id": "c1",
+              "text": "Carrier tracking shows the shipment as delivered"
+            }
+          ],
+          "deadline": null,
+          "evidenceTypes": [
+            "tracking"
+          ],
+          "id": "m2",
+          "percent": 70,
+          "title": "Delivery completed"
+        }
+      ],
+      "seller": {
+        "email": null,
+        "name": "Kofi Textiles"
+      },
+      "subcontractors": [],
+      "title": "50 Embroidered T-Shirts",
+      "totalAmount": 450
+    },
+    "questions": [],
+    "status": "ok"
+  },
+  "usage": {
+    "role": "parser",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 1172,
+    "outputTokens": 2666,
+    "reasoningTokens": 2281,
+    "cachedTokens": 0,
+    "costUsd": 0.0127955,
+    "latencyMs": 20692
+  },
+  "recordedAt": "2026-11-06T19:05:41.575Z",
+  "today": "2026-11-06"
+}

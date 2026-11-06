@@ -28,6 +28,7 @@ export interface ReconciliationPayload {
   errors: string[];
 }
 
+// Fields PACT's custom widgets query must stay visible: widgetApi.getSchema() omits hidden fields.
 type FieldSpec = [id: string, name: string, format: AgFormat, hide?: boolean];
 const fields = (specs: FieldSpec[]): AgFieldDefinition[] => specs.map(([id, name, format, hide]) => ({ id, name, format, ...(hide && { hide }) }));
 const manyToOne = (id: string, source: string, target: string): AgRelationDefinition => {
@@ -87,8 +88,8 @@ export function buildStudioData(d: DashboardPayload, rec: ReconciliationPayload 
         description: 'One row per milestone of a pact (key = pactId:milestoneId).',
         data: rowsOf(d.milestones),
         fields: fields([
-          ['key', 'Milestone Key', 'textFormat', true],
-          ['pactId', 'Pact ID', 'textFormat', true],
+          ['key', 'Milestone Key', 'textFormat'],
+          ['pactId', 'Pact ID', 'textFormat'],
           ['pactTitle', 'Milestone Pact', 'textFormat'],
           ['milestoneId', 'Milestone ID', 'textFormat'],
           ['position', 'Step', 'integerFormat'],
@@ -104,7 +105,7 @@ export function buildStudioData(d: DashboardPayload, rec: ReconciliationPayload 
           ['lastVerdict', 'Last Verdict', 'textFormat'],
           ['lastConfidence', 'Last Confidence', 'decimalFormat'],
           ['evidenceCount', 'Evidence Files', 'integerFormat'],
-          ['thumbnailUrl', 'Thumbnail', 'textFormat', true],
+          ['thumbnailUrl', 'Thumbnail', 'textFormat'],
           ['seller', 'Milestone Seller', 'textFormat'],
         ]),
       },
@@ -114,9 +115,9 @@ export function buildStudioData(d: DashboardPayload, rec: ReconciliationPayload 
         data: rowsOf(d.verdicts),
         fields: fields([
           ['id', 'Verdict ID', 'textFormat'],
-          ['pactId', 'Pact ID', 'textFormat', true],
+          ['pactId', 'Pact ID', 'textFormat'],
           ['pactTitle', 'Verdict Pact', 'textFormat'],
-          ['milestoneKey', 'Milestone Key', 'textFormat', true],
+          ['milestoneKey', 'Milestone Key', 'textFormat'],
           ['milestoneTitle', 'Verdict Milestone', 'textFormat'],
           ['kind', 'Decided By', 'textFormat'],
           ['status', 'Verdict', 'textFormat'],
@@ -137,8 +138,8 @@ export function buildStudioData(d: DashboardPayload, rec: ReconciliationPayload 
         data: rowsOf(d.payments),
         fields: fields([
           ['id', 'Payment ID', 'textFormat', true],
-          ['pactId', 'Pact ID', 'textFormat', true],
-          ['milestoneKey', 'Milestone Key', 'textFormat', true],
+          ['pactId', 'Pact ID', 'textFormat'],
+          ['milestoneKey', 'Milestone Key', 'textFormat'],
           ['kind', 'Operation', 'textFormat'],
           ['amount', 'Operation Amount', 'currencyFormat'],
           ['currency', 'Operation Currency', 'textFormat', true],
@@ -164,7 +165,7 @@ export function buildStudioData(d: DashboardPayload, rec: ReconciliationPayload 
           ['refundRate', 'Refund Rate', 'percentageFormat'],
           ['confidence', 'Score Confidence', 'percentageFormat'],
           ['milestones', 'Settled Milestones', 'integerFormat'],
-          ['trend', 'Trend', 'textFormat', true],
+          ['trend', 'Trend', 'textFormat'],
         ]),
       },
       {

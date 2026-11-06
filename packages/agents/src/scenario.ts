@@ -8,7 +8,7 @@ import { McpAgent, type AgentEvent } from './agent';
 // The real current date: replayed model answers are date-shifted to it, so deadlines stay in the future.
 export const DEMO_TODAY = new Date().toISOString().slice(0, 10);
 export const DEMO_DEAL =
-  'I want 50 embroidered t-shirts (plain white, small blue embroidered star on the chest) delivered before Friday. ' +
+  'I want 50 embroidered t-shirts (plain white, small blue embroidered star on the chest) delivered within 7 days. ' +
   'Total price 450 USD: 30% when production is done, 70% at delivery.';
 
 const BUYER_SYSTEM = `You are "Ada", a procurement agent buying for a small cafe. Today is ${DEMO_TODAY}.

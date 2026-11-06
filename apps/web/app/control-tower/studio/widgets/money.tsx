@@ -124,7 +124,7 @@ export function MoneyFlowWidget(params: AgWidgetParams<any>) {
     if (!flows.length) return null;
     const W_ = 640;
     const H_ = 300;
-    const pad = 10;
+    const pad = 22;
     const nodeW = 14;
     const sources = [...new Set(flows.map((f) => f.source))].filter((s) => !flows.some((f) => f.target === s));
     const middles = [...new Set(flows.map((f) => f.source))].filter((s) => !sources.includes(s));
@@ -183,11 +183,18 @@ export function MoneyFlowWidget(params: AgWidgetParams<any>) {
           </motion.path>
         ))}
         {Object.entries(layout.nodes).map(([name, n]) => {
-          const right = n.col > 0;
+          const lastCol = Math.max(...Object.values(layout.nodes).map((x) => x.col));
+          // First column: label to the right; last column: label to the left; middle: above the bar.
+          const pos =
+            n.col === 0
+              ? { x: n.x + layout.nodeW + 8, y: n.y + n.h / 2, anchor: 'start' as const, dy: '0.35em' }
+              : n.col === lastCol
+                ? { x: n.x - 8, y: n.y + n.h / 2, anchor: 'end' as const, dy: '0.35em' }
+                : { x: n.x + layout.nodeW / 2, y: Math.max(12, n.y - 6), anchor: 'middle' as const, dy: '0' };
           return (
             <g key={name}>
               <rect x={n.x} y={n.y} width={layout.nodeW} height={n.h} rx={3} fill={color(name)} />
-              <text x={right ? n.x - 8 : n.x + layout.nodeW + 8} y={n.y + n.h / 2} dy="0.35em" textAnchor={right ? 'end' : 'start'} style={{ fontSize: 12, fill: 'var(--pact-ink)', fontFamily: 'var(--pact-font)', paintOrder: 'stroke', stroke: 'var(--pact-surface)', strokeWidth: 3 }}>
+              <text x={pos.x} y={pos.y} dy={pos.dy} textAnchor={pos.anchor} style={{ fontSize: 12, fill: 'var(--pact-ink)', fontFamily: 'var(--pact-font)', paintOrder: 'stroke', stroke: 'var(--pact-surface)', strokeWidth: 3 }}>
                 {name} · {usd(n.value)}
               </text>
             </g>

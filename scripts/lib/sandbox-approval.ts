@@ -16,7 +16,10 @@ async function clickFirst(page: Page, selectors: string[], timeout = 15_000) {
     }
     await page.waitForTimeout(400);
   }
-  throw new Error(`None of these appeared on the PayPal page: ${selectors.join(', ')}`);
+  // Leave evidence for debugging: a screenshot (git-ignored data/) and the visible button labels.
+  await page.screenshot({ path: 'data/paypal-approval-failure.png', timeout: 30_000, animations: 'disabled' }).catch((e) => console.error('screenshot failed:', String((e as Error).message).slice(0, 200)));
+  const buttons = await page.locator('button:visible').allInnerTexts().catch(() => [] as string[]);
+  throw new Error(`None of these appeared on the PayPal page: ${selectors.join(', ')}. Visible buttons: ${buttons.map((b) => b.trim()).filter(Boolean).join(' | ')}. URL: ${page.url().split('?')[0]}`);
 }
 
 export async function approveSandboxOrder(approvalUrl: string, opts: { headless?: boolean } = {}) {
@@ -28,14 +31,16 @@ export async function approveSandboxOrder(approvalUrl: string, opts: { headless?
   const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL ?? 'chrome', headless: opts.headless ?? true });
   try {
     const page = await browser.newPage();
-    await page.goto(approvalUrl, { waitUntil: 'domcontentloaded', timeout: 60_000 });
-    await page.locator('#email').fill(email, { timeout: 30_000 });
+    // Slow connections: the sandbox checkout can take minutes to load.
+    page.setDefaultTimeout(180_000);
+    await page.goto(approvalUrl, { waitUntil: 'commit', timeout: 180_000 });
+    await page.locator('#email').fill(email, { timeout: 180_000 });
     // Newer checkout shows the password on a second step.
     if (await page.locator('#btnNext').isVisible().catch(() => false)) await page.locator('#btnNext').click();
-    await page.locator('#password').fill(password, { timeout: 30_000 });
+    await page.locator('#password').fill(password, { timeout: 180_000 });
     await clickFirst(page, ['#btnLogin', 'button[type=submit]']);
-    await clickFirst(page, ['#payment-submit-btn', 'button[data-testid="submit-button-initial"]', 'button:has-text("Continue")', 'button:has-text("Agree")', 'button:has-text("Pay")'], 60_000);
-    await page.waitForURL(/paypal=approved|token=/, { timeout: 60_000 }).catch(() => undefined);
+    await clickFirst(page, ['#payment-submit-btn', 'button[data-testid="submit-button-initial"]', 'button:has-text("Continue")', 'button:has-text("Agree")', 'button:has-text("Pay")'], 180_000);
+    await page.waitForURL(/paypal=approved/, { timeout: 180_000 }).catch(() => undefined);
   } finally {
     await browser.close();
   }
