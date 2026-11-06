@@ -117,6 +117,17 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
   // Every non-primitive Studio prop must keep its reference between renders.
   const layout = useMemo(() => ({ widgetBorderEnabled: true }), []);
 
+  // Studio shows its AI panel in edit mode: open it with the Compose and Data panels folded away.
+  const askAuditor = () => {
+    setMode('edit');
+    setTimeout(() => {
+      const a = apiRef.current;
+      if (!a) return;
+      const s = a.getState();
+      a.setState({ ...s, panels: { ...s.panels, edit: { collapsed: true }, data: { collapsed: true }, filters: { collapsed: true }, ai: { collapsed: false } } } as AgReportState);
+    }, 60);
+  };
+
   const goTo = (id: string) => {
     const a = apiRef.current;
     if (!a) return;
@@ -149,6 +160,11 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
           {dash?.paymentMode === 'simulated' && <Badge tone="held">SIMULATED PayPal</Badge>}
           {dash?.llmMode === 'replay' && <Badge tone="held">Replay: recorded responses</Badge>}
           {!licenseKey && <Badge tone="neutral">No AG Studio licence (watermark)</Badge>}
+          {aiEnabled && mode === 'view' && (
+            <Button size="sm" onClick={askAuditor}>
+              Ask the PACT Auditor
+            </Button>
+          )}
           <Button size="sm" variant={mode === 'edit' ? 'primary' : 'secondary'} onClick={() => setMode((m) => (m === 'edit' ? 'view' : 'edit'))} aria-pressed={mode === 'edit'}>
             {mode === 'edit' ? 'Done editing' : 'Edit layout'}
           </Button>

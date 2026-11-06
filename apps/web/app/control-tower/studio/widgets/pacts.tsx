@@ -8,7 +8,7 @@ import type { AgWidgetParams } from 'ag-studio';
 import { studioGridTheme } from 'ag-studio';
 import { AllCommunityModule, ModuleRegistry, type ColDef, type ICellRendererParams } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
-import { STATUS_COLOR, crossFilterPact, ctxOf, usd, useTableRows, W, type Row } from './common';
+import { STATUS_COLOR, crossFilterPact, ctxOf, ms, usd, useTableRows, W, type Row } from './common';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -34,14 +34,20 @@ const nice = (s: string) => String(s ?? '').replace(/_/g, ' ');
 
 export function MilestoneTimelineWidget(params: AgWidgetParams<any>) {
   const rows = useTableRows(params, 'milestones', ['pactId', 'pactTitle', 'milestoneId', 'position', 'title', 'percent', 'amount', 'status', 'lastVerdict', 'lastConfidence', 'thumbnailUrl', 'attempts', 'seller']);
+  const pactRows = useTableRows(params, 'pacts', ['id', 'createdAt', 'status']);
   const ctx = ctxOf(params);
   const pacts = useMemo(() => {
     const by = new Map<string, Row[]>();
     for (const r of rows ?? []) by.set(r.pactId, [...(by.get(r.pactId) ?? []), r]);
-    return [...by.entries()].map(([id, ms]) => ({ id, title: ms[0].pactTitle, seller: ms[0].seller, ms: ms.sort((a, b) => a.position - b.position) }));
-  }, [rows]);
-  // With a cross-filter there is one pact; otherwise show the most recent ones.
-  const shown = pacts.slice(-Math.max(1, Math.min(3, pacts.length))).reverse();
+    const created = new Map((pactRows ?? []).map((p) => [p.id, ms(p.createdAt)]));
+    // Live pacts first (funded / in progress / disputed), then the most recent.
+    const live = new Set((pactRows ?? []).filter((p) => ['funded', 'in_progress', 'disputed'].includes(p.status)).map((p) => p.id));
+    return [...by.entries()]
+      .map(([id, list]) => ({ id, title: list[0].pactTitle, seller: list[0].seller, ms: list.sort((a, b) => a.position - b.position) }))
+      .sort((a, b) => Number(live.has(b.id)) - Number(live.has(a.id)) || (created.get(b.id) ?? 0) - (created.get(a.id) ?? 0));
+  }, [rows, pactRows]);
+  // With a cross-filter there is one pact; otherwise show the most relevant ones.
+  const shown = pacts.slice(0, 3);
   return (
     <div style={{ ...W.root, overflowY: 'auto', gap: 18 }}>
       {shown.map((p) => (
@@ -101,7 +107,7 @@ export function VerdictCardWidget(params: AgWidgetParams<any>) {
   const ctx = ctxOf(params);
   const focus = (params.format as any)?.style?.focus ?? 'latest';
   const list = useMemo(() => {
-    const sorted = [...(rows ?? [])].sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+    const sorted = [...(rows ?? [])].sort((a, b) => ms(b.createdAt) - ms(a.createdAt));
     return focus === 'refused' ? sorted.filter((r) => ['rejected', 'refund'].includes(r.status)) : sorted;
   }, [rows, focus]);
   const [i, setI] = useState(0);
@@ -340,7 +346,7 @@ export function RefusedListWidget(params: AgWidgetParams<any>) {
   const rows = useTableRows(params, 'verdicts', ['id', 'pactId', 'pactTitle', 'milestoneTitle', 'milestoneKey', 'kind', 'status', 'confidence', 'reasoning', 'appealStatus', 'createdAt']);
   const ctx = ctxOf(params);
   const [since] = useState(() => Date.now() - 7 * 864e5);
-  const refused = (rows ?? []).filter((r) => ['rejected', 'refund'].includes(r.status) && new Date(r.createdAt).getTime() >= since);
+  const refused = (rows ?? []).filter((r) => ['rejected', 'refund'].includes(r.status) && ms(r.createdAt) >= since);
   const cols = useMemo<ColDef[]>(
     () => [
       { field: 'createdAt', headerName: 'When', width: 150, valueFormatter: (p) => new Date(p.value).toLocaleString(), sort: 'desc' },

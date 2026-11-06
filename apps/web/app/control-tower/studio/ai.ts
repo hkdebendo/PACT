@@ -13,7 +13,7 @@ import { openaiAdapter } from './openai-adapter';
 import type { TowerContext } from './widgets/common';
 
 export const PROMPT_STARTERS: AgAiPromptStarter[] = [
-  { label: 'Why was milestone 2 refused?', prompt: 'Why was milestone 2 refused? Show all refused milestones this week.' },
+  { label: 'Why was the production photo refused?', prompt: 'Why was the production photo refused? Show all refused milestones this week.' },
   { label: 'Is the audit chain intact?', prompt: 'Is the audit chain intact? Summarise what the AI decided today.' },
   { label: 'Who is most reliable?', prompt: 'Which seller has the best reputation, and why? Add a chart of reputation by party.' },
 ];

@@ -75,6 +75,9 @@ export function crossFilterPact(params: AgWidgetParams<any>, pactId: string | nu
   else (params.widgetApi as any).toggleCrossFilter({ type: 'multiValue', values: [{ field, value: pactId }], group: 0 });
 }
 
+/** Studio may hand dates back as strings, numbers or Date objects: compare as epoch ms. */
+export const ms = (v: unknown): number => (v instanceof Date ? v.getTime() : typeof v === 'number' ? v : Date.parse(String(v ?? '')) || 0);
+
 export const usd = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: n % 1 === 0 ? 0 : 2 }).format(n || 0);
 
 export const STATUS_COLOR: Record<string, string> = {

@@ -12,6 +12,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { canonical, denormaliseOutput, normaliseOutput, normaliseVolatile } from '@pact/llm/cache';
+import { boundSchemaDepth } from '../unroll-schema';
 
 const ROOT = resolve(process.cwd(), '..', '..');
 const CACHE_DIR = resolve(ROOT, 'fixtures', 'llm-cache', 'studio');
@@ -52,6 +53,28 @@ function sse(response: Json): ReadableStream<Uint8Array> {
   });
 }
 
+/**
+ * Meta rejects recursive JSON Schemas and schemas nested deeper than 10 levels: bound every tool's
+ * parameters (and the text format) to 8 levels. A tool whose schema had to be loosened is sent
+ * non-strict; Studio validates the returned arguments anyway.
+ */
+function withFiniteSchemas(body: Json): Json {
+  const tools = Array.isArray(body.tools)
+    ? body.tools.map((t: Json) => {
+        if (!t.parameters) return t;
+        const { schema, changed } = boundSchemaDepth(t.parameters, 7);
+        return changed ? { ...t, parameters: schema, strict: false } : t;
+      })
+    : body.tools;
+  const format = body.text?.format;
+  let text = body.text;
+  if (format?.schema) {
+    const { schema, changed } = boundSchemaDepth(format.schema, 7);
+    if (changed) text = { ...body.text, format: { ...format, schema, strict: false } };
+  }
+  return { ...body, tools, text };
+}
+
 async function recordUsage(response: Json, mode: 'live' | 'replay', cacheHit: boolean, latencyMs: number) {
   const u = response.usage ?? {};
   await fetch(`${env('NEXT_PUBLIC_API_URL', 'http://localhost:4000')}/api/admin/llm-usage`, {
@@ -80,7 +103,7 @@ export async function POST(request: Request) {
   }
   const model = env('MUSE_MODEL', 'muse-spark-1.3');
   const mode = env('LLM_MODE', 'live') === 'replay' ? 'replay' : 'live';
-  const upstreamBody = { ...body, model, stream: false, max_output_tokens: MAX_OUTPUT_TOKENS };
+  const upstreamBody = withFiniteSchemas({ ...body, model, stream: false, max_output_tokens: MAX_OUTPUT_TOKENS });
 
   // Cache key over the request without volatile values; the reasoning effort is part of it.
   const norm = normaliseVolatile({ ...upstreamBody, stream: undefined, max_output_tokens: undefined });
@@ -112,7 +135,16 @@ export async function POST(request: Request) {
   } catch {
     return error(502, `Meta Model API returned non-JSON (HTTP ${upstream.status}).`);
   }
-  if (!upstream.ok) return error(upstream.status, json.error?.message ?? `Meta Model API error (HTTP ${upstream.status}).`);
+  if (!upstream.ok) {
+    const message = json.error?.message ?? `Meta Model API error (HTTP ${upstream.status}).`;
+    console.warn(`[ai proxy] Meta Model API ${upstream.status}: ${message}`);
+    if (process.env.NODE_ENV !== 'production') {
+      // Local debugging aid (data/ is git-ignored). The request body never contains the key.
+      mkdirSync(resolve(ROOT, 'data'), { recursive: true });
+      writeFileSync(resolve(ROOT, 'data', 'ai-last-failed-request.json'), JSON.stringify({ status: upstream.status, error: json.error ?? json, request: upstreamBody }, null, 2));
+    }
+    return error(upstream.status, message);
+  }
   mkdirSync(resolve(file, '..'), { recursive: true });
   writeFileSync(file, JSON.stringify({ role: 'studio.pact-auditor', model, output: normaliseOutput(json, norm.values), recordedAt: new Date().toISOString() }, null, 2) + '\n');
   void recordUsage(json, 'live', false, Date.now() - started);
