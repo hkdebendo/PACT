@@ -1,0 +1,9 @@
+{
+  "name": "@pact/agents",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "start": "tsx src/run.ts" },
+  "dependencies": { "@pact/llm": "0.1.0", "@modelcontextprotocol/sdk": "latest", "zod": "^4" }
+}

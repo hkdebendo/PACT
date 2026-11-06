@@ -1,0 +1,22 @@
+{
+  "name": "@pact/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false src/server.ts",
+    "start": "tsx src/server.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "latest",
+    "@fastify/multipart": "latest",
+    "@fastify/rate-limit": "latest",
+    "@modelcontextprotocol/sdk": "latest",
+    "@pact/core": "0.1.0",
+    "@pact/db": "0.1.0",
+    "@pact/llm": "0.1.0",
+    "@pact/paypal": "0.1.0",
+    "fastify": "^5",
+    "zod": "^4"
+  }
+}

@@ -1,0 +1,6 @@
+node_modules
+.next
+data
+fixtures/llm-cache
+package-lock.json
+apps/web/app/dashboard/studio/openai-adapter.ts

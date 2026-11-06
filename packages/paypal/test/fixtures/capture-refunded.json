@@ -1,0 +1,16 @@
+{
+  "id": "WH-TEST-CAPTURE-REFUNDED",
+  "event_version": "1.0",
+  "create_time": "2026-11-06T13:00:00Z",
+  "resource_type": "refund",
+  "event_type": "PAYMENT.CAPTURE.REFUNDED",
+  "resource": {
+    "id": "1JU08902781691411",
+    "status": "COMPLETED",
+    "amount": { "currency_code": "USD", "value": "135.00" },
+    "links": [
+      { "href": "https://api.sandbox.paypal.com/v2/payments/refunds/1JU08902781691411", "rel": "self", "method": "GET" },
+      { "href": "https://api.sandbox.paypal.com/v2/payments/captures/2GG279541U471931P", "rel": "up", "method": "GET" }
+    ]
+  }
+}

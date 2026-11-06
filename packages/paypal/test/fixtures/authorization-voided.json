@@ -1,0 +1,13 @@
+{
+  "id": "WH-TEST-AUTH-VOIDED",
+  "event_version": "1.0",
+  "create_time": "2026-11-06T14:00:00Z",
+  "resource_type": "authorization",
+  "event_type": "PAYMENT.AUTHORIZATION.VOIDED",
+  "resource": {
+    "id": "0VF52814937998046",
+    "status": "VOIDED",
+    "amount": { "currency_code": "USD", "value": "450.00" },
+    "links": [{ "href": "https://api.sandbox.paypal.com/v2/payments/authorizations/0VF52814937998046", "rel": "self", "method": "GET" }]
+  }
+}

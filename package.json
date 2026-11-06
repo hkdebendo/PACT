@@ -1,0 +1,43 @@
+{
+  "name": "pact",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PACT: programmable trust for the agent economy. Where AI agents sign deals and PayPal enforces them.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": ["packages/*", "apps/*"],
+  "engines": { "node": ">=20.9" },
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"npm run dev -w @pact/api\" \"npm run dev -w @pact/web\"",
+    "build": "npm run typecheck && npm run build -w @pact/web",
+    "start": "concurrently -k -n api,web \"npm run start -w @pact/api\" \"npm run start -w @pact/web\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit && npm run typecheck -w @pact/web",
+    "lint": "eslint . && npm run lint -w @pact/web",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "playwright test",
+    "db:migrate": "tsx packages/db/src/migrate-cli.ts",
+    "db:generate": "drizzle-kit generate --config packages/db/drizzle.config.ts",
+    "seed": "tsx scripts/seed.ts",
+    "demo": "tsx scripts/demo.ts",
+    "openapi": "tsx scripts/openapi.ts",
+    "fixtures": "tsx scripts/make-fixtures.ts",
+    "env:check": "node scripts/env-check.mjs",
+    "secret-scan": "node scripts/secret-scan.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9",
+    "@playwright/test": "latest",
+    "@types/better-sqlite3": "latest",
+    "@types/node": "^22",
+    "concurrently": "latest",
+    "drizzle-kit": "latest",
+    "eslint": "^9",
+    "prettier": "latest",
+    "tsx": "latest",
+    "typescript": "^5",
+    "typescript-eslint": "latest",
+    "vitest": "latest"
+  }
+}
