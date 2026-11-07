@@ -34,9 +34,14 @@ TypeScript end to end, in an npm-workspaces monorepo that runs with `npm install
 - **Vision models can be wrong.** We split verification so the model describes evidence before it knows what the evidence should prove, added deterministic pre-checks, and wrapped the model's verdict in a policy that turns low confidence into "needs more evidence".
 - **Determinism for the video and for judges.** Replaying recorded model answers breaks as soon as ids or dates change, so we normalise volatile values in the cache key and shift dates on replay.
 - **Partial captures and authorization lifetimes.** Honor period, 29-day validity, reauthorization rules and auto-void on final capture all shape when PACT can move money.
+- **Bringing our own model into AG Studio's Agent Framework.** Studio's built-in tools use deep, recursive JSON Schemas; Meta's Model API rejects recursive schemas and anything nested deeper than 10 levels. Our server-side adapter proxy rewrites each tool schema into a finite, bounded one (shared definitions kept, deep paths cut and sent non-strict) while Studio still validates every argument the model returns.
+- **A real race condition.** Our reconciliation poller and the buyer confirming the same PayPal approval at the same moment produced a double transition. One in-flight confirmation per pact fixed it; a test now covers it.
+- **Writing criteria a photo can prove.** Our first contracts asked a photo to "count 50 shirts" and prove "embroidery". The Verifier rightly refused. The Contract Parser now writes criteria evidence can actually satisfy (a quantity label, a visible mark) — and the Verifier still rejects the wrong item at 0.99 confidence.
 
 ## Accomplishments that we're proud of
-- A real money flow in the PayPal sandbox: authorize once, capture milestone by milestone, void or refund the rest.
+- A real money flow in the PayPal sandbox, verified end to end: authorize once, 30% partial capture, 70% final capture, partial refund, void on cancellation, a dispute resolved at 60% with the remainder released, and a Payouts batch to a subcontractor.
+- Two Muse agents play the whole deal over MCP with no human scripting — the seller agent sends the wrong photo, reads the Verifier's reasoning and corrects itself.
+- Judges can run the full demo with no keys at all: a clean clone replays every model answer and labels it as replayed.
 - Every AI decision is explained, appealable and sealed in a verifiable hash chain.
 - Agents can use the whole system through MCP, and a dashboard agent can explain any decision from the evidence.
 
@@ -59,6 +64,6 @@ TypeScript · Node.js · Next.js · React · Fastify · PayPal REST APIs (Orders
 
 ## What is real and what is simulated
 - Payments run against the **real PayPal sandbox** when sandbox credentials are configured. Without them, a **simulated adapter** stands in; it is labelled "SIMULATED" in the UI, the API responses and the docs, and is never presented as PayPal. The seeded demo history uses the simulated adapter.
-- The demo video uses **recorded Muse answers** (replay mode) for determinism; the recordings were produced by live Muse calls, and the UI labels replayed answers.
+- The demo video uses **recorded Muse answers** (replay mode) for determinism; the recordings were produced by live Muse calls against our own photos, and the UI labels replayed answers ("Replay mode: recorded model responses").
 - Webhooks need a public URL; on localhost PACT uses its reconciliation poller instead (both paths are implemented).
 - Evidence images in the repository are generated, brand-free placeholders or our own photos of plain objects.
