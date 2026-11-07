@@ -8,7 +8,8 @@ const env = {
   ...(process.env as Record<string, string>),
   DATABASE_URL: 'file:./data/e2e.db',
   ...(sandbox ? {} : { PAYPAL_ENV: 'simulated' }),
-  LLM_MODE: 'replay',
+  // Replay by default (no key needed); E2E_LLM_MODE=live records new answers.
+  LLM_MODE: process.env.E2E_LLM_MODE ?? 'replay',
 };
 
 export default defineConfig({
@@ -25,7 +26,8 @@ export default defineConfig({
     viewport: { width: 1440, height: 900 },
   },
   webServer: [
-    { command: 'npm run start -w @pact/api', url: 'http://localhost:4000/health', reuseExistingServer: !process.env.CI, env, timeout: 120_000 },
-    { command: 'npm run dev -w @pact/web', url: 'http://localhost:3000', reuseExistingServer: !process.env.CI, env, timeout: 300_000 },
+    // The e2e database is recreated on every run (PACT rejects evidence reused across pacts).
+    { command: 'node scripts/dev/fresh-e2e-db.mjs && npm run start -w @pact/api', url: 'http://localhost:4000/health', reuseExistingServer: false, env, timeout: 120_000 },
+    { command: 'npm run dev -w @pact/web', url: 'http://localhost:3000', reuseExistingServer: false, env, timeout: 300_000 },
   ],
 });

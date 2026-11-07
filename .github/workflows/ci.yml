@@ -24,3 +24,7 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build -w @pact/web
+      # End-to-end demo scenario in the browser (installed Chrome; SIMULATED PayPal + recorded Muse answers).
+      - run: npx playwright test
+        env:
+          META_API_KEY: ''
