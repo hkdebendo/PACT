@@ -28,9 +28,11 @@ An agent that pays another agent, a freelancer or a seller on a chat app pays bl
 
 ## Screenshots
 
-| The PACT Control Tower (AG Studio, live) | The PACT Auditor explains a refusal |
+| The PACT Control Tower (AG Studio, live) | The PACT Auditor explains a refusal and adds a widget |
 |---|---|
-| ![Control Tower](docs/screenshots/control-tower.png) | ![Dark mode](docs/screenshots/control-tower-dark.png) |
+| ![Control Tower](docs/screenshots/control-tower.png) | ![PACT Auditor](docs/screenshots/auditor.png) |
+| **Dark mode** (PACT theme, Studio theme modes) | **Mobile** |
+| ![Dark mode](docs/screenshots/control-tower-dark.png) | ![Mobile](docs/screenshots/mobile-pacts.png) |
 | **Reputation leaderboard** (custom AG Grid widget, sparklines) | **Write a deal, Muse drafts the contract** |
 | ![Reputation](docs/screenshots/reputation.png) | ![Composer](docs/screenshots/composer.png) |
 
