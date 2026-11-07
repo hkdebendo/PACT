@@ -20,24 +20,24 @@ Deadline: **2026-11-12 12:00 PT (21:00 Cotonou)**. Started 2026-11-06.
 - Meta Model API: `muse-spark-1.3` chat completions with strict json_schema → valid JSON; image_url data URL accepted; `/v1/responses` non-streaming with a strict function tool → reasoning + message + function_call items (ids + call_id present); Responses streaming also supported (SSE). reasoning_effort=low still spends ~250 reasoning tokens.
 - npm install attempt 2 failed (two concurrent npm processes + ECONNRESET); cache now ~958 MB; attempt 3 running with --prefer-offline.
 
-## Status by tier (2026-11-07 01:45)
+## Status by tier (2026-11-07 02:30)
 Legend: ✅ built and verified by running it · 🟡 partly verified
 
-- ✅ **Tier 0** — install, 48 unit/integration tests, lint, typecheck, production build, CI green on GitHub (lint, types, tests, build; e2e step added).
-- ✅ **Tier 1** — real sandbox: authorize → buyer approval → partial capture → final capture; partial refund; dispute partial capture with auto-release of the remainder; poller/buyer race fixed. 🟡 explicit void (cancel) and reauthorization not yet observed live; Payouts not yet sent live.
-- ✅ **Tier 2** — Muse live with real photos: wrong item rejected 0.99, conforming approved 0.93–0.95, tracking approved, Arbiter partial 60%. Parser writes evidence-checkable criteria. Replay cache verified: full demo + Auditor chat replay with **no Meta key**.
-- ✅ **Tier 3** — Control Tower with licence, 9 custom widgets, live SSE data, light/dark modes, drill-through, edit mode.
-- ✅ **Tier 4** — MCP agents play the whole scenario (real sandbox + simulated), dispute variant.
-- ✅ **Tier 5** — PACT Auditor answers the demo question, adds the widget; Studio tool schemas bounded for Meta.
-- 🟡 **Tier 6** — docs updated; OpenAPI/Postman; Playwright e2e ✅ (live + replay); README screenshots, clean-clone test and final Devpost review still to do.
+- ✅ **Tier 0** — install (clean clone verified), 48 tests, lint, typecheck, production build, CI green (lint, types, tests, build, e2e).
+- ✅ **Tier 1** — real sandbox verified: AUTHORIZE → buyer approval → 30% partial capture → 70% final capture; partial refund; void on cancel (VOIDED); dispute partial capture with remainder released; Payouts batch SUCCESS; poller/buyer race fixed. 🟡 reauthorization: authorization `49V221249H7518322` created 2026-11-07 01:19 UTC → run `npx tsx scripts/dev/reauth-check.ts reauth 49V221249H7518322` on/after **2026-11-10 02:30 UTC**.
+- ✅ **Tier 2** — Muse live with Vincent's photos (wrong item 0.99 rejected, conforming 0.93–0.95 approved, tracking approved, Arbiter partial 60%); replay verified in simulated AND sandbox modes, no misses; clean clone runs with no keys.
+- ✅ **Tier 3** — Control Tower: licence, 9 custom widgets, live data, light/dark, drill-through, edit mode, reputation trends.
+- ✅ **Tier 4** — MCP agents play the full scenario in the real sandbox and in simulated mode; Payouts verified.
+- ✅ **Tier 5** — PACT Auditor (custom agent + delegation + PACT tools) answers the demo question and adds a widget, live and replayed. ⬜ stretch: custom harness/runner variant.
+- ✅ **Tier 6** — docs, screenshots in README, OpenAPI/Postman, e2e, Devpost text updated with verified results.
 
-## Next steps (in order)
-1. Finish sandbox-mode recording (agents + chat) for a deterministic video in sandbox + replay.
-2. README screenshots (scripts/dev/screenshots.cjs), dark/mobile check.
-3. Live void (cancel) check and one Payouts batch.
-4. Clean-clone test following the README; final secret scan; Devpost text review.
+## Remaining
+1. Reauthorization check on/after 2026-11-10 (see above), record in docs/SANDBOX_LIMITATIONS.md.
+2. Stretch: custom runner/harness variant for the PACT Auditor (AG Studio "swapped harness").
+3. Vincent: confirm rights on order_wrong_item.jpg; record the video; submit on Devpost.
 
 ## Log
+- 2026-11-07 01:45–02:30: void + Payouts verified live, party merge + reputation trends, replay verified in both modes, README screenshots, clean-clone test (no keys) passed, .env.example defaults to replay, Devpost text updated, reauth authorization created.
 - 2026-11-06 23:00 → 2026-11-07 01:45: real photos, prompt fixes (evidence-checkable criteria, marking location), full real-sandbox scenario by agents, race fix, robust PayPal checkout automation, replay made run-independent (ids/hashes/mode), e2e green, control-tower dynamic.
 - 2026-11-06 19:00–21:00: install fixed (cache filled tarball by tarball + offline install), live PayPal/Muse probes, first green test run, real sandbox money flow, Studio + PACT Auditor working with Muse, MCP agents scenario working.
 - 2026-11-06 17:30–18:50: brief read, env detected, boilerplate + Studio docs studied, all packages/apps/docs written, two commits pushed. npm install running in background (metadata resolution very slow).

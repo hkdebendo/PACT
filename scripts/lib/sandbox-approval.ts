@@ -51,6 +51,11 @@ async function approveOnce(approvalUrl: string, opts: { headless?: boolean } = {
   });
   try {
     const page = browser.pages()[0] ?? (await browser.newPage());
+    // PayPal's redirect to the return URL is the proof of approval, even if nothing answers there.
+    let redirected = false;
+    page.on('request', (r) => {
+      if (/[?&]paypal=approved/.test(r.url())) redirected = true;
+    });
     // Slow connections: the sandbox checkout can take minutes to load.
     page.setDefaultTimeout(180_000);
     await page.goto(approvalUrl, { waitUntil: 'commit', timeout: 180_000 });
@@ -75,7 +80,12 @@ async function approveOnce(approvalUrl: string, opts: { headless?: boolean } = {
     // Some accounts get an extra confirmation screen: keep confirming until PayPal redirects back to
     // PACT's return URL, and fail loudly if it never does (the caller must not assume approval).
     for (let step = 0; step < 3; step++) {
-      const back = await page.waitForURL(/paypal=approved/, { timeout: 60_000 }).then(() => true).catch(() => false);
+      const back =
+        redirected ||
+        (await page
+          .waitForURL(/paypal=approved/, { timeout: 60_000 })
+          .then(() => true)
+          .catch(() => redirected));
       if (back) return;
       if (/paypal=cancelled/.test(page.url())) throw new Error('The PayPal checkout was cancelled.');
       await clickFirst(page, ['#payment-submit-btn', 'button[data-testid="submit-button-initial"]', 'button:has-text("Review Order")', 'button:has-text("Continue")', 'button:has-text("Agree")', 'button:has-text("Pay")', 'button:has-text("Complete")'], 30_000).catch(() => undefined);
