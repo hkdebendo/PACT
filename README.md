@@ -58,7 +58,7 @@ Then choose how much you want to plug in:
 
 | You have… | Set in `.env.local` | What you get |
 |---|---|---|
-| nothing | `PAYPAL_ENV=simulated`, `LLM_MODE=replay` | The full demo scenario with **recorded Muse answers** and the **SIMULATED** PayPal adapter (clearly labelled). New free-text deals need a Meta key. |
+| nothing | nothing to change (the defaults are `LLM_MODE=replay`, and PayPal falls back to the simulated adapter without credentials) | The full demo scenario with **recorded Muse answers** and the **SIMULATED** PayPal adapter (clearly labelled). New free-text deals need a Meta key. |
 | a PayPal sandbox app (free) | `PAYPAL_ENV=sandbox`, `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` (+ `DEMO_BUYER_EMAIL` / `DEMO_BUYER_PASSWORD` for the automated approval) | Real sandbox authorizations, partial captures, voids, refunds |
 | a Meta Model API key | `META_API_KEY`, `LLM_MODE=live` | Muse parses, verifies and arbitrates anything you type or upload |
 | an AG Studio trial key (free, 45 days) | `AG_STUDIO_LICENSE_KEY` | Control Tower without the trial watermark |
@@ -98,7 +98,7 @@ Open **http://localhost:3000** → *Control Tower* to watch it live, or *New pac
 | `META_API_KEY` | — | Meta Model API key |
 | `META_BASE_URL` | `https://api.meta.ai/v1` | OpenAI-compatible base URL |
 | `MUSE_MODEL` | `muse-spark-1.3` | Model id |
-| `LLM_MODE` | `live` | `live` records every answer to `fixtures/llm-cache/`; `replay` serves recorded answers only |
+| `LLM_MODE` | `replay` in `.env.example` | `replay` serves recorded answers only (no key needed); `live` calls Muse and records every answer to `fixtures/llm-cache/` |
 | `MUSE_REASONING_EFFORT` | `medium` | Default effort (roles override it) |
 | `AG_STUDIO_LICENSE_KEY` | — | AG Studio licence |
 | `APP_BASE_URL`, `API_PORT`, `NEXT_PUBLIC_API_URL` | `http://localhost:3000`, `4000`, `http://localhost:4000` | |
