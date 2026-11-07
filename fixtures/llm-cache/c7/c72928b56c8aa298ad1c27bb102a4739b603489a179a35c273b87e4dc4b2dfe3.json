@@ -1,0 +1,39 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.99,
+    "criteria": [
+      {
+        "confidence": 0.99,
+        "criterionId": "c1",
+        "passed": false,
+        "reasoning": "The description states the photo shows two ceramic mugs with woven baskets and a woven stand, with no t-shirts and no visible text showing 50. This does not establish about 50 white t-shirts or a quantity label for 50."
+      },
+      {
+        "confidence": 0.99,
+        "criterionId": "c2",
+        "passed": false,
+        "reasoning": "The description lists only ceramic mugs and woven baskets with green stripes and speckles, with no white t-shirts and no small blue star on a chest area visible."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The submitted photo shows mugs and baskets, not t-shirts. There are no white shirts, no blue stars, and no quantity note for 50 visible. The evidence shows the wrong items entirely, so the milestone is not met.",
+    "status": "rejected"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 995,
+    "outputTokens": 1260,
+    "reasoningTokens": 1040,
+    "cachedTokens": 0,
+    "costUsd": 0.00659875,
+    "latencyMs": 10762
+  },
+  "recordedAt": "2026-11-07T00:11:54.060Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the second step of PACT's evidence Verifier. You compare factual evidence descriptions with a milestone's acceptance criteria.\\n\\nRules:\\n- Judge each criterion separately, citing the specific facts from the descriptions. If the descriptions do not establish a criterion, it is NOT passed.\\n- status \\\"approved\\\" only if every criterion passed with high confidence.\\n- status \\\"rejected\\\" if the evidence clearly contradicts a criterion (wrong item, wrong count, wrong colour, failed delivery).\\n- status \\\"needs_more\\\" if the evidence is insufficient, unreadable or ambiguous. Say exactly what is missing.\\n- confidence is your calibrated probability (0..1) that your status is correct. Be conservative: a wrong approval releases real money.\\n- Pre-check failures listed by the system are facts; take them into account.\\n- When a criterion accepts a quantity label or packing note, a legible label in the evidence counts as proof of quantity, provided what is visible is consistent with it (e.g. several full stacks for \\\"50 shirts\\\").\\n- Write reasoning for a non-expert in 2-4 sentences. No markdown.\",\"role\":\"system\"},{\"content\":\"{\\n \\\"deal\\\": {\\n  \\\"title\\\": \\\"50 embroidered t-shirts\\\",\\n  \\\"description\\\": \\\"Kofi Textiles will produce 50 plain white t-shirts with a small blue star on the chest and deliver them to Ada within 7 days for 450 USD.\\\"\\n },\\n \\\"milestone\\\": {\\n  \\\"id\\\": \\\"m1\\\",\\n  \\\"title\\\": \\\"Production complete\\\",\\n  \\\"criteria\\\": [\\n   {\\n    \\\"id\\\": \\\"c1\\\",\\n    \\\"text\\\": \\\"About 50 white t-shirts are shown, or a quantity label or packing note shows 50\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c2\\\",\\n    \\\"text\\\": \\\"T-shirts are white and a small blue star is visible on the chest area\\\"\\n   }\\n  ],\\n  \\\"acceptedEvidence\\\": [\\n   \\\"photo\\\"\\n  ]\\n },\\n \\\"precheckFailures\\\": [],\\n \\\"evidenceDescriptions\\\": [\\n  {\\n   \\\"evidenceId\\\": \\\"⟦v1⟧\\\",\\n   \\\"type\\\": \\\"photo\\\",\\n   \\\"description\\\": {\\n    \\\"summary\\\": \\\"The photo shows two ceramic mugs displayed with woven baskets and a woven stand.\\\",\\n    \\\"objects\\\": [\\n     {\\n      \\\"name\\\": \\\"ceramic mug with green and beige stripes\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"green interior\\\",\\n       \\\"beige exterior with green horizontal stripes\\\",\\n       \\\"positioned lower left foreground on a dark stand\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"ceramic mug with speckled rim\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"beige lower half\\\",\\n       \\\"off-white upper half with dark speckles\\\",\\n       \\\"positioned upper centre on a woven stand\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"large woven basket\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"natural tan woven material with white woven accents\\\",\\n       \\\"positioned left background, cropped at left and top edges\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"woven stand\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"natural tan woven material\\\",\\n       \\\"cylindrical shape, positioned centre under speckled mug\\\",\\n       \\\"white oval tag attached on front lower area\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"small woven basket\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"natural tan woven material with twisted handles\\\",\\n       \\\"positioned right side, partially cropped\\\"\\n      ]\\n     }\\n    ],\\n    \\\"visibleText\\\": [],\\n    \\\"dates\\\": [],\\n    \\\"quality\\\": {\\n     \\\"legible\\\": true,\\n     \\\"issues\\\": [\\n      \\\"blur\\\",\\n      \\\"cropping\\\"\\n     ]\\n    }\\n   }\\n  }\\n ]\\n}\",\"role\":\"user\"}]"
+}

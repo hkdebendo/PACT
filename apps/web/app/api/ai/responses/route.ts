@@ -116,8 +116,11 @@ export async function POST(request: Request) {
     void recordUsage(response, mode, true, 0);
     return new Response(sse(response), { headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-store' } });
   }
-  if (mode === 'replay')
+  if (mode === 'replay') {
+    mkdirSync(resolve(CACHE_DIR, '..', '_misses'), { recursive: true });
+    writeFileSync(resolve(CACHE_DIR, '..', '_misses', `studio-${key.slice(0, 12)}.txt`), norm.text);
     return error(503, 'Replay mode: this question has no recorded Muse answer. Try one of the suggested prompts, or set META_API_KEY and LLM_MODE=live in .env.local to ask anything.');
+  }
   const apiKey = env('META_API_KEY');
   if (!apiKey) return error(503, 'The PACT Auditor needs META_API_KEY in .env.local (or LLM_MODE=replay for the recorded demo).');
 
@@ -146,7 +149,7 @@ export async function POST(request: Request) {
     return error(upstream.status, message);
   }
   mkdirSync(resolve(file, '..'), { recursive: true });
-  writeFileSync(file, JSON.stringify({ role: 'studio.pact-auditor', model, output: normaliseOutput(json, norm.values), recordedAt: new Date().toISOString() }, null, 2) + '\n');
+  writeFileSync(file, JSON.stringify({ role: 'studio.pact-auditor', model, output: normaliseOutput(json, norm.values), recordedAt: new Date().toISOString(), prompt: norm.text }, null, 2) + '\n');
   void recordUsage(json, 'live', false, Date.now() - started);
   return new Response(sse(json), { headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-store' } });
 }

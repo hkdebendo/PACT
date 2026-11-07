@@ -29,6 +29,9 @@ export interface CachedCall {
   };
   recordedAt: string;
   today?: string | null; // reference date of the recording (YYYY-MM-DD), for date shifting
+  /** The normalised prompt that produced the key: shows exactly what was asked, and lets a replay
+   *  miss be diffed against the recordings. */
+  prompt?: string;
 }
 
 export function canonical(value: unknown): string {
@@ -47,8 +50,9 @@ export const cacheKey = (parts: unknown): string => createHash('sha256').update(
 const VOLATILE = new RegExp(
   [
     String.raw`\b(?:pact|ev|vd|pay|party|dsp|job|llm)_[0-9a-f]{16}\b`, // PACT ids
-    String.raw`\bSIM-[A-Z]+-[0-9A-F]{12}\b`, // simulated PayPal ids
+    String.raw`\bSIM-[A-Z]+-[0-9A-F-]{12}\b`, // simulated PayPal ids (uuid slice, may contain a dash)
     String.raw`\b(?=[0-9A-Z]*\d)[0-9A-Z]{17}\b`, // real PayPal order/authorization/capture ids (may be all digits)
+    String.raw`\b[0-9a-f]{64}\b`, // sha256 hashes (audit chain links embed timestamps)
     String.raw`\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z\b`, // ISO timestamps
     String.raw`\b\d{4}-\d{2}-\d{2}\b`, // dates
   ].join('|'),
@@ -61,8 +65,12 @@ export interface Normalised {
 }
 
 /** Replaces volatile values with ⟦vN⟧ placeholders (N by first appearance). */
+// The LLM mode a verdict was produced in ("live" when recorded, "replay" when replayed) appears in
+// tool results; it says nothing about the content, so it is neutralised in the key.
+const LLM_MODE_FIELD = /(llmMode\\*"\s*:\s*\\*")(live|replay)/g;
+
 export function normaliseVolatile(value: unknown, values: string[] = []): Normalised {
-  const text = canonical(value).replace(VOLATILE, (m) => {
+  const text = canonical(value).replace(LLM_MODE_FIELD, '$1⟦mode⟧').replace(VOLATILE, (m) => {
     let i = values.indexOf(m);
     if (i < 0) {
       values.push(m);
@@ -108,6 +116,13 @@ export class ReplayCache {
   get(key: string): CachedCall | null {
     const p = this.path(key);
     return existsSync(p) ? (JSON.parse(readFileSync(p, 'utf8')) as CachedCall) : null;
+  }
+
+  /** Writes the prompt of a replay miss next to the cache (fixtures/llm-cache/_misses/) for diffing. */
+  recordMiss(key: string, role: string, prompt: string) {
+    const p = resolve(this.dir, '_misses', `${role}-${key.slice(0, 12)}.txt`);
+    mkdirSync(resolve(p, '..'), { recursive: true });
+    writeFileSync(p, prompt);
   }
 
   put(key: string, call: CachedCall) {

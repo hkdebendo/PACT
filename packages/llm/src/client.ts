@@ -188,7 +188,10 @@ export class LlmClient {
       this.emit(usage, req.pactId);
       return { value, usage, model: cached.model, mode: this.config.mode, cacheKey: key };
     }
-    if (this.config.mode === 'replay') throw new LlmReplayMissError(req.role, key);
+    if (this.config.mode === 'replay') {
+      this.cache.recordMiss(key, req.role, norm.text);
+      throw new LlmReplayMissError(req.role, key);
+    }
     if (!this.openai) throw new LlmConfigError('LLM_MODE=live but META_API_KEY is not set. Set it in .env.local, or use LLM_MODE=replay.');
 
     const started = Date.now();
@@ -226,7 +229,7 @@ export class LlmClient {
       throw new LlmOutputError(`${req.role}: model output is not valid JSON`, text);
     }
     const value = this.validate(req, parsed);
-    this.cache.put(key, { role: req.role, model: usage.model, output: normaliseOutput(parsed, norm.values), usage, recordedAt: new Date().toISOString(), today: req.today ?? null });
+    this.cache.put(key, { role: req.role, model: usage.model, output: normaliseOutput(parsed, norm.values), usage, recordedAt: new Date().toISOString(), today: req.today ?? null, prompt: norm.text });
     this.emit(usage, req.pactId);
     return { value, usage, model: usage.model, mode: 'live', cacheKey: key };
   }
@@ -252,7 +255,10 @@ export class LlmClient {
       this.emit(usage, req.pactId);
       return { message: denormaliseOutput(cached.output, norm.values) as OpenAI.Chat.Completions.ChatCompletionMessage, usage };
     }
-    if (this.config.mode === 'replay') throw new LlmReplayMissError(req.role, key);
+    if (this.config.mode === 'replay') {
+      this.cache.recordMiss(key, req.role, norm.text);
+      throw new LlmReplayMissError(req.role, key);
+    }
     if (!this.openai) throw new LlmConfigError('LLM_MODE=live but META_API_KEY is not set.');
     const started = Date.now();
     const completion = await this.openai.chat.completions.create({
@@ -281,7 +287,7 @@ export class LlmClient {
     };
     usage.costUsd = costOf(this.config.model, usage);
     const clean = { role: message.role, content: message.content, tool_calls: message.tool_calls } as OpenAI.Chat.Completions.ChatCompletionMessage;
-    this.cache.put(key, { role: req.role, model: usage.model, output: normaliseOutput(clean, norm.values), usage, recordedAt: new Date().toISOString() });
+    this.cache.put(key, { role: req.role, model: usage.model, output: normaliseOutput(clean, norm.values), usage, recordedAt: new Date().toISOString(), prompt: norm.text });
     this.emit(usage, req.pactId);
     return { message: clean, usage };
   }

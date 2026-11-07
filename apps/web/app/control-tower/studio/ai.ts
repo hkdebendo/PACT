@@ -90,7 +90,7 @@ function pactTools(api: AgStudioApi, ctx: () => TowerContext) {
     params: (s: any) => s.object({}),
     execute: async (_args: any, c: any) => {
       const r = await getJson(ctx().apiUrl, '/api/audit/verify', c.signal);
-      return r.ok ? c.success(`Chain intact: ${r.count} entries, head ${r.headHash.slice(0, 16)}.`, r) : c.error(`Chain broken at entry #${r.brokenAt}: ${r.reason}`);
+      return r.ok ? c.success(`Chain intact: ${r.count} entries, head ${r.headHash}.`, r) : c.error(`Chain broken at entry #${r.brokenAt}: ${r.reason}`);
     },
   });
 
@@ -102,7 +102,8 @@ function pactTools(api: AgStudioApi, ctx: () => TowerContext) {
       const state = api.getState() as any;
       const page = state.pages.find((p: any) => p.id === state.selectedPageId);
       if (!page) return c.error('No page is selected.');
-      const id = `refused-${Date.now().toString(36)}`;
+      // Deterministic id (no clock): replayed conversations must see the same page state.
+      const id = `refused-${Object.keys(page.widgets ?? {}).filter((k) => k.startsWith('refused-')).length + 1}`;
       const bottom = Math.max(0, ...Object.values(page.widgetLayout ?? {}).map((l: any) => l.yTrack + l.ySpan));
       api.setState({
         ...state,
@@ -146,7 +147,9 @@ export function buildAi(getContext: () => TowerContext): AgAiHarnessSetup {
               return [
                 'You are the PACT Auditor inside the PACT Control Tower, an AG Studio dashboard over an escrow ledger.',
                 'PACT: buyers and sellers (often AI agents) agree a deal; PayPal holds the money with an authorization; PACT captures each milestone share only after the AI Verifier approves evidence; disputes go to an AI Arbiter; every decision can be appealed to a human and is written to a SHA-256 hash-chained audit log.',
-                `Runtime: PayPal ${ctx.paymentMode === 'sandbox' ? 'REAL sandbox' : 'SIMULATED adapter (say so if asked about payments)'}; model responses ${ctx.llmMode === 'replay' ? 'replayed from recordings' : 'live'}. Audit chain ${ctx.audit.ok ? 'verified' : 'BROKEN'} (${ctx.audit.count} entries).`,
+                // (The LLM mode is deliberately not mentioned: it must not change the prompt between a
+                // live recording and its replay.)
+                `Runtime: PayPal ${ctx.paymentMode === 'sandbox' ? 'REAL sandbox' : 'SIMULATED adapter (say so if asked about payments)'}. Audit chain ${ctx.audit.ok ? 'verified' : 'BROKEN'} (${ctx.audit.count} entries).`,
                 `Dashboard tables: ${tables.map((t: any) => t.name).join(', ')}.`,
                 'How to work:',
                 '- "Why was X refused/approved?": call list_refused_milestones or get_verdict to find the verdict, then explain_decision. Quote the failed criterion and the facts from the evidence description. Mention the confidence and that the decision can be appealed.',

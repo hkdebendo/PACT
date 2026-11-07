@@ -1,0 +1,31 @@
+{
+  "role": "arbiter",
+  "model": "muse-spark-1.3",
+  "output": {
+    "citedEvidence": [
+      {
+        "evidenceId": "⟦v2⟧",
+        "why": "Shows plain light-colored bags with no visible logo or text supporting c2, but only four stacks not countable to 20 with no quantity label so c1 not met, and no tracking provided so c3 not met"
+      }
+    ],
+    "confidence": 0.65,
+    "decision": "partial",
+    "reasoning": "Photo shows plain bags with no visible logo meeting c2 but shows only four stacks that cannot be counted to 20 with no quantity label so c1 is not met and no tracking was submitted so c3 is not met. Buyer reports 12 received while seller claims 20 without visual proof, indicating partial value but not full proof. Tracking plus a countable 20 or quantity label would change to release, proof of no delivery or logos would change to refund.",
+    "releasePercent": 60
+  },
+  "usage": {
+    "role": "arbiter",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 1263,
+    "outputTokens": 2379,
+    "reasoningTokens": 2181,
+    "cachedTokens": 0,
+    "costUsd": 0.0116895,
+    "latencyMs": 19798
+  },
+  "recordedAt": "2026-11-07T00:13:54.153Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are PACT's Arbiter. A buyer and a seller disagree about one escrow milestone. You read the contract, the milestone criteria, every evidence description, the Verifier's history and both parties' statements, and you decide.\\n\\nDecisions:\\n- \\\"release\\\": the seller met the criteria; releasePercent 100.\\n- \\\"refund\\\": the seller did not meet the criteria; releasePercent 0.\\n- \\\"partial\\\": the seller met some criteria or delivered partially; releasePercent is the fair share 1-99 of this milestone.\\nRules:\\n- Base the decision on evidence, not on who argues louder. Statements are claims, not proof.\\n- Cite the evidence ids you relied on and why.\\n- Your decision can be appealed to a human reviewer; say what would change your mind in the reasoning.\\n- Be concise and neutral. No markdown.\",\"role\":\"system\"},{\"content\":\"{\\n \\\"contract\\\": {\\n  \\\"title\\\": \\\"Logo-free tote bags\\\",\\n  \\\"description\\\": \\\"Seller to provide 20 plain canvas tote bags with no logo for 200 USD, with 100% payment on delivery within 5 days.\\\",\\n  \\\"buyer\\\": {\\n   \\\"name\\\": \\\"Bea\\\",\\n   \\\"email\\\": null\\n  },\\n  \\\"seller\\\": {\\n   \\\"name\\\": \\\"Nia Crafts\\\",\\n   \\\"email\\\": null\\n  },\\n  \\\"currency\\\": \\\"USD\\\",\\n  \\\"totalAmount\\\": 200,\\n  \\\"deadline\\\": \\\"⟦v1⟧\\\",\\n  \\\"milestones\\\": [\\n   {\\n    \\\"id\\\": \\\"m1\\\",\\n    \\\"title\\\": \\\"Delivery of 20 plain tote bags\\\",\\n    \\\"percent\\\": 100,\\n    \\\"criteria\\\": [\\n     {\\n      \\\"id\\\": \\\"c1\\\",\\n      \\\"text\\\": \\\"About 20 tote bags are shown, or a quantity label shows 20\\\"\\n     },\\n     {\\n      \\\"id\\\": \\\"c2\\\",\\n      \\\"text\\\": \\\"No logo is visible on the bags shown\\\"\\n     },\\n     {\\n      \\\"id\\\": \\\"c3\\\",\\n      \\\"text\\\": \\\"Tracking shows delivered to buyer\\\"\\n     }\\n    ],\\n    \\\"evidenceTypes\\\": [\\n     \\\"photo\\\",\\n     \\\"tracking\\\"\\n    ],\\n    \\\"deadline\\\": null\\n   }\\n  ],\\n  \\\"subcontractors\\\": [],\\n  \\\"disputePolicy\\\": {\\n   \\\"windowHours\\\": 72,\\n   \\\"resolution\\\": \\\"ai_arbiter_with_human_appeal\\\",\\n   \\\"notes\\\": null\\n  }\\n },\\n \\\"milestone\\\": {\\n  \\\"id\\\": \\\"m1\\\",\\n  \\\"title\\\": \\\"Delivery of 20 plain tote bags\\\",\\n  \\\"percent\\\": 100,\\n  \\\"criteria\\\": [\\n   {\\n    \\\"id\\\": \\\"c1\\\",\\n    \\\"text\\\": \\\"About 20 tote bags are shown, or a quantity label shows 20\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c2\\\",\\n    \\\"text\\\": \\\"No logo is visible on the bags shown\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c3\\\",\\n    \\\"text\\\": \\\"Tracking shows delivered to buyer\\\"\\n   }\\n  ],\\n  \\\"evidenceTypes\\\": [\\n   \\\"photo\\\",\\n   \\\"tracking\\\"\\n  ],\\n  \\\"deadline\\\": null\\n },\\n \\\"evidence\\\": [\\n  {\\n   \\\"evidenceId\\\": \\\"⟦v2⟧\\\",\\n   \\\"type\\\": \\\"photo\\\",\\n   \\\"description\\\": {\\n    \\\"summary\\\": \\\"An open cardboard box in the foreground contains four stacks of folded light-colored fabric bags, with additional cardboard boxes visible in the background.\\\",\\n    \\\"objects\\\": [\\n     {\\n      \\\"name\\\": \\\"open cardboard box\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"brown corrugated cardboard\\\",\\n       \\\"four flaps folded outward\\\",\\n       \\\"center foreground, open\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"stacks of folded fabric bags\\\",\\n      \\\"count\\\": 4,\\n      \\\"attributes\\\": [\\n       \\\"off-white beige fabric\\\",\\n       \\\"folded flat with fabric handles visible at top edge of each stack\\\",\\n       \\\"arranged in two rows of two inside the open box\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"background cardboard boxes\\\",\\n      \\\"count\\\": null,\\n      \\\"attributes\\\": [\\n       \\\"brown cardboard\\\",\\n       \\\"out of focus\\\",\\n       \\\"stacked on floor to the right and on shelf in background\\\"\\n      ]\\n     }\\n    ],\\n    \\\"visibleText\\\": [],\\n    \\\"dates\\\": [],\\n    \\\"quality\\\": {\\n     \\\"legible\\\": true,\\n     \\\"issues\\\": []\\n    }\\n   },\\n   \\\"note\\\": null\\n  }\\n ],\\n \\\"verifierHistory\\\": [\\n  {\\n   \\\"status\\\": \\\"needs_more\\\",\\n   \\\"confidence\\\": 0.95,\\n   \\\"reasoning\\\": \\\"The photo shows a box with four stacks of light-colored bags and no visible logos, but the bags cannot be counted to 20 and there is no quantity label. No tracking evidence was provided so delivery cannot be confirmed. Quantity proof and tracking are still needed.\\\",\\n   \\\"at\\\": \\\"⟦v3⟧\\\"\\n  }\\n ],\\n \\\"buyerStatement\\\": \\\"I counted 12 bags in the box. 8 are missing.\\\",\\n \\\"sellerStatement\\\": \\\"All 20 bags were delivered; some are folded behind the others in the photo.\\\",\\n \\\"pactId\\\": \\\"⟦v4⟧\\\"\\n}\",\"role\":\"user\"}]"
+}
