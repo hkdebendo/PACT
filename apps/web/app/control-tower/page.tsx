@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
+import { connection } from 'next/server';
 import { ControlTower } from './control-tower';
 
 export const metadata: Metadata = { title: 'Control Tower' };
 
-export default function ControlTowerPage() {
+export default async function ControlTowerPage() {
+  // Rendered per request: the licence key and the AI mode come from the server's environment at
+  // runtime, never baked into a build.
+  await connection();
   // The licence key is read on the server from .env.local and handed to AgStudioProvider. Without
   // it Studio still renders, with its trial watermark/console notice.
   const licenseKey = process.env.AG_STUDIO_LICENSE_KEY || undefined;

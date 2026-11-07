@@ -50,9 +50,15 @@ Observed on 2026-11-06 with the project's sandbox app (pact `pact_888b7b6b9fe345
 | Second capture 135.00 with `final_capture: true` on the same authorization | ✅ `COMPLETED`; authorization then reads `CAPTURED` (two captures, one authorization) |
 | Partial refund 10.00 on the first capture | ✅ `COMPLETED` |
 | Transaction Search, balances | ✅ 200 (feature enabled on the app) |
-| Void of an un-captured authorization (cancel path) | ⏳ not yet observed: the sandbox checkout page did not finish loading on the connection available that evening; the call is implemented and covered by mocked/simulated tests |
+| Second pact, dispute → Arbiter `partial` 60% → capture 120.00 with `final_capture: true` | ✅ remainder released by PayPal (no separate void call needed) |
+| Full scenario played by the two MCP agents with real photos | ✅ wrong item rejected, conforming photo approved → 135.00 captured, tracking approved → 315.00 final capture |
+| Void of an un-captured authorization (cancel path, pact cancelled after funding) | ✅ authorization `VOIDED`, 12.00 never charged (2026-11-07) |
 | Reauthorization after the honor period | ⏳ needs a 4-day-old authorization; covered by the simulated adapter and the job logic |
-| Payouts batch | ⏳ endpoint reachable, real payout not yet sent |
+| Payouts batch (1.00 USD to the sandbox personal account) | ✅ batch `PROCESSING` → item `SUCCESS` → batch `SUCCESS` within ~30 s (2026-11-07) |
+
+### Notes on automating the sandbox checkout
+
+PayPal serves several checkout variants to the same sandbox buyer (login form; a landing page with a "Log In" button; a review page with "Review Order"; a "Getting your wallet…" step that sometimes never finishes loading). The Playwright helper in `scripts/lib/sandbox-approval.ts` handles the variants, keeps a persistent browser profile in `data/` (git-ignored) and retries once; it only reports success when PayPal redirects back to PACT's return URL. A **race** found while doing this — the reconciliation poller and the buyer confirming the same approval at once — is now prevented (one in-flight confirmation per pact, with a test).
 
 ## Webhooks vs. the reconciliation poller
 

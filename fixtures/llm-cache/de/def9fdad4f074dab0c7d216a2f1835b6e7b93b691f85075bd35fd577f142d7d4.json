@@ -1,0 +1,73 @@
+{
+  "role": "parser",
+  "model": "muse-spark-1.3",
+  "output": {
+    "assumptions": [
+      "Dispute window set to 72 hours (default)"
+    ],
+    "contract": {
+      "buyer": {
+        "email": null,
+        "name": "Bea"
+      },
+      "currency": "USD",
+      "deadline": "2026-11-12",
+      "description": "Seller to deliver 20 plain logo-free canvas tote bags to buyer for 200 USD within 5 days, with 100% payment on delivery.",
+      "disputePolicy": {
+        "notes": null,
+        "resolution": "ai_arbiter_with_human_appeal",
+        "windowHours": 72
+      },
+      "milestones": [
+        {
+          "criteria": [
+            {
+              "id": "c1",
+              "text": "Tracking shows the package is delivered"
+            },
+            {
+              "id": "c2",
+              "text": "About 20 tote bags are shown, or a quantity label shows 20"
+            },
+            {
+              "id": "c3",
+              "text": "No logo is visible on the bags shown"
+            }
+          ],
+          "deadline": null,
+          "evidenceTypes": [
+            "photo",
+            "tracking"
+          ],
+          "id": "m1",
+          "percent": 100,
+          "title": "Delivery of 20 plain tote bags"
+        }
+      ],
+      "seller": {
+        "email": null,
+        "name": "Nia Crafts"
+      },
+      "subcontractors": [],
+      "title": "Logo-free tote bags",
+      "totalAmount": 200
+    },
+    "questions": [],
+    "status": "ok"
+  },
+  "usage": {
+    "role": "parser",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 1282,
+    "outputTokens": 2318,
+    "reasoningTokens": 2029,
+    "cachedTokens": 0,
+    "costUsd": 0.011454,
+    "latencyMs": 21473
+  },
+  "recordedAt": "2026-11-07T00:34:24.479Z",
+  "today": "2026-11-07",
+  "prompt": "[{\"content\":\"You are PACT's Contract Parser. You turn a natural-language deal between a buyer and a seller into a structured escrow contract.\\n\\nRules:\\n- Only use facts stated or clearly implied. Never invent quantities, prices, dates or parties.\\n- If something essential is missing or ambiguous (total price, currency when no hint exists, what is delivered, how payment is split, a deadline), return status \\\"needs_clarification\\\" with specific questions, contract null.\\n- Minor gaps may be filled with sensible defaults; list each one in \\\"assumptions\\\" (e.g. \\\"Currency assumed USD\\\", \\\"Dispute window set to 72 hours\\\").\\n- Milestone percentages must sum to exactly 100. Use ids m1, m2, ... in order; criterion ids c1, c2, ... inside each milestone.\\n- Criteria must be objectively checkable from the evidence that will be submitted (photo, document, code, tracking), not \\\"good quality\\\".\\n- A photo cannot count stacked or packed items one by one, nor prove how something was made. Phrase quantity criteria so a visible quantity label, packing note or a count consistent with stacks can prove them (e.g. \\\"About 50 t-shirts are shown, or a quantity label shows 50\\\"), and phrase visual requirements as what can be seen (e.g. \\\"A small blue star is visible on the front of the shirts\\\"), not as a manufacturing technique.\\n- Each milestone checks what happens at that stage only. Do not repeat a criterion already proven by an earlier milestone: a delivery milestone checks delivery (e.g. tracking shows delivered), not the product attributes checked at production, unless the deal explicitly asks for it.\\n- Choose evidence types that can actually prove each criterion: production → photo; delivery → tracking (and optionally photo); software → code; paperwork → document.\\n- Dates: resolve relative dates (\\\"before Friday\\\") against TODAY given by the user message, format YYYY-MM-DD. A milestone deadline may be null to mean the contract deadline.\\n- Dispute policy resolution is always \\\"ai_arbiter_with_human_appeal\\\". Default windowHours 72.\\n- subcontractors: only if the text names someone to be paid out of a milestone; otherwise [].\",\"role\":\"system\"},{\"content\":\"TODAY: ⟦v1⟧\\nBUYER: Bea (buyer)\\nSELLER: Nia Crafts\\nDEAL:\\nLogo-free tote bags: 20 plain canvas tote bags, 200 USD, 100% on delivery within 5 days. Delivery must show 20 bags.\",\"role\":\"user\"}]"
+}

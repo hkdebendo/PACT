@@ -10,7 +10,7 @@ npm run seed -- --reset      # a few weeks of labelled, simulated history for th
 npm run dev                  # API :4000 + web :3000 (keep this terminal visible for shot 2)
 ```
 
-`.env.local` for the recording: real sandbox credentials (`PAYPAL_ENV=sandbox`), `LLM_MODE=replay` (deterministic: recorded Muse answers), `AG_STUDIO_LICENSE_KEY` set (no watermark). Open three tabs: `http://localhost:3000`, a second terminal ready with `npm run demo -- --headed`, and the PayPal sandbox merchant dashboard (Activity) already logged in.
+`.env.local` for the recording: real sandbox credentials (`PAYPAL_ENV=sandbox`), `LLM_MODE=replay` (deterministic: recorded Muse answers, recorded for both sandbox and simulated payments), `AG_STUDIO_LICENSE_KEY` set (no watermark). Open three tabs: `http://localhost:3000`, a second terminal ready with `npm run demo -- --headed`, and the PayPal sandbox merchant dashboard (Activity) already logged in.
 
 Do one full dry run first: `npm run demo` must print `Main pact …: completed` and `Audit chain: verified`.
 
@@ -33,12 +33,15 @@ Do one full dry run first: `npm run demo` must print `Main pact …: completed` 
 
 ```bash
 npm run demo -- --headed     # agents + Playwright sandbox approval in a visible browser
+npm run demo -- --manual     # agents; YOU approve in PayPal (most reliable on a slow connection)
 npm run demo -- --no-agents  # same story driven over REST (fallback if an agent run diverges)
 npm run demo -- --no-dispute # skip the dispute variant
+npm run demo -- --only-dispute --force   # only the dispute variant
 ```
 
 ## If something goes wrong on camera
 
 - "Replay mode: no recorded Muse answer": the input changed (e.g. a fixture photo was replaced). Re-record once with `LLM_MODE=live` and a Meta key, then switch back to replay.
 - PayPal sandbox checkout layout changed: run with `--headed` and click through manually; the demo waits for the approval.
+- "The demo photos were already submitted": every take needs a fresh database (anti-fraud pre-check on reused evidence). Windows: `powershell -File scripts/dev/reset.ps1`, then `npm run dev`.
 - Reset everything: stop `npm run dev`, `npm run seed -- --reset`, start again.

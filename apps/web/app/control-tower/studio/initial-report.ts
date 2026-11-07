@@ -80,7 +80,7 @@ export const initialReport = (): AgReportState =>
             format: title('Score by party'),
           },
         },
-        widgetLayout: { board: at(0, 0, 15, 22), 'score-chart': at(15, 0, 9, 22) },
+        widgetLayout: { board: at(0, 0, 15, 27), 'score-chart': at(15, 0, 9, 27) },
       },
       {
         id: 'reconciliation',

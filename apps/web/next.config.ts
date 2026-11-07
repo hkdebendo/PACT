@@ -9,6 +9,7 @@ loadEnvConfig(root, process.env.NODE_ENV !== 'production', console, true);
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@pact/core', '@pact/llm'],
+  devIndicators: false,
   turbopack: { root },
   outputFileTracingRoot: root,
   env: {

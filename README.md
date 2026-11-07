@@ -26,6 +26,18 @@ An agent that pays another agent, a freelancer or a seller on a chat app pays bl
 8. **Audit**: append-only SHA-256 hash chain of every state change and AI decision, with a verify endpoint and a "chain verified" badge.
 9. **Real-time** everywhere via Server-Sent Events.
 
+## Screenshots
+
+| The PACT Control Tower (AG Studio, live) | The PACT Auditor explains a refusal |
+|---|---|
+| ![Control Tower](docs/screenshots/control-tower.png) | ![Dark mode](docs/screenshots/control-tower-dark.png) |
+| **Reputation leaderboard** (custom AG Grid widget, sparklines) | **Write a deal, Muse drafts the contract** |
+| ![Reputation](docs/screenshots/reputation.png) | ![Composer](docs/screenshots/composer.png) |
+
+The pact room — every AI decision with per-criterion reasoning, confidence, the audit-chain seal and a human-appeal button (real PayPal sandbox captures):
+
+![Pact room](docs/screenshots/pact-room.png)
+
 ![Architecture](docs/architecture.svg)
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the state machine, money model, AI layer and AG Studio integration.
@@ -98,7 +110,7 @@ Open **http://localhost:3000** → *Control Tower* to watch it live, or *New pac
 | Command | |
 |---|---|
 | `npm run dev` | API (:4000) + web (:3000) |
-| `npm run demo` | Agents play the scenario (`--headed`, `--no-agents`, `--no-dispute`) |
+| `npm run demo` | Agents play the scenario. Flags: `--no-agents` (same story over REST), `--no-dispute`, `--only-dispute`, `--headed` (visible browser for the PayPal sandbox approval), `--manual` (you approve in your own browser) |
 | `npm run seed -- --reset` | Labelled simulated history |
 | `npm test` | Vitest: state machine, audit chain, reputation, schemas, PayPal adapters, LLM policy and replay, full API money flow |
 | `npm run e2e` | Playwright demo scenario (uses your installed Chrome) |
@@ -117,6 +129,8 @@ Open **http://localhost:3000** → *Control Tower* to watch it live, or *New pac
 - **"Replay mode: no recorded model response"**: you typed a new deal or uploaded a new file while `LLM_MODE=replay`. Use the demo deal, fill the contract by hand, or set a Meta key and `LLM_MODE=live`.
 - **PayPal errors** show the PayPal `debug_id` and issue codes in the UI and the audit log. `npm run env:check` confirms credentials are set.
 - **Reconciliation page empty**: enable *Transaction search* on the sandbox app; new activity can take up to ~3 hours to appear.
+- **"The demo photos were already submitted in this database"**: PACT rejects evidence that is byte-identical to evidence used in another pact (an anti-fraud pre-check), so each demo run needs a fresh database: stop `npm run dev`, run `npm run seed -- --reset`, start again. On Windows, `powershell -File scripts/dev/reset.ps1` does the stop + reset + seed.
+- **PayPal sandbox approval hangs on "Getting your wallet…"**: the sandbox checkout is heavy and sometimes slow; the automation retries once. Use `npm run demo -- --manual` to approve in your own browser instead.
 - **Reset**: stop the servers, `npm run seed -- --reset`.
 
 ## Credits and honesty notes

@@ -36,7 +36,9 @@ Steps:
 
 ## Assets
 
-- [ ] **Most important now.** Real photos are required: Muse correctly rejects the generated placeholders because they are drawings, not photographs (verified 2026-11-06). Please provide, with **no brand or logo** visible, saved in `fixtures/evidence/` with exactly these names:
+- [x] Real photos added 2026-11-06 (verified: wrong item rejected 0.99, conforming photo approved 0.93–0.95, dispute photo leads to a partial decision).
+- [ ] **Please confirm** `order_wrong_item.jpg` (the mugs, 547×365) is your own photo or free to use. If it was downloaded from the web, replace it with your own photo of plain mugs/bowls (same file name) and tell me: the hackathon forbids copyrighted media, and I would re-record the answers for the new image.
+- [ ] (done) Real photos are required: Muse correctly rejects the generated placeholders because they are drawings, not photographs (verified 2026-11-06). Please provide, with **no brand or logo** visible, saved in `fixtures/evidence/` with exactly these names:
   - `order_conforming.jpg` — a pile/stack of plain **white** t-shirts with a small **blue star** drawn/embroidered/stuck on the chest (a few shirts is fine if you also show a paper note "QTY 50"); the parser's criteria are "at least 50 plain white t-shirts visible or counted" and "small blue star on the chest".
   - `order_wrong_item.jpg` — the wrong item: e.g. a few plain grey/white mugs or bowls, no t-shirts.
   - `delivery_partial.jpg` — (dispute variant) an open box with about 12 plain canvas/cloth tote bags (or any plain bags), clearly fewer than 20.

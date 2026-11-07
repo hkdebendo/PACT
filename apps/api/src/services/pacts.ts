@@ -54,12 +54,16 @@ export class PactService {
 
   ensureParty(p: PartyInput) {
     const kind = p.kind ?? 'human';
-    const existing = this.ctx.db
-      .select()
-      .from(tables.parties)
-      .where(and(eq(tables.parties.name, p.name), eq(tables.parties.kind, kind)))
-      .get();
-    if (existing) return existing;
+    // One party per name: the same seller is the same reputation whether it acts through an agent
+    // or the web UI (the kind records how it last acted).
+    const existing = this.ctx.db.select().from(tables.parties).where(eq(tables.parties.name, p.name)).get();
+    if (existing) {
+      if (p.kind && existing.kind !== p.kind) {
+        this.ctx.db.update(tables.parties).set({ kind: p.kind }).where(eq(tables.parties.id, existing.id)).run();
+        return { ...existing, kind: p.kind };
+      }
+      return existing;
+    }
     const row = { id: newId('party'), name: p.name, kind, email: p.email ?? null, createdAt: this.now() };
     this.ctx.db.insert(tables.parties).values(row).run();
     return row;
@@ -533,6 +537,7 @@ export class PactService {
     this.transition(pactId, { type: 'RELEASE', milestoneId }, actor, { captureId: cap.captureId });
     const payouts = await this.payoutSubcontractors(pactId, milestoneId, m.amountMinor, actor);
     await this.settleIfDone(pactId, actor, cap.finalCapture);
+    if (this.row(pactId).status === 'completed') snapshotReputation(this.ctx, row.sellerId);
     return { captureId: cap.captureId, amountMinor: m.amountMinor, finalCapture: cap.finalCapture, payouts };
   }
 

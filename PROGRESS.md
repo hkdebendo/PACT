@@ -20,22 +20,24 @@ Deadline: **2026-11-12 12:00 PT (21:00 Cotonou)**. Started 2026-11-06.
 - Meta Model API: `muse-spark-1.3` chat completions with strict json_schema → valid JSON; image_url data URL accepted; `/v1/responses` non-streaming with a strict function tool → reasoning + message + function_call items (ids + call_id present); Responses streaming also supported (SSE). reasoning_effort=low still spends ~250 reasoning tokens.
 - npm install attempt 2 failed (two concurrent npm processes + ECONNRESET); cache now ~958 MB; attempt 3 running with --prefer-offline.
 
-## Status by tier (2026-11-06 21:00)
-Legend: ✅ built and verified by running it · 🟡 built, partly verified · ⬜ not started
+## Status by tier (2026-11-07 01:45)
+Legend: ✅ built and verified by running it · 🟡 partly verified
 
-- ✅ **Tier 0** — monorepo installs (offline from cache), `npm test` 46/46, lint + typecheck clean (backend and web), CI workflow, secret scan (checks all credential values), env check.
-- ✅ **Tier 1** — real sandbox: AUTHORIZE order → Playwright buyer approval → authorize → partial capture 315 → final capture 135 (authorization CAPTURED) → partial refund 10. Audit chain verified. 🟡 void and reauthorization not yet observed live (approval page too slow on the evening connection); Payouts not yet run live.
-- ✅ **Tier 2** — Muse live: Contract Parser (asks clarification when a deadline is ambiguous!), two-step Verifier (wrong item rejected 0.99), Arbiter (reasoned release; partial 60% in dispute variant), cost tracked (~$0.04 for a full run). Replay cache recorded for the verified runs.
-- ✅ **Tier 3** — Control Tower renders with the licence (no watermark), 9 custom widgets with live data, PACT theme, drill-through, 4 pages, edit mode with PACT widget catalogue.
-- ✅ **Tier 4** — MCP server + two Muse agents play the full scenario over MCP (simulated payments run); dispute variant via REST.
-- ✅ **Tier 5** — PACT Auditor in AG Studio answers the demo question from live tools and adds the Refused Milestones widget; Muse proxy bounds Studio tool schemas to Meta's limits (no recursion, ≤10 levels).
-- 🟡 **Tier 6** — docs written; OpenAPI + Postman generated; e2e spec written, not yet run; clean-clone test not done; **real photos needed** (placeholders are rejected as drawings — correct behaviour).
+- ✅ **Tier 0** — install, 48 unit/integration tests, lint, typecheck, production build, CI green on GitHub (lint, types, tests, build; e2e step added).
+- ✅ **Tier 1** — real sandbox: authorize → buyer approval → partial capture → final capture; partial refund; dispute partial capture with auto-release of the remainder; poller/buyer race fixed. 🟡 explicit void (cancel) and reauthorization not yet observed live; Payouts not yet sent live.
+- ✅ **Tier 2** — Muse live with real photos: wrong item rejected 0.99, conforming approved 0.93–0.95, tracking approved, Arbiter partial 60%. Parser writes evidence-checkable criteria. Replay cache verified: full demo + Auditor chat replay with **no Meta key**.
+- ✅ **Tier 3** — Control Tower with licence, 9 custom widgets, live SSE data, light/dark modes, drill-through, edit mode.
+- ✅ **Tier 4** — MCP agents play the whole scenario (real sandbox + simulated), dispute variant.
+- ✅ **Tier 5** — PACT Auditor answers the demo question, adds the widget; Studio tool schemas bounded for Meta.
+- 🟡 **Tier 6** — docs updated; OpenAPI/Postman; Playwright e2e ✅ (live + replay); README screenshots, clean-clone test and final Devpost review still to do.
 
 ## Next steps (in order)
-1. Real photos from Vincent → re-record replay cache (`LLM_MODE=live npm run demo -- --no-agents`, then agents run) on a fresh seed.
-2. Re-run sandbox approval on a good connection: verify void (cancel) + run the agents demo against the real sandbox; try one Payouts batch (pact with a subcontractor email = sandbox personal account).
-3. Playwright e2e (simulated + replay), dark mode + mobile pass, clean-clone test, final docs (screenshots in README), Devpost text review.
+1. Finish sandbox-mode recording (agents + chat) for a deterministic video in sandbox + replay.
+2. README screenshots (scripts/dev/screenshots.cjs), dark/mobile check.
+3. Live void (cancel) check and one Payouts batch.
+4. Clean-clone test following the README; final secret scan; Devpost text review.
 
 ## Log
+- 2026-11-06 23:00 → 2026-11-07 01:45: real photos, prompt fixes (evidence-checkable criteria, marking location), full real-sandbox scenario by agents, race fix, robust PayPal checkout automation, replay made run-independent (ids/hashes/mode), e2e green, control-tower dynamic.
 - 2026-11-06 19:00–21:00: install fixed (cache filled tarball by tarball + offline install), live PayPal/Muse probes, first green test run, real sandbox money flow, Studio + PACT Auditor working with Muse, MCP agents scenario working.
 - 2026-11-06 17:30–18:50: brief read, env detected, boilerplate + Studio docs studied, all packages/apps/docs written, two commits pushed. npm install running in background (metadata resolution very slow).
