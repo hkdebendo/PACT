@@ -29,10 +29,10 @@ export function Seal({ size = 30, className }: { size?: number; className?: stri
 }
 
 const NAV = [
-  { href: '/pacts/new', label: 'New pact' },
-  { href: '/pacts', label: 'Pacts' },
-  { href: '/control-tower', label: 'Control Tower' },
-  { href: '/admin', label: 'Admin' },
+  { href: '/pacts/new', label: 'New pact', short: 'New' },
+  { href: '/pacts', label: 'Pacts', short: 'Pacts' },
+  { href: '/control-tower', label: 'Control Tower', short: 'Tower' },
+  { href: '/admin', label: 'Admin', short: 'Admin' },
 ];
 
 const readTheme = (): 'light' | 'dark' =>
@@ -106,9 +106,9 @@ export function TopNav() {
     <header className="sticky top-0 z-30 border-b border-line bg-paper/85 backdrop-blur">
       <ModeBanner />
       <nav className="mx-auto flex h-14 max-w-7xl items-center gap-2 px-4 sm:px-6" aria-label="Main">
-        <Link href="/" className="mr-4 flex items-center gap-2.5">
+        <Link href="/" className="mr-1 flex shrink-0 items-center gap-2.5 sm:mr-4" aria-label="PACT home">
           <Seal />
-          <span className="font-display text-xl tracking-tight text-ink">PACT</span>
+          <span className="hidden font-display text-xl tracking-tight text-ink sm:inline">PACT</span>
         </Link>
         <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
           {NAV.map((n) => {
@@ -118,9 +118,10 @@ export function TopNav() {
                 key={n.href}
                 href={n.href}
                 aria-current={active ? 'page' : undefined}
-                className={cx('rounded-full px-3 py-1.5 text-sm whitespace-nowrap transition-colors', active ? 'bg-ink text-paper' : 'text-ink-2 hover:bg-paper-2')}
+                className={cx('rounded-full px-2.5 py-1.5 text-[13px] whitespace-nowrap transition-colors sm:px-3 sm:text-sm', active ? 'bg-ink text-paper' : 'text-ink-2 hover:bg-paper-2')}
               >
-                {n.label}
+                <span className="hidden sm:inline">{n.label}</span>
+                <span className="sm:hidden">{n.short}</span>
               </Link>
             );
           })}

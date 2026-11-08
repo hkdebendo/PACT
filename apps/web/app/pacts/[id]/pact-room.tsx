@@ -36,10 +36,10 @@ function RoleSwitch({ role, setRole, pact }: { role: Role; setRole: (r: Role) =>
     { r: 'reviewer', l: 'Human reviewer' },
   ];
   return (
-    <div className="inline-flex rounded-full border border-line bg-surface p-1 text-[13px]" role="radiogroup" aria-label="Act as">
+    <div className="inline-flex max-w-full overflow-x-auto rounded-full border border-line bg-surface p-1 text-[13px]" role="radiogroup" aria-label="Act as">
       {opts.map((o) => (
-        <button key={o.r} role="radio" aria-checked={role === o.r} onClick={() => setRole(o.r)} className={cx('rounded-full px-3 py-1 transition-colors', role === o.r ? 'bg-ink text-paper' : 'text-ink-2 hover:bg-paper-2')}>
-          <span className="text-[11px] tracking-wider uppercase opacity-70">{o.r === 'reviewer' ? '' : `${o.r} · `}</span>
+        <button key={o.r} role="radio" aria-checked={role === o.r} onClick={() => setRole(o.r)} className={cx('rounded-full px-3 py-1 whitespace-nowrap transition-colors', role === o.r ? 'bg-ink text-paper' : 'text-ink-2 hover:bg-paper-2')}>
+          <span className="hidden text-[11px] tracking-wider uppercase opacity-70 sm:inline">{o.r === 'reviewer' ? '' : `${o.r} · `}</span>
           {o.l}
         </button>
       ))}
@@ -267,8 +267,8 @@ function AuditTrail({ pactId }: { pactId: string }) {
   const [open, setOpen] = useState(false);
   return (
     <Card className="p-5">
-      <div className="flex items-center gap-3">
-        <h2 className="font-display text-xl">Audit trail</h2>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <h2 className="font-display text-xl whitespace-nowrap">Audit trail</h2>
         <ChainBadge />
         <button className="ml-auto text-[13px] text-ink-2 underline" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
           {open ? 'Hide' : `Show ${data?.length ?? ''} entries`}

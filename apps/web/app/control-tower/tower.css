@@ -1,0 +1,705 @@
+/*
+ * Control Tower styles: PACT's custom AG Studio widgets (.pw-*) and the few places where the PACT
+ * look reaches into Studio's own chrome. Colours and type come from the design tokens in
+ * app/globals.css, the same tokens the Studio theme (studio/theme.ts) points at, so light and dark
+ * modes switch everything together. Every widget is a size container: its layout adapts to the
+ * width the user gives it on the canvas (container queries), not to the window.
+ */
+
+/* ---------- Studio chrome, PACT style -------------------------------------------------------- */
+
+.pact-tower {
+  --pw-pad: 20px;
+}
+
+/* Widget cards: Studio draws the card; PACT adds depth and aligns the header with the content. */
+.pact-tower .ag-studio-layout-widget-container {
+  box-shadow: var(--pact-shadow);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+.pact-tower .ag-studio-layout-widget:hover .ag-studio-layout-widget-container {
+  border-color: color-mix(in srgb, var(--pact-ink) 18%, var(--pact-line));
+}
+.pact-tower .ag-studio-layout-widget-header {
+  margin: 16px var(--pw-pad) 10px;
+}
+.pact-tower .ag-studio-layout-widget-footer {
+  margin: 0 var(--pw-pad) 14px;
+}
+.pact-tower .ag-studio-layout-widget-title {
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.pact-tower .ag-studio-layout-widget-subtitle {
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+/* Studio's own widgets (charts, filters) get the same side padding as PACT's custom ones. */
+.pact-tower .ag-studio-layout-widget-body:not(:has(.pw)) {
+  margin: 0 12px 6px;
+}
+
+/* ---------- Shared widget primitives -------------------------------------------------------- */
+
+.pw {
+  container-type: inline-size;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 var(--pw-pad, 20px) 18px;
+  overflow: hidden;
+  font-family: var(--pact-font);
+  color: var(--pact-ink);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.pw *,
+.pw *::before,
+.pw *::after {
+  box-sizing: border-box;
+}
+.pw-flush {
+  padding: 0;
+  gap: 0;
+}
+.pw-eyebrow {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pact-muted);
+}
+.pw-display {
+  font-family: var(--pact-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.015em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.pw-mono {
+  font-family: var(--pact-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+}
+.pw-muted {
+  color: var(--pact-muted);
+}
+.pw-note {
+  font-size: 12px;
+  color: var(--pact-muted);
+  line-height: 1.45;
+}
+.pw-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.pw-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.pw-spacer {
+  flex: 1;
+}
+
+.pw-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  line-height: 1;
+  background: var(--pact-paper-2);
+  color: var(--pact-ink-2);
+}
+.pw-pill[data-tone="released"] {
+  background: var(--pact-released-soft);
+  color: var(--pact-released);
+}
+.pw-pill[data-tone="held"] {
+  background: var(--pact-held-soft);
+  color: var(--pact-held);
+}
+.pw-pill[data-tone="refund"] {
+  background: var(--pact-refund-soft);
+  color: var(--pact-refund);
+}
+.pw-pill[data-tone="navy"] {
+  background: var(--pact-navy);
+  color: var(--pact-paper);
+}
+.pw-pill[data-tone="void"] {
+  background: var(--pact-paper-2);
+  color: var(--pact-void);
+}
+.pw-pill .pw-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: currentColor;
+}
+
+.pw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--pact-line);
+  background: var(--pact-surface);
+  color: var(--pact-ink);
+  font: 500 12px/1 var(--pact-font);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.1s;
+}
+.pw-btn:hover {
+  border-color: color-mix(in srgb, var(--pact-ink) 30%, var(--pact-line));
+  background: var(--pact-paper);
+}
+.pw-btn:active {
+  transform: translateY(1px);
+}
+.pw-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pw-btn[data-variant="primary"] {
+  background: var(--pact-navy);
+  border-color: var(--pact-navy);
+  color: var(--pact-paper);
+}
+.pw-btn[data-variant="link"] {
+  border-color: transparent;
+  background: none;
+  color: var(--pact-navy);
+  padding: 0 4px;
+}
+.pw-btn[data-variant="link"]:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.pw-icon-btn {
+  width: 28px;
+  padding: 0;
+}
+
+.pw-meter {
+  position: relative;
+  height: 6px;
+  border-radius: 99px;
+  background: var(--pact-paper-2);
+  overflow: hidden;
+}
+.pw-meter > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 99px;
+  background: currentColor;
+}
+
+/* Grid widgets: an intro strip with the widget padding, then a full-bleed grid. */
+.pw-intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 0 var(--pw-pad, 20px) 12px;
+}
+.pw-gridwrap {
+  flex: 1;
+  min-height: 0;
+  border-top: 1px solid var(--pact-line);
+}
+
+/* ---------- KPI tile ------------------------------------------------------------------------- */
+
+.pw-kpi {
+  padding: 16px var(--pw-pad, 20px) 14px;
+  gap: 6px;
+  justify-content: space-between;
+}
+.pw-kpi-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.pw-kpi-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--kpi-color) 14%, transparent);
+  color: var(--kpi-color);
+}
+.pw-kpi-value {
+  font-size: 30px;
+  line-height: 1.05;
+  color: var(--pact-ink);
+}
+.pw-kpi-body {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  min-width: 0;
+}
+.pw-kpi-spark {
+  flex: 1;
+  min-width: 60px;
+  height: 38px;
+}
+.pw-kpi-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 11.5px;
+  color: var(--pact-muted);
+}
+@container (max-width: 230px) {
+  .pw-kpi-spark {
+    display: none;
+  }
+  .pw-kpi-value {
+    font-size: 26px;
+  }
+}
+
+/* ---------- Escrow vault --------------------------------------------------------------------- */
+
+.pw-vault-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pw-vault-amount {
+  font-size: 46px;
+  line-height: 1;
+  color: var(--pact-held);
+  margin-top: 6px;
+}
+.pw-split {
+  display: flex;
+  height: 10px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: var(--pact-paper-2);
+  gap: 2px;
+}
+.pw-split > div {
+  min-width: 0;
+}
+.pw-legend {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: auto;
+}
+.pw-legend-item {
+  min-width: 0;
+  padding-left: 10px;
+  border-left: 2px solid var(--c);
+}
+.pw-legend-item .pw-display {
+  font-size: 21px;
+  line-height: 1.15;
+}
+@container (max-width: 340px) {
+  .pw-vault-top {
+    flex-direction: column-reverse;
+    gap: 6px;
+  }
+  .pw-vault-amount {
+    font-size: 36px;
+  }
+  .pw-legend {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .pw-legend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .pw-legend-item .pw-display {
+    font-size: 16px;
+  }
+}
+
+/* ---------- Rate gauges ---------------------------------------------------------------------- */
+
+.pw-gauges {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+  height: 100%;
+  align-content: center;
+}
+.pw-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
+.pw-gauge-ring {
+  position: relative;
+  width: 100%;
+  max-width: 104px;
+  aspect-ratio: 1;
+}
+.pw-gauge-ring svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.pw-gauge-value {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  padding-top: 6px;
+}
+.pw-gauge-label {
+  margin-top: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.pw-gauge-hint {
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--pact-muted);
+  max-width: 150px;
+}
+@container (max-width: 330px) {
+  .pw-gauges {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-content: start;
+  }
+  .pw-gauge {
+    display: grid;
+    grid-template-columns: 54px 1fr;
+    column-gap: 12px;
+    text-align: left;
+    align-items: center;
+  }
+  .pw-gauge-ring {
+    grid-row: span 2;
+    max-width: 54px;
+  }
+  .pw-gauge-value {
+    font-size: 14px;
+    padding-top: 3px;
+  }
+  .pw-gauge-label {
+    margin: 0;
+  }
+  .pw-gauge-hint {
+    max-width: none;
+  }
+}
+
+/* ---------- Verdict card --------------------------------------------------------------------- */
+
+.pw-verdict {
+  gap: 10px;
+}
+.pw-verdict-context {
+  font-size: 12px;
+  color: var(--pact-muted);
+}
+.pw-verdict-context b {
+  color: var(--pact-ink-2);
+  font-weight: 600;
+}
+.pw-quote {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 2px 4px 14px 14px;
+  border-left: 3px solid var(--quote, var(--pact-held));
+  font-family: var(--pact-display);
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--pact-ink);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent);
+}
+.pw-verdict-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--pact-line-2);
+}
+.pw-pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--pact-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pw-conf {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--pact-muted);
+}
+.pw-conf .pw-meter {
+  width: 46px;
+  height: 5px;
+}
+@container (max-width: 380px) {
+  .pw-hide-narrow {
+    display: none !important;
+  }
+}
+
+/* ---------- Milestone timeline --------------------------------------------------------------- */
+
+.pw-timeline {
+  overflow-y: auto;
+  gap: 0;
+  scrollbar-width: thin;
+}
+.pw-tl-pact {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 20px;
+  padding: 14px 0;
+  border-top: 1px solid var(--pact-line-2);
+}
+.pw-tl-pact:first-child {
+  border-top: 0;
+  padding-top: 2px;
+}
+.pw-tl-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pw-tl-title {
+  font-size: 17px;
+  line-height: 1.2;
+}
+.pw-tl-steps {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.pw-tl-step {
+  position: relative;
+  min-width: 0;
+  flex: 1 1 0;
+  padding-right: 14px;
+}
+.pw-tl-node {
+  display: flex;
+  align-items: center;
+}
+.pw-tl-dot {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  font: 700 12.5px/1 var(--pact-font);
+  cursor: pointer;
+  border: 2px solid var(--c);
+  background: var(--pact-surface);
+  color: var(--c);
+  box-shadow: 0 0 0 4px var(--pact-surface);
+}
+.pw-tl-dot[data-filled="true"] {
+  background: var(--c);
+  color: var(--pact-surface);
+}
+.pw-tl-line {
+  flex: 1;
+  height: 2px;
+  margin-left: 8px;
+  border-radius: 2px;
+  background: var(--pact-line);
+}
+.pw-tl-card {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  min-width: 0;
+}
+.pw-tl-card-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.pw-tl-thumb {
+  flex: none;
+  width: 64px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--pact-line);
+}
+@container (max-width: 640px) {
+  .pw-tl-pact {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+@container (max-width: 460px) {
+  .pw-tl-thumb {
+    display: none;
+  }
+}
+
+/* ---------- Money flow ----------------------------------------------------------------------- */
+
+.pw-flow {
+  padding-bottom: 14px;
+}
+.pw-flow-canvas {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+.pw-flow-canvas svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.pw-flow-label {
+  font: 600 12px var(--pact-font);
+  fill: var(--pact-ink);
+}
+.pw-flow-sub {
+  font: 500 11px var(--pact-font);
+  fill: var(--pact-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Grid cells ----------------------------------------------------------------------- */
+
+/* PACT rows are taller than the theme default: centre every cell vertically, whatever renders it. */
+.pw .ag-cell {
+  display: flex;
+  align-items: center;
+}
+.pw .ag-cell.ag-right-aligned-cell {
+  justify-content: flex-end;
+}
+.pw .ag-cell > .pw-cell {
+  width: 100%;
+}
+.pw-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  min-width: 0;
+}
+.pw-avatar {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  font: 600 11px/1 var(--pact-font);
+  color: var(--pact-paper);
+  background: var(--c, var(--pact-navy));
+}
+.pw-rank {
+  font-family: var(--pact-display);
+  font-size: 15px;
+  color: var(--pact-muted);
+}
+.pw-rank[data-top="true"] {
+  color: var(--pact-held);
+}
+.pw-wrap-cell {
+  white-space: normal;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding: 8px 0;
+}
+
+/* ---------- Toolbar of the Control Tower (outside Studio) ------------------------------------ */
+
+.pact-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--pact-paper-2);
+  border: 1px solid var(--pact-line-2);
+}
+.pact-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--pact-ink-2);
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+}
+.pact-tab:hover {
+  color: var(--pact-ink);
+}
+.pact-tab[aria-current="page"] {
+  background: var(--pact-surface);
+  color: var(--pact-ink);
+  font-weight: 600;
+  box-shadow:
+    0 1px 2px rgba(22, 26, 35, 0.08),
+    0 0 0 1px var(--pact-line);
+}
+.pact-tab svg {
+  opacity: 0.75;
+}

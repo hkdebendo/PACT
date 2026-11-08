@@ -3,6 +3,7 @@
 // PACT's custom widget catalogue for AG Studio. Registered through createWidgets (ag-studio-react)
 // under a "PACT" menu group, ahead of Studio's own widgets, so users and the AI agents can add them.
 import { createWidgets } from 'ag-studio-react';
+import { KPI_METRICS, KpiTileWidget } from './kpi';
 import { EscrowVaultWidget, MoneyFlowWidget, RateGaugesWidget } from './money';
 import { MilestoneTimelineWidget, PactLedgerWidget, ReconciliationWidget, RefusedListWidget, ReputationLeaderboardWidget, VerdictCardWidget } from './pacts';
 
@@ -19,6 +20,14 @@ const ICONS = {
   ledger: icon('<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'),
   reconcile: icon('<path d="M4 7h11l-3-3M20 17H9l3 3"/>'),
   refused: icon('<circle cx="12" cy="12" r="9"/><path d="M8 8l8 8"/>'),
+  kpi: icon('<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 15l3-3 2.5 2L17 9"/>'),
+};
+
+/** Adds a select to the widget's Format section of Studio's edit panel. */
+const withSelect = (id: string, label: string, defaultValue: string, options: { value: string; label: string }[]) => (params: any) => {
+  const form = params.createDefaults({ dataMappingItems: [] });
+  form.items?.[1]?.items?.push({ type: 'select', id, label, defaultValue, options });
+  return form;
 };
 
 const noMapping = (params: any) => params.createDefaults({ dataMappingItems: [] });
@@ -35,6 +44,7 @@ const def = (id: string, label: string, comp: any, ico: string, description: str
 });
 
 export const PACT_WIDGET_IDS = [
+  'pact-kpi',
   'pact-escrow-vault',
   'pact-milestone-timeline',
   'pact-verdict-card',
@@ -49,22 +59,22 @@ export const PACT_WIDGET_IDS = [
 export const buildWidgets = () => (defaults: any) =>
   createWidgets({
     additionalTypes: [
+      def(
+        'pact-kpi',
+        'KPI Tile',
+        KpiTileWidget,
+        ICONS.kpi,
+        `One PACT metric as a large number with its growth sparkline and the change over the last 24 hours. Set format.style.metric to one of: ${Object.keys(KPI_METRICS).join(', ')}.`,
+        [300, 150],
+        [200, 120],
+        withSelect('format.style.metric', 'Metric', 'released', Object.entries(KPI_METRICS).map(([value, label]) => ({ value, label }))),
+      ),
       def('pact-escrow-vault', 'Escrow Vault', EscrowVaultWidget, ICONS.vault, 'Totals of money held by PayPal (authorized, not charged), released to sellers, refunded and voided, with animated transitions.', [520, 260], [300, 200]),
       def('pact-milestone-timeline', 'Milestone Timeline', MilestoneTimelineWidget, ICONS.timeline, "Per pact, its milestones as steps coloured by state, with the latest evidence thumbnail and verifier confidence. Follows the page's cross-filter (one pact) or shows the most recent pacts.", [900, 300], [420, 200]),
-      def('pact-verdict-card', 'Verdict Card', VerdictCardWidget, ICONS.verdict, 'The latest AI Verifier / Arbiter / human decision with its reasoning, confidence, model, audit-chain status and an "Appeal to a human" action.', [520, 300], [320, 220], (params: any) => {
-        const form = params.createDefaults({ dataMappingItems: [] });
-        form.items?.[1]?.items?.push({
-          type: 'select',
-          id: 'format.style.focus',
-          label: 'Show',
-          defaultValue: 'latest',
-          options: [
-            { value: 'latest', label: 'Latest decisions' },
-            { value: 'refused', label: 'Refusals only' },
-          ],
-        });
-        return form;
-      }),
+      def('pact-verdict-card', 'Verdict Card', VerdictCardWidget, ICONS.verdict, 'The latest AI Verifier / Arbiter / human decision with its reasoning, confidence, model, audit-chain status and an "Appeal to a human" action.', [520, 300], [320, 220], withSelect('format.style.focus', 'Show', 'latest', [
+        { value: 'latest', label: 'Latest decisions' },
+        { value: 'refused', label: 'Refusals only' },
+      ])),
       def('pact-reputation-leaderboard', 'Reputation Leaderboard', ReputationLeaderboardWidget, ICONS.leaderboard, 'Grid of parties ranked by Bayesian-smoothed reputation score, with sparkline trend, tier and completion / on-time / dispute rates.', [900, 340], [420, 220]),
       def('pact-money-flow', 'Money Flow', MoneyFlowWidget, ICONS.flow, 'Sankey diagram of escrowed money: buyers → PayPal authorization → sellers, subcontractor payouts, refunds, voided and still held.', [700, 340], [360, 240]),
       def('pact-rate-gauges', 'Dispute & Refund Gauges', RateGaugesWidget, ICONS.gauge, 'Three gauges: dispute rate, refund rate and share of AI verdicts that were refusals.', [520, 220], [320, 160]),

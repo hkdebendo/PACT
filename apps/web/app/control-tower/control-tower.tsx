@@ -15,10 +15,25 @@ import { initialReport, PAGE_TITLES } from './studio/initial-report';
 import { PACT_THEME_MODES, pactStudioTheme } from './studio/theme';
 import { buildWidgets } from './studio/widgets';
 import type { TowerContext } from './studio/widgets/common';
+import './tower.css';
 
 if (process.env.NODE_ENV !== 'production') enableStudioDevValidations();
 
-const STORAGE_KEY = 'pact-control-tower-report-v1';
+const ico = (d: React.ReactNode) => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    {d}
+  </svg>
+);
+const PAGE_ICONS: Record<string, React.ReactNode> = {
+  overview: ico(<><rect x="3" y="3" width="7" height="9" rx="1.5" /><rect x="14" y="3" width="7" height="5" rx="1.5" /><rect x="14" y="12" width="7" height="9" rx="1.5" /><rect x="3" y="16" width="7" height="5" rx="1.5" /></>),
+  verdicts: ico(<><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" /><path d="M9 12l2 2 4-4" /></>),
+  reputation: ico(<><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z" /></>),
+  reconciliation: ico(<><path d="M4 7h12l-3-3M20 17H8l3 3" /></>),
+};
+const SPARK = ico(<><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" /><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" /></>);
+const PENCIL = ico(<><path d="M4 20h4L19 9l-4-4L4 16z" /><path d="M13.5 6.5l4 4" /></>);
+
+const STORAGE_KEY = 'pact-control-tower-report-v2';
 
 // The PACT Auditor's tools read the latest context lazily (one Control Tower per page).
 let liveContext: TowerContext | null = null;
@@ -142,34 +157,40 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
   if (error) return <div className="p-10"><ErrorNote error={error} /></div>;
 
   return (
-    <div className="flex h-[calc(100vh-88px)] min-h-[640px] flex-col">
-      <div className="flex flex-wrap items-center gap-3 border-b border-line bg-surface/60 px-4 py-2.5 sm:px-6">
-        <div className="mr-2">
-          <div className="text-[10.5px] font-semibold tracking-[0.18em] text-muted uppercase">Control Tower</div>
-          <div className="font-display text-lg leading-tight">PACT escrow, live</div>
+    <div className="pact-tower flex h-[calc(100vh-88px)] min-h-[640px] flex-col">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-3 border-b border-line bg-surface/70 px-4 py-3 backdrop-blur sm:px-6">
+        <div className="flex items-center gap-3">
+          <div>
+            <div className="text-[10.5px] font-semibold tracking-[0.18em] text-muted uppercase">Control Tower</div>
+            <div className="font-display text-[19px] leading-tight">PACT escrow, live</div>
+          </div>
         </div>
-        <nav className="flex flex-wrap gap-1" aria-label="Dashboard pages">
+        <nav className="pact-tabs max-w-full overflow-x-auto" aria-label="Dashboard pages">
           {Object.entries(PAGE_TITLES).map(([id, t]) => (
-            <button key={id} onClick={() => goTo(id)} aria-current={pageId === id ? 'page' : undefined} className={cx('rounded-full px-3 py-1 text-[13px]', pageId === id ? 'bg-ink text-paper' : 'text-ink-2 hover:bg-paper-2')}>
+            <button key={id} onClick={() => goTo(id)} aria-current={pageId === id ? 'page' : undefined} className="pact-tab">
+              {PAGE_ICONS[id]}
               {t}
             </button>
           ))}
         </nav>
         <div className="ml-auto flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 text-[12px] text-muted">
+          <span className="inline-flex h-7 items-center gap-1.5 rounded-full border border-line-2 bg-paper/60 px-3 text-[12px] text-muted tabular-nums" title="Last update from the PACT API's live feed">
             <span className={cx('size-1.5 rounded-full', live ? 'animate-pulse bg-released' : 'bg-void')} />
-            {live ? 'live' : 'offline'} · {dash ? new Date(dash.asOf).toLocaleTimeString() : '—'}
+            {live ? 'Live' : 'Offline'} · {dash ? new Date(dash.asOf).toLocaleTimeString('en-GB') : '—'}
           </span>
           <ChainBadge />
           {dash?.paymentMode === 'simulated' && <Badge tone="held">SIMULATED PayPal</Badge>}
           {dash?.llmMode === 'replay' && <Badge tone="held">Replay: recorded responses</Badge>}
           {!licenseKey && <Badge tone="neutral">No AG Studio licence (watermark)</Badge>}
+          <span className="mx-1 hidden h-6 w-px bg-line sm:block" aria-hidden />
           {aiEnabled && mode === 'view' && (
             <Button size="sm" onClick={askAuditor}>
+              {SPARK}
               Ask the PACT Auditor
             </Button>
           )}
           <Button size="sm" variant={mode === 'edit' ? 'primary' : 'secondary'} onClick={() => setMode((m) => (m === 'edit' ? 'view' : 'edit'))} aria-pressed={mode === 'edit'}>
+            {mode === 'edit' ? null : PENCIL}
             {mode === 'edit' ? 'Done editing' : 'Edit layout'}
           </Button>
           {mode === 'edit' && (
@@ -199,11 +220,14 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
       </div>
       <div className="relative min-h-0 flex-1">
         {!data || !context ? (
-          <div className="grid grid-cols-3 gap-4 p-6">
-            <Skeleton className="h-48" />
-            <Skeleton className="h-48" />
-            <Skeleton className="h-48" />
-            <Skeleton className="col-span-3 h-56" />
+          <div className="grid grid-cols-4 gap-[18px] p-[27px]">
+            <Skeleton className="h-[126px] rounded-2xl" />
+            <Skeleton className="h-[126px] rounded-2xl" />
+            <Skeleton className="h-[126px] rounded-2xl" />
+            <Skeleton className="h-[126px] rounded-2xl" />
+            <Skeleton className="col-span-2 h-64 rounded-2xl" />
+            <Skeleton className="col-span-2 h-64 rounded-2xl" />
+            <Skeleton className="col-span-4 h-72 rounded-2xl" />
           </div>
         ) : (
           <AgStudioProvider licenseKey={licenseKey} modules={modules}>

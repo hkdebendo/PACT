@@ -56,7 +56,7 @@ export function ChainBadge({ className }: { className?: string }) {
   const { data, reload } = useLive<ChainStatus>('/api/audit/verify', (e) => e.type === 'audit.appended');
   if (!data) return <Badge className={className}>verifying chain…</Badge>;
   return (
-    <button onClick={reload} title={`Recomputed ${data.count} SHA-256 links at ${new Date(data.verifiedAt).toLocaleTimeString()}. Click to verify again.`} className={cx('inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium', data.ok ? 'bg-released-soft text-released' : 'bg-refund-soft text-refund', className)}>
+    <button onClick={reload} title={`Recomputed ${data.count} SHA-256 links at ${new Date(data.verifiedAt).toLocaleTimeString()}. Click to verify again.`} className={cx('inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium whitespace-nowrap', data.ok ? 'bg-released-soft text-released' : 'bg-refund-soft text-refund', className)}>
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" aria-hidden>
         {data.ok ? <path d="M5 12l4 4 10-10" /> : <path d="M6 6l12 12M18 6L6 18" />}
       </svg>

@@ -32,11 +32,13 @@ Legend: ✅ built and verified by running it · 🟡 partly verified
 - ✅ **Tier 6** — docs, screenshots in README, OpenAPI/Postman, e2e, Devpost text updated with verified results.
 
 ## Remaining
+0. **PACT Auditor replay must be re-recorded**: the 2026-11-08 Control Tower redesign changed the page layout and the widget catalogue, which are part of the Auditor's prompts, so the recorded answers in fixtures/llm-cache/studio/ no longer match (live mode is unaffected). Needs one live run of the three prompt starters (a few cents of Muse usage), then a replay check.
 1. Reauthorization check on/after 2026-11-10 (see above), record in docs/SANDBOX_LIMITATIONS.md.
 2. Stretch: custom runner/harness variant for the PACT Auditor (AG Studio "swapped harness").
 3. Vincent: record the video; submit on Devpost. (Rights on order_wrong_item.jpg confirmed 2026-11-08.)
 
 ## Log
+- 2026-11-08 evening: Control Tower redesign for the AG Grid prize. Custom widgets get real inner padding (Studio's studioWidgetPadding is the gap between cards, not padding) and container-query layouts; new PACT KPI Tile widget (8 metrics, sparkline, 24h delta, metric picker in Studio's edit form); Studio charts used properly (stacked column with legendKey, donuts with legend right + total, button filter); PACT AG Grid theme (aligned padding, centred cells, avatars, sparklines with delta); segmented page tabs with icons; canvas min width 1080 so edit mode scrolls instead of squeezing; AG Grid tooltipField deprecation fixed; mobile nav/act-as/audit header fixed. Typecheck, lint, 48 tests green; screenshots reviewed light/dark/mobile.
 - 2026-11-07 01:45–02:30: void + Payouts verified live, party merge + reputation trends, replay verified in both modes, README screenshots, clean-clone test (no keys) passed, .env.example defaults to replay, Devpost text updated, reauth authorization created.
 - 2026-11-06 23:00 → 2026-11-07 01:45: real photos, prompt fixes (evidence-checkable criteria, marking location), full real-sandbox scenario by agents, race fix, robust PayPal checkout automation, replay made run-independent (ids/hashes/mode), e2e green, control-tower dynamic.
 - 2026-11-06 19:00–21:00: install fixed (cache filled tarball by tarball + offline install), live PayPal/Muse probes, first green test run, real sandbox money flow, Studio + PACT Auditor working with Muse, MCP agents scenario working.
