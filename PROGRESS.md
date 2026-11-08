@@ -34,7 +34,7 @@ Legend: ✅ built and verified by running it · 🟡 partly verified
 ## Remaining
 1. Reauthorization check on/after 2026-11-10 (see above), record in docs/SANDBOX_LIMITATIONS.md.
 2. Stretch: custom runner/harness variant for the PACT Auditor (AG Studio "swapped harness").
-3. Vincent: confirm rights on order_wrong_item.jpg; record the video; submit on Devpost.
+3. Vincent: record the video; submit on Devpost. (Rights on order_wrong_item.jpg confirmed 2026-11-08.)
 
 ## Log
 - 2026-11-07 01:45–02:30: void + Payouts verified live, party merge + reputation trends, replay verified in both modes, README screenshots, clean-clone test (no keys) passed, .env.example defaults to replay, Devpost text updated, reauth authorization created.
