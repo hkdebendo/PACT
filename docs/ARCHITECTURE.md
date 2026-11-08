@@ -3,7 +3,7 @@
 ```
                   ┌──────────────────────────── apps/web (Next.js 16) ─────────────────────────────┐
   human  ───────▶ │ landing · pact composer · pact room · admin                                     │
-  browser         │ Control Tower = AG Studio + 9 PACT widgets + PACT Auditor (Agent Framework)     │
+  browser         │ Control Tower = AG Studio + 11 PACT widgets + PACT Auditor & Sentinel agents    │
                   │      │ REST + SSE                       │ /api/ai/responses (Muse proxy, replay) │
                   └──────┼──────────────────────────────────┼────────────────────────────────────────┘
                          ▼                                  ▼
@@ -63,9 +63,15 @@ Amounts are integers in minor units. Milestone amounts are split with the remain
 
 The Control Tower is a single Studio instance with sync data sources from `GET /api/dashboard` (PACT's ledger) and `GET /api/reconciliation` (PayPal). Live updates: the browser keeps one SSE connection; each event triggers a refetch and the new rows are passed to Studio's `data` prop (Studio's sync-data reload; structure is fixed at init). Custom widgets read fields from `widgetApi.getSchema()` and use `getData` with `onDataUpdated`, so they respect page filters and cross-filters. The Pact Ledger widget implements drill-through with Studio's own cross-filter (`toggleCrossFilter` multi-value on `pacts.id`); double-click opens the pact room.
 
+**Look and layout.** One PACT theme drives everything: `studioTheme.withParams` with a light and a dark mode whose parameters point at the CSS design tokens of the app shell, so Studio's chrome, its grids and charts (palette, tooltips, axis colours) and PACT's own widgets change together. PACT's grid widgets use `studioGridTheme.withParams` (cell padding aligned with widget titles, centred cells, quiet separators). Custom widgets are CSS size containers: their layout adapts to the width the user drags them to on the canvas (container queries), and the canvas has a minimum width so edit mode scrolls rather than squeezes. Five pages mix PACT widgets with Studio's own (stacked columns split with `legendKey`, donuts with a right legend and total, bar charts, a button filter).
+
+**Custom widgets (11):** KPI Tile (8 metrics, growth sparkline, 24 h delta, metric picker added to Studio's edit form), Escrow Vault, Dispute & Refund Gauges, Verdict Card (pager, appeal action), Milestone Timeline, Money Flow (Sankey), Pact Ledger (drill-through), Reputation Leaderboard (AG Grid, avatars, trend sparklines), PayPal Reconciliation (AG Grid), Refused Milestones (AG Grid) and the Anomaly Radar (PACT Sentinel).
+
 The Sankey is drawn in SVG by PACT: AG Charts' Sankey series is an AG Charts Enterprise feature that requires its own licence inside a custom widget.
 
 The **PACT Auditor** is a custom primary agent registered with `createAiHarness`, run by `directLlmRunner` with the OpenAI Responses adapter from the Studio docs, pointed at PACT's server proxy which forwards to Meta's `/v1/responses` (non-streaming upstream, re-emitted as Responses SSE events). It has six PACT tools defined with `api.defineAiTool` and delegates dashboard edits to Studio's built-in `planning`, `data`, `page` and `widget` agents via `tools.delegateTo`. Its instructions are rebuilt every run from live PACT context and `api.getAiContext().schema()`.
+
+The **PACT Sentinel** is a second agent whose loop is PACT's own, plugged in with `clientToolRunner`: a deterministic rules engine on the API decides what is anomalous, Muse writes the briefing, and Studio executes the tools the Sentinel asks for: a PACT tool that pins the finding on the Anomaly Radar and places a chart, then `delegate_to` Studio's built-in Widget agent (with its typed `widgetType` / `widgetId` / `pageId` params) to configure that chart. The Auditor delegates risk questions to the Sentinel; the Sentinel ends delegated runs with `complete_task`. Details: [SENTINEL.md](SENTINEL.md).
 
 ## Limitations (honest list)
 

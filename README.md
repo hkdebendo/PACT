@@ -25,12 +25,23 @@ An agent that pays another agent, a freelancer or a seller on a chat app pays bl
 7. **Reputation** with Bayesian smoothing (new sellers start at the prior, not at zero). [docs/REPUTATION.md](docs/REPUTATION.md)
 8. **Audit**: append-only SHA-256 hash chain of every state change and AI decision, with a verify endpoint and a "chain verified" badge.
 9. **Real-time** everywhere via Server-Sent Events.
+10. **PACT Sentinel**: nine deterministic anomaly rules (refund spikes, seller refund concentration, repeated rejections, low-confidence releases, expiring authorizations, …), an Anomaly Radar widget, and an agent with its own loop inside AG Studio's Agent Framework. [docs/SENTINEL.md](docs/SENTINEL.md)
+
+## The Control Tower (AG Studio)
+
+- **One theme, two modes.** The PACT theme is built with Studio's theming API from the same design tokens as the rest of the app; PACT's grid widgets get a matching AG Grid theme.
+- **Eleven custom widgets** (KPI Tile, Escrow Vault, Gauges, Verdict Card, Milestone Timeline, Money Flow Sankey, Pact Ledger, Reputation Leaderboard, PayPal Reconciliation, Refused Milestones, Anomaly Radar). Each one adapts its layout to the size it is given on the canvas, and reads Studio's data API, so page filters and cross-filters apply.
+- **Studio's own widgets** mixed in: stacked columns, donuts, bar charts and a button filter, across five pages.
+- **Layout tools.** Edit mode with Studio's Compose and Data panels, saved layouts, reset, and a KPI Tile whose metric is picked in Studio's edit form.
+- **Three agents in one conversation.** The PACT Auditor (custom LLM agent with PACT tools) delegates to Studio's built-in agents and to the PACT Sentinel (custom agent with its own loop, `clientToolRunner`), which in turn delegates chart configuration to Studio's Widget agent.
 
 ## Screenshots
 
 | The PACT Control Tower (AG Studio, live) | The PACT Auditor explains a refusal and adds a widget |
 |---|---|
 | ![Control Tower](docs/screenshots/control-tower.png) | ![PACT Auditor](docs/screenshots/auditor.png) |
+| **PACT Sentinel**: the Auditor hands off, the finding is pinned on the Anomaly Radar and Studio's Widget agent builds the chart | **Admin**: Muse usage and cost, jobs, PayPal calls |
+| ![PACT Sentinel](docs/screenshots/sentinel.png) | ![Admin](docs/screenshots/admin.png) |
 | **Dark mode** (PACT theme, Studio theme modes) | **Mobile** |
 | ![Dark mode](docs/screenshots/control-tower-dark.png) | ![Mobile](docs/screenshots/mobile-pacts.png) |
 | **Reputation leaderboard** (custom AG Grid widget, sparklines) | **Write a deal, Muse drafts the contract** |
@@ -85,7 +96,8 @@ Open **http://localhost:3000** → *Control Tower* to watch it live, or *New pac
 | Demo scenario (`npm run demo`) | ✅ simulated, labelled | ✅ recorded answers | ✅ |
 | New free-text deals / your own photos | ✅ | ❌ (clear "replay mode" message; you can still fill a contract by hand) | ✅ |
 | Real PayPal sandbox money movements | ❌ | ✅ | ✅ |
-| Control Tower + PACT Auditor chat | ✅ | ✅ suggested prompts only | ✅ with watermark |
+| Control Tower + PACT Auditor / Sentinel chat | ✅ | ✅ suggested prompts only | ✅ with watermark |
+| Anomaly Radar (Sentinel rules) | ✅ | ✅ (rules need no model; briefing replayed) | ✅ with watermark |
 
 ## Environment variables
 

@@ -172,7 +172,7 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
 
   return (
     <div className="pact-tower flex h-[calc(100vh-88px)] min-h-[640px] flex-col">
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-3 border-b border-line bg-surface/70 px-4 py-3 backdrop-blur sm:px-6">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-b border-line bg-surface/70 px-4 py-3 backdrop-blur sm:px-6">
         <div className="flex items-center gap-3">
           <div>
             <div className="text-[10.5px] font-semibold tracking-[0.18em] text-muted uppercase">Control Tower</div>
@@ -188,10 +188,8 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
           ))}
         </nav>
         <div className="ml-auto flex flex-wrap items-center gap-2">
-          <span className="inline-flex h-7 items-center gap-1.5 rounded-full border border-line-2 bg-paper/60 px-3 text-[12px] text-muted tabular-nums" title="Last update from the PACT API's live feed">
-            <span className={cx('size-1.5 rounded-full', live ? 'animate-pulse bg-released' : 'bg-void')} />
-            {live ? 'Live' : 'Offline'} · {dash ? new Date(dash.asOf).toLocaleTimeString('en-GB') : '—'}
-          </span>
+          {/* The live-feed state is in the global mode banner; only an outage is repeated here. */}
+          {!live && <Badge tone="void">Live feed offline</Badge>}
           <ChainBadge />
           {risk && (
             <button

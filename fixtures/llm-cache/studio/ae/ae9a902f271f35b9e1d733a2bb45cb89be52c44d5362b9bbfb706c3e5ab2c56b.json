@@ -1,0 +1,1944 @@
+{
+  "role": "studio.pact-auditor",
+  "model": "muse-spark-1.3",
+  "output": {
+    "top_logprobs": 0,
+    "temperature": 1,
+    "top_p": 1,
+    "service_tier": "default",
+    "model": "muse-spark-1.3",
+    "reasoning": {
+      "effort": "medium"
+    },
+    "background": false,
+    "text": {
+      "format": {
+        "type": "text"
+      }
+    },
+    "tools": [
+      {
+        "type": "function",
+        "name": "view_schema",
+        "description": "View the available data schema - fieldsets and their fields with types. Always call this before creating widgets or writing queries so you know which field IDs exist.",
+        "parameters": {
+          "required": [],
+          "properties": {},
+          "type": "object",
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "view_page",
+        "description": "View the current page state: widget positions, page layout config, active page filters, layout/filter issues, and per-widget health summaries.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false,
+          "required": []
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "view_plan",
+        "description": "View the current plan with status annotations, or null if no plan exists.",
+        "parameters": {
+          "properties": {},
+          "type": "object",
+          "required": [],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "add_page_filter",
+        "description": "Add a single page-level filter (appended to the page filter list).\nSupports comparison, text, set (isIn), null/blank, relative-date (inRelativeRange), and rank\noperators - see the field type for the available set. For a top/bottom-N filter, use operator \"rank\"\non the numeric field to rank by, with value [topN, bottomN] (null for the unused bound).",
+        "parameters": {
+          "properties": {
+            "op": {
+              "enum": [
+                "append"
+              ],
+              "type": "string"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "field": {
+                      "$ref": "#/$defs/FieldNumberNoAgg"
+                    },
+                    "model": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNull"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotNull"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isUndefined"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotUndefined"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isBlank"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotBlank"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNaN"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "equals"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "notEqual"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "greaterThan"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "greaterThanOrEqual"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "lessThan"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "lessThanOrEqual"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "between"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "items": {},
+                                  "maxItems": 2,
+                                  "minItems": 2,
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isIn"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "items": {},
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "rank"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "description": "Top/bottom bounds [topN, bottomN]: keeps the topN highest and/or bottomN lowest rows ranked by this field; null for the unused bound (top 10 = [10, null]).",
+                                  "items": {},
+                                  "maxItems": 2,
+                                  "minItems": 2,
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "conditions": {
+                              "items": {
+                                "anyOf": [
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {}
+                                ]
+                              },
+                              "type": "array"
+                            },
+                            "operator": {
+                              "enum": [
+                                "AND",
+                                "OR"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "operator",
+                            "conditions"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "view": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "expanded": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "viewTypeId": {
+                          "enum": [
+                            "simple",
+                            "selection",
+                            "rank",
+                            "relativeDate"
+                          ],
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "expanded",
+                        "viewTypeId"
+                      ],
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "field",
+                    "view",
+                    "model"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "field": {
+                      "$ref": "#/$defs/FieldStringNoAgg"
+                    },
+                    "model": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNull"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotNull"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isUndefined"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotUndefined"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isBlank"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotBlank"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "equals"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "notEqual"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "contains"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "notContains"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "startsWith"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "endsWith"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isIn"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "items": {},
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "conditions": {
+                              "items": {
+                                "anyOf": [
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {}
+                                ]
+                              },
+                              "type": "array"
+                            },
+                            "operator": {
+                              "enum": [
+                                "AND",
+                                "OR"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "operator",
+                            "conditions"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "view": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "expanded": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "viewTypeId": {
+                          "enum": [
+                            "simple",
+                            "selection",
+                            "rank",
+                            "relativeDate"
+                          ],
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "expanded",
+                        "viewTypeId"
+                      ],
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "field",
+                    "view",
+                    "model"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "field": {
+                      "$ref": "#/$defs/FieldDateNoAgg"
+                    },
+                    "model": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNull"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotNull"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isUndefined"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotUndefined"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isBlank"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotBlank"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "equals"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "notEqual"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "greaterThan"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "greaterThanOrEqual"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "lessThan"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "lessThanOrEqual"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "format": "date-time",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "between"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "items": {},
+                                  "maxItems": 2,
+                                  "minItems": 2,
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "inRelativeRange"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "includeToday": {},
+                                    "type": {},
+                                    "unit": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "type",
+                                    "value",
+                                    "unit",
+                                    "includeToday"
+                                  ],
+                                  "type": "object"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isIn"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "items": {},
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "conditions": {
+                              "items": {
+                                "anyOf": [
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {}
+                                ]
+                              },
+                              "type": "array"
+                            },
+                            "operator": {
+                              "enum": [
+                                "AND",
+                                "OR"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "operator",
+                            "conditions"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "view": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "expanded": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "viewTypeId": {
+                          "enum": [
+                            "simple",
+                            "selection",
+                            "rank",
+                            "relativeDate"
+                          ],
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "expanded",
+                        "viewTypeId"
+                      ],
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "field",
+                    "view",
+                    "model"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "field": {
+                      "$ref": "#/$defs/FieldBooleanNoAgg"
+                    },
+                    "model": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNull"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotNull"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isUndefined"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotUndefined"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isBlank"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isNotBlank"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isTrue"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isFalse"
+                                  ],
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "operator"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "equals"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "notEqual"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "operator": {
+                                  "enum": [
+                                    "isIn"
+                                  ],
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "items": {},
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "value"
+                              ],
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "conditions": {
+                              "items": {
+                                "anyOf": [
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {}
+                                ]
+                              },
+                              "type": "array"
+                            },
+                            "operator": {
+                              "enum": [
+                                "AND",
+                                "OR"
+                              ],
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "operator",
+                            "conditions"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "view": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "expanded": {
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "viewTypeId": {
+                          "enum": [
+                            "simple",
+                            "selection",
+                            "rank",
+                            "relativeDate"
+                          ],
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "expanded",
+                        "viewTypeId"
+                      ],
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "field",
+                    "view",
+                    "model"
+                  ],
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          "required": [
+            "op",
+            "value"
+          ],
+          "type": "object",
+          "$defs": {
+            "FieldBooleanNoAgg": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/FieldIdsBooleanRolesCategoryAggCountCountd"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "FieldDateNoAgg": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/FieldIdsDatetimeRolesCategoryNumericTemporalAggCountCountdFirstLast"
+                        },
+                        {
+                          "$ref": "#/$defs/FieldIdsDateRolesCategoryTemporalAggCountCountdFirstLast"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "FieldIdsBooleanRolesCategoryAggCountCountd": {
+              "enum": [
+                "paypalTransactions.matched",
+                "verdicts.refused"
+              ],
+              "type": "string"
+            },
+            "FieldIdsDateRolesCategoryTemporalAggCountCountdFirstLast": {
+              "enum": [
+                "milestones.deadline",
+                "pacts.deadline"
+              ],
+              "type": "string"
+            },
+            "FieldIdsDatetimeRolesCategoryNumericTemporalAggCountCountdFirstLast": {
+              "enum": [
+                "milestones.releasedAt",
+                "pacts.createdAt",
+                "payments.createdAt",
+                "paypalTransactions.date",
+                "verdicts.createdAt"
+              ],
+              "type": "string"
+            },
+            "FieldIdsNumberMeasureRolesNumericAggAvgCountCountdFirstLastMaxMinSum": {
+              "enum": [
+                "refundShare",
+                "releaseRate"
+              ],
+              "type": "string"
+            },
+            "FieldIdsNumberRolesCategoryAggCountCountdFirstLastMaxMin": {
+              "enum": [
+                "calendar::day",
+                "calendar::month",
+                "calendar::week",
+                "calendar::year"
+              ],
+              "type": "string"
+            },
+            "FieldIdsNumberRolesCategoryNumericAggAvgCountCountdFirstLastMaxMinSum": {
+              "enum": [
+                "flows.value",
+                "milestones.amount",
+                "milestones.attempts",
+                "milestones.captured",
+                "milestones.evidenceCount",
+                "milestones.lastConfidence",
+                "milestones.percent",
+                "milestones.position",
+                "milestones.refunded",
+                "pacts.held",
+                "pacts.milestones",
+                "pacts.milestonesDone",
+                "pacts.refunded",
+                "pacts.released",
+                "pacts.total",
+                "pacts.voided",
+                "payments.amount",
+                "paypalTransactions.amount",
+                "paypalTransactions.fee",
+                "reputation.completionRate",
+                "reputation.confidence",
+                "reputation.disputeRate",
+                "reputation.milestones",
+                "reputation.onTimeRate",
+                "reputation.refundRate",
+                "reputation.score",
+                "verdicts.confidence",
+                "verdicts.precheckFailures"
+              ],
+              "type": "string"
+            },
+            "FieldIdsStringRolesCategoryAggCountCountdFirstLast": {
+              "enum": [
+                "flows.source",
+                "flows.target",
+                "milestones.key",
+                "milestones.lastVerdict",
+                "milestones.milestoneId",
+                "milestones.pactId",
+                "milestones.pactTitle",
+                "milestones.seller",
+                "milestones.status",
+                "milestones.thumbnailUrl",
+                "milestones.title",
+                "pacts.buyer",
+                "pacts.buyerId",
+                "pacts.currency",
+                "pacts.id",
+                "pacts.paymentMode",
+                "pacts.seller",
+                "pacts.sellerId",
+                "pacts.status",
+                "pacts.title",
+                "payments.currency",
+                "payments.id",
+                "payments.kind",
+                "payments.milestoneKey",
+                "payments.mode",
+                "payments.pactId",
+                "payments.paypalId",
+                "payments.status",
+                "paypalTransactions.counterparty",
+                "paypalTransactions.currency",
+                "paypalTransactions.eventCode",
+                "paypalTransactions.id",
+                "paypalTransactions.note",
+                "paypalTransactions.pactId",
+                "paypalTransactions.pactKind",
+                "paypalTransactions.status",
+                "reputation.kind",
+                "reputation.name",
+                "reputation.partyId",
+                "reputation.tier",
+                "reputation.trend",
+                "verdicts.appealStatus",
+                "verdicts.id",
+                "verdicts.kind",
+                "verdicts.llmMode",
+                "verdicts.milestoneKey",
+                "verdicts.milestoneTitle",
+                "verdicts.model",
+                "verdicts.pactId",
+                "verdicts.pactTitle",
+                "verdicts.reasoning",
+                "verdicts.seller",
+                "verdicts.status"
+              ],
+              "type": "string"
+            },
+            "FieldNumberNoAgg": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/$defs/FieldIdsNumberRolesCategoryNumericAggAvgCountCountdFirstLastMaxMinSum"
+                        },
+                        {
+                          "$ref": "#/$defs/FieldIdsNumberMeasureRolesNumericAggAvgCountCountdFirstLastMaxMinSum"
+                        },
+                        {
+                          "$ref": "#/$defs/FieldIdsNumberRolesCategoryAggCountCountdFirstLastMaxMin"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "FieldStringNoAgg": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "$ref": "#/$defs/FieldIdsStringRolesCategoryAggCountCountdFirstLast"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "strict": false
+      },
+      {
+        "type": "function",
+        "name": "remove_page_filter",
+        "description": "Remove a page filter by its index in the page's filter list (0-based). Call view_page first to see the current filters and their order.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "number"
+            },
+            "op": {
+              "enum": [
+                "remove"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "index"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "add_widget",
+        "description": "Add a widget to the grid. Position is 0-indexed.",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "pact-kpi",
+                "pact-sentinel-radar",
+                "pact-escrow-vault",
+                "pact-milestone-timeline",
+                "pact-verdict-card",
+                "pact-reputation-leaderboard",
+                "pact-money-flow",
+                "pact-rate-gauges",
+                "pact-ledger",
+                "pact-reconciliation",
+                "pact-refused-list",
+                "column-chart-grouped",
+                "column-chart-stacked",
+                "column-chart-stacked-100",
+                "bar-chart-grouped",
+                "bar-chart-stacked",
+                "bar-chart-stacked-100",
+                "line-chart",
+                "area-chart",
+                "area-chart-stacked",
+                "area-chart-stacked-100",
+                "value",
+                "radial-gauge",
+                "linear-gauge",
+                "scatter-chart",
+                "bubble-chart",
+                "grid",
+                "pivot-grid",
+                "radar-line-chart",
+                "radar-area-chart",
+                "radial-column-chart",
+                "nightingale-chart",
+                "radial-bar-chart",
+                "pie-chart",
+                "donut-chart",
+                "funnel-chart",
+                "cone-funnel-chart",
+                "pyramid-chart",
+                "treemap-chart",
+                "sunburst-chart",
+                "text",
+                "image",
+                "button-filter",
+                "list-filter",
+                "date-filter",
+                "combo-chart-grouped-column-line",
+                "combo-chart-stacked-column-line"
+              ],
+              "type": "string"
+            },
+            "widgetId": {
+              "type": "string"
+            },
+            "xSpan": {
+              "type": "number"
+            },
+            "xTrack": {
+              "type": "number"
+            },
+            "ySpan": {
+              "type": "number"
+            },
+            "yTrack": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "widgetId",
+            "type",
+            "xTrack",
+            "yTrack",
+            "xSpan",
+            "ySpan"
+          ],
+          "type": "object"
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "position_widget",
+        "description": "Move and/or resize a widget on the grid. All position fields are optional - omitted fields preserve current values. 0-indexed.",
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "op",
+            "value",
+            "widgetId"
+          ],
+          "properties": {
+            "op": {
+              "enum": [
+                "patch"
+              ],
+              "type": "string"
+            },
+            "value": {
+              "additionalProperties": false,
+              "properties": {
+                "xSpan": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "xTrack": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "ySpan": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "yTrack": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "xTrack",
+                "yTrack",
+                "xSpan",
+                "ySpan"
+              ],
+              "type": "object"
+            },
+            "widgetId": {
+              "enum": [
+                "board",
+                "score-chart"
+              ],
+              "type": "string"
+            }
+          }
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "remove_widget",
+        "description": "Permanently remove a widget from the page.",
+        "parameters": {
+          "additionalProperties": false,
+          "required": [
+            "widgetId"
+          ],
+          "type": "object",
+          "properties": {
+            "widgetId": {
+              "enum": [
+                "board",
+                "score-chart"
+              ],
+              "type": "string"
+            }
+          }
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "complete_task",
+        "description": "Call this tool when you have completed your task or need to report results. You MUST call this tool to signal completion - do not respond with text alone.",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "artifacts": {
+              "description": "Artifacts created by tool calls. Use [] if none.",
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "description"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "summary": {
+              "description": "Detailed summary of findings and what was achieved. This is passed back to the requesting agent.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "summary",
+            "artifacts"
+          ],
+          "type": "object"
+        },
+        "strict": true
+      }
+    ],
+    "tool_choice": "auto",
+    "truncation": "disabled",
+    "id": "resp_6af0d2d27dc4a403cd904a2c",
+    "object": "response",
+    "status": "completed",
+    "created_at": 1794167506,
+    "completed_at": 1794167506,
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "rs_6af0d2d27dc4a403cd904a2c:rs_539be6ae-557d-4f15-b395-8994e8afe51b",
+        "summary": [],
+        "status": "completed"
+      },
+      {
+        "type": "message",
+        "id": "rs_8552e9f9-0215-4047-8180-f9bc17633f5e",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Placing your Reputation by party bar chart below the current widgets.",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "phase": "commentary",
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "fc_d33183dd-2a08-4475-b47d-8256520961ce",
+        "call_id": "call_d33183dd-2a08-4475-b47d-8256520961ce",
+        "name": "add_widget",
+        "arguments": "{\"type\":\"bar-chart-grouped\",\"widgetId\":\"reputation-by-party\",\"xSpan\":24.0,\"xTrack\":0.0,\"ySpan\":25.0,\"yTrack\":30.0}",
+        "status": "completed"
+      }
+    ],
+    "instructions": "You are the page manager. You create, position, arrange, and remove widgets on the grid,\nand manage page-level filters. You know nothing about data - you work purely with\nwidget types, IDs, grid positions, and filters.\n\nYou work on one page, reputation, and every tool you have acts on it. There is no page to\nchoose and no way to reach another one, so nothing you call takes a page.\nReport the page id (reputation) in your completion summary, so the Orchestrator can hand it to the Widget agents.\n\nYou cannot inspect or change a widget's internal configuration (data mappings, formatting,\ntitles). For modify entries in the plan, your only job is repositioning or resizing the\nwidget per the new layout - config changes are someone else's problem; you don't need to\ncoordinate with the Widget agent.\n\n## Data Overview\nPACT escrow ledger. A pact is a deal between a buyer and a seller; PayPal holds the money (authorization) and PACT releases it milestone by milestone after an AI Verifier approves evidence. Verdicts are AI or human decisions: verifier (approved / rejected / needs_more), arbiter (release / partial / refund), human (appeal review). \"refused\" means rejected or refunded. Money is in USD major units.\n\n## Tables\n\n### Pacts\nOne row per pact. held = still authorized, released = captured to the seller net of refunds, refunded = returned after capture, voided = authorization released without charging.\nRelationships: milestones → pacts (many-to-one), verdicts → pacts (many-to-one), payments → pacts (many-to-one)\n\n### Milestones\nOne row per milestone of a pact (key = pactId:milestoneId).\nRelationships: milestones → pacts (many-to-one), verdicts → milestones (many-to-one)\n\n### Verdicts\nAI Verifier, AI Arbiter and human decisions. refused = rejected or refund.\nRelationships: verdicts → pacts (many-to-one), verdicts → milestones (many-to-one)\n\n### Payments\nPayPal operations recorded by PACT: order, authorization, capture, refund, void, reauthorization, payout.\nRelationships: payments → pacts (many-to-one)\n\n### Reputation\nBayesian-smoothed reputation per party (score 0-100). trend = past scores, comma-separated.\n\n### Money Flows\nWhere escrowed money went: source → target, value in USD.\n\n### PayPal Transactions\nPayPal Transaction Search, last 30 days (activity can take up to 3 hours to appear). matched = PACT knows this PayPal id.\n\n### Calendar\n\nThe above frames what's in the data. You'll occasionally need exact field IDs when adding page filters - call view_schema to look them up. You don't need it for layout work.\n\n## Loading Page State\nCall `view_page` to see current widgets, their positions, active page filters, and grid dimensions. Do this at the start of any task - you can't place or position widgets without knowing the grid. The response shape:\n\n- `widgets`: existing widget IDs and their `xTrack`/`yTrack`/`xSpan`/`ySpan`\n- `pageLayout`: `{ columns, rowHeight, widgetPadding }` - the grid configuration\n- `filters`: active page filters with their IDs (needed for `remove_page_filter`)\n- `issues`: layout problems flagged by the system\n\n## Widget Sizing\n# Widget Catalogue\n\n## pact-kpi\nOne PACT metric as a large number with its growth sparkline and the change over the last 24 hours. Set format.style.metric to one of: released, held, active, decisions, confidence, refused, precheck, chain.\n### Sizing\n- Minimum: 16% width × 17% height of viewport\n- Ideal: 23% width × 21% height of viewport\n\n## pact-sentinel-radar\nLive findings of the PACT Sentinel rules engine (refund spikes, seller refund concentration, repeated rejections, low-confidence releases, expiring PayPal authorizations, failed operations, open disputes, pending appeals, stalled funding): severity, metric vs baseline, money at stake and the affected pacts. format.style.focus = a rule id to pin first; format.style.headline = a one-line briefing.\n### Sizing\n- Minimum: 27% width × 42% height of viewport\n- Ideal: 48% width × 72% height of viewport\n\n## pact-escrow-vault\nTotals of money held by PayPal (authorized, not charged), released to sellers, refunded and voided, with animated transitions.\n### Sizing\n- Minimum: 23% width × 28% height of viewport\n- Ideal: 41% width × 36% height of viewport\n\n## pact-milestone-timeline\nPer pact, its milestones as steps coloured by state, with the latest evidence thumbnail and verifier confidence. Follows the page's cross-filter (one pact) or shows the most recent pacts.\n### Sizing\n- Minimum: 33% width × 28% height of viewport\n- Ideal: 70% width × 42% height of viewport\n\n## pact-verdict-card\nThe latest AI Verifier / Arbiter / human decision with its reasoning, confidence, model, audit-chain status and an \"Appeal to a human\" action.\n### Sizing\n- Minimum: 25% width × 31% height of viewport\n- Ideal: 41% width × 42% height of viewport\n\n## pact-reputation-leaderboard\nGrid of parties ranked by Bayesian-smoothed reputation score, with sparkline trend, tier and completion / on-time / dispute rates.\n### Sizing\n- Minimum: 33% width × 31% height of viewport\n- Ideal: 70% width × 47% height of viewport\n\n## pact-money-flow\nSankey diagram of escrowed money: buyers → PayPal authorization → sellers, subcontractor payouts, refunds, voided and still held.\n### Sizing\n- Minimum: 28% width × 33% height of viewport\n- Ideal: 55% width × 47% height of viewport\n\n## pact-rate-gauges\nThree gauges: dispute rate, refund rate and share of AI verdicts that were refusals.\n### Sizing\n- Minimum: 25% width × 22% height of viewport\n- Ideal: 41% width × 31% height of viewport\n\n## pact-ledger\nGrid of all pacts. Clicking a row cross-filters the page to that pact (drill-through); double-click opens the pact room.\n### Sizing\n- Minimum: 33% width × 28% height of viewport\n- Ideal: 70% width × 44% height of viewport\n\n## pact-reconciliation\nPayPal Transaction Search rows matched against PACT's ledger, with balances, an as-of timestamp and the 3-hour Transaction Search caveat.\n### Sizing\n- Minimum: 33% width × 33% height of viewport\n- Ideal: 70% width × 50% height of viewport\n\n## pact-refused-list\nEvery Verifier rejection and Arbiter refund in the last 7 days with the reasoning, confidence and appeal status.\n### Sizing\n- Minimum: 33% width × 28% height of viewport\n- Ideal: 70% width × 42% height of viewport\n\n## column-chart-grouped\nAdjacent vertical bars comparing multiple categories or series side by side.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## column-chart-stacked\nStacked vertical bars showing part-to-whole relationships across categories.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## column-chart-stacked-100\nStacked vertical bars normalised to 100% for comparing proportions across categories.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## bar-chart-grouped\nAdjacent horizontal bars for comparisons, especially with long category names.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## bar-chart-stacked\nStacked horizontal bars showing part-to-whole relationships.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## bar-chart-stacked-100\nStacked horizontal bars normalised to 100% for comparing proportions.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## line-chart\nLines connecting data points to show trends over time or continuous dimensions.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## area-chart\nFilled area beneath a line to emphasise magnitude of trends over time.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## area-chart-stacked\nStacked filled areas showing cumulative trends and part-to-whole over time.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## area-chart-stacked-100\nStacked areas normalised to 100% showing proportional trends over time.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## value\nSingle aggregated number displayed prominently. Use for KPIs, totals, and headline metrics.\n### Sizing\n- Minimum: 0% width × 0% height of viewport\n- Ideal: 16% width × 14% height of viewport\n\n## radial-gauge\nCircular dial showing a single value against a defined range. Use for progress or target tracking.\n### Sizing\n- Minimum: 8% width × 14% height of viewport\n- Ideal: 23% width × 42% height of viewport\n\n## linear-gauge\nHorizontal or vertical bar gauge showing a value against a range. Use for progress or threshold indicators.\n### Sizing\n- Minimum: 4% width × 7% height of viewport\n- Ideal: 23% width × 42% height of viewport\n\n## scatter-chart\nDots plotted on two axes to compare grouped data and show correlations.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## bubble-chart\nScatter plot with variable dot sizes adding a third data dimension.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## grid\nTabular data with sortable and filterable columns. Use for detailed data tables and row-level exploration.\n### Sizing\n- Minimum: 8% width × 14% height of viewport\n- Ideal: 23% width × 56% height of viewport\n\n## pivot-grid\nGrouped or pivoted table with row and column axes. Use for hierarchical drill-down and cross-tabulated summaries.\n### Sizing\n- Minimum: 16% width × 14% height of viewport\n- Ideal: 47% width × 56% height of viewport\n\n## radar-line-chart\nSpider/radar chart with lines for comparing multiple variables at once.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## radar-area-chart\nSpider/radar chart with filled areas to emphasise coverage across dimensions.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## radial-column-chart\nBars arranged in a circle, useful for cyclical or categorical data.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## nightingale-chart\nRose/Nightingale chart with variable-radius sectors to emphasise value differences.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## radial-bar-chart\nConcentric circular bars for compact category comparisons.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## pie-chart\nCircular chart divided into slices showing simple part-to-whole proportions.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## donut-chart\nPie chart with a hollow centre, allowing a central metric or label.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## funnel-chart\nStepped funnel showing conversion rates or sequential process stages.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## cone-funnel-chart\nSmooth-tapering funnel for conversion or sequential process visualisation.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## pyramid-chart\nTriangular chart for hierarchical or tiered data visualisation.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## treemap-chart\nNested rectangles showing a hierarchy of part-to-whole proportions, sized by value.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## sunburst-chart\nConcentric rings showing a hierarchy of part-to-whole proportions, sized by value.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## text\nStatic rich text content for titles, descriptions, or annotations. Always set format.style.text with the body content.\n### Sizing\n- Minimum: 0% width × 0% height of viewport\n- Ideal: 23% width × 14% height of viewport\n\n## image\nStatic image display for logos, backgrounds, or visual context.\n### Sizing\n- Minimum: 0% width × 0% height of viewport\n- Ideal: 16% width × 28% height of viewport\n\n## button-filter\nClickable toggle buttons for quick single or multi-value filtering.\n### Sizing\n- Minimum: 4% width × 2% height of viewport\n- Ideal: 16% width × 14% height of viewport\n\n## list-filter\nScrollable list for selecting one or more filter values from many options.\n### Sizing\n- Minimum: 4% width × 7% height of viewport\n- Ideal: 16% width × 14% height of viewport\n\n## date-filter\nDate picker for filtering by date range or specific dates.\n### Sizing\n- Minimum: 4% width × 2% height of viewport\n- Ideal: 16% width × 14% height of viewport\n\n## combo-chart-grouped-column-line\nAdjacent vertical bars comparing multiple categories or series side by side combined with lines connecting data points to show trends over time or continuous dimensions.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\n## combo-chart-stacked-column-line\nStacked vertical bars comparing multiple categories or series side by side combined with lines connecting data points to show trends over time or continuous dimensions.\n### Sizing\n- Minimum: 12% width × 21% height of viewport\n- Ideal: 31% width × 56% height of viewport\n\nEach widget type has a minimum and ideal size expressed as a percentage of the viewport. When placing widgets - especially without an upstream Planning agent - use these constraints to size sensibly. A widget below its minimum will be unreadable; well above its ideal usually wastes space.\n\n## Grid System\nRead grid dimensions from `pageLayout` in the `view_page` response:\n- `columns`: total column count (e.g. 24)\n- `rowHeight`: height of each row in pixels (e.g. 16px)\n- `widgetPadding`: padding between widgets in pixels\n- Position: `xTrack` (column), `yTrack` (row) - 0-indexed\n- Size: `xSpan` (width in columns), `ySpan` (height in rows)\n- For full dashboard layouts, use the full column width and enough rows to fill the visible viewport.\n\nIMPORTANT: A row in the layout tree doesn't correspond to a single grid row. Think of it as a horizontal band. A row of KPIs should probably be at least 6 grid rows high.\n\n## Interpreting Layout Trees\nWhen the plan includes a proportional layout tree, resolve it to grid coordinates:\n- The tree uses proportional integer units (ratios, not pixels)\n- Row children declare width (split the parent's width proportionally)\n- Column children declare height (split the parent's height proportionally)\n- Map the proportional ratios to the grid (use `columns` from `pageLayout`)\n\n### Rounding Rule\nProportional units rarely divide evenly into the grid. Resolve siblings left-to-right\n(or top-to-bottom for column children): round each to the nearest integer, then give\nthe *last* sibling whatever's left so the total matches the parent's size exactly.\nThis keeps the grid fully covered and avoids cumulative rounding error.\n\n### Worked Example\nGiven `pageLayout.columns = 24` and a target dashboard height of 54 rows (a value the agent picks based on dashboard scope - see `viewportRows` in `pageLayout` once available; until then, use a sensible default for full-page builds), and this layout tree:\n\n  root (column):\n    row height:1 → [w-kpi-1 width:1, w-kpi-2 width:1, w-kpi-3 width:1]\n    row height:3 → [w-chart width:2, w-table width:1]\n\n**Step 1 - Resolve row heights.** Total height units = 1 + 3 = 4.\nRow 1: round((1/4) × 54) = round(13.5) = 14 rows.\nRow 2 (last): 54 − 14 = 40 rows. Total: 14 + 40 = 54. ✓\n\n**Step 2 - Resolve row 1 widths.** Total width units = 1 + 1 + 1 = 3.\nEach widget: 24/3 = 8 columns.\n  w-kpi-1: xTrack:0  yTrack:0  xSpan:8  ySpan:14\n  w-kpi-2: xTrack:8  yTrack:0  xSpan:8  ySpan:14\n  w-kpi-3: xTrack:16 yTrack:0  xSpan:8  ySpan:14\n\n**Step 3 - Resolve row 2 widths.** Total width units = 2 + 1 = 3.\nw-chart: round(24 × (2/3)) = round(16) = 16 columns.\nw-table (last): 24 − 16 = 8 columns.\n  w-chart: xTrack:0  yTrack:14 xSpan:16 ySpan:40\n  w-table: xTrack:16 yTrack:14 xSpan:8  ySpan:40\n\n## Adding Widgets\nUse add_widget with widgetType, widgetId, xTrack, yTrack, xSpan, ySpan: creates an empty widget at the specified position. Call add_widget once per widget.\n\nReturn all created widget IDs in your summary so the Orchestrator can update the plan and delegate configuration to Widget agents.\n\nAfter placing or repositioning widgets, call view_page to verify the layout. Check the\nissues array for layout or filter health checks - if any can be improved (e.g. overlaps,\nmisalignment, thin gaps), adjust positions and re-check before completing.\n\n## Page-Level Filters\nUse add_page_filter to add individual page-level filters.\nUse remove_page_filter to remove page filters by ID.\nUse view_page to see active page filters with their IDs.\n\nEach filter targets a field and carries a `model` condition (or an AND/OR group). Operators by field type: all types support `isNull`/`isNotNull`/`isBlank`/`isNotBlank`/`isIn`; number supports `equals`/`notEqual`/`greaterThan`/`greaterThanOrEqual`/`lessThan`/`lessThanOrEqual`/`between`; string supports `equals`/`notEqual`/`contains`/`notContains`/`startsWith`/`endsWith`; date additionally supports `inRelativeRange` (a rolling window `{ type: \"last\" | \"next\" | \"this\", value?: number, unit: \"minute\" | \"hour\" | \"day\" | \"week\" | \"month\" | \"year\", includeToday?: boolean }`); boolean supports `isTrue`/`isFalse`. Prefer a relative-range date filter over hard-coded dates for rolling windows.\n\n## Rules\n- Be conservative: don't move existing widgets unless asked\n- High-importance widgets go near the top of the page\n- Group related widgets together\n\n## Referencing Widgets, Fields or Tables\nWhen mentioning widgets, fields or tables in your summaries, use these reference formats:\n- Widgets: @widget[widget_id] (e.g., @widget[abc123])\n- Fields: @field[field_id] (e.g., @field[revenue])\n- Tables: @table[table_id] (e.g., @table[orders])\n\n## Output\nKeep your completion summary concise - 3-4 sentences max.",
+    "usage": {
+      "input_tokens": 11354,
+      "input_tokens_details": {
+        "cached_tokens": 11249
+      },
+      "output_tokens": 1319,
+      "output_tokens_details": {
+        "reasoning_tokens": 1166
+      },
+      "total_tokens": 12673
+    },
+    "parallel_tool_calls": true,
+    "store": true,
+    "max_output_tokens": 16000
+  },
+  "recordedAt": "2026-11-08T19:51:47.601Z",
+  "prompt": "{\"input\":[{\"content\":[{\"text\":\"Add a chart of reputation by party (reputation score per party name) on this page. Use bar chart grouped by party showing reputation score, include all parties. Title it Reputation by party.\",\"type\":\"input_text\"}],\"role\":\"user\",\"status\":\"completed\",\"type\":\"message\"},{\"arguments\":\"{}\",\"call_id\":\"⟦run1⟧-preflight-0\",\"name\":\"view_page\",\"status\":\"completed\",\"type\":\"function_call\"},{\"call_id\":\"⟦run1⟧-preflight-0\",\"output\":\"{\\\"success\\\":true,\\\"response\\\":\\\"Found 2 widget(s) in layout. Health checks need the page on screen, and this is not the page being viewed, so there are none to report.\\\",\\\"data\\\":{\\\"widgets\\\":{\\\"board\\\":{\\\"xTrack\\\":0,\\\"yTrack\\\":0,\\\"xSpan\\\":16,\\\"ySpan\\\":30,\\\"widgetType\\\":\\\"pact-reputation-leaderboard\\\",\\\"issues\\\":[]},\\\"score-chart\\\":{\\\"xTrack\\\":16,\\\"yTrack\\\":0,\\\"xSpan\\\":8,\\\"ySpan\\\":30,\\\"widgetType\\\":\\\"bar-chart-grouped\\\",\\\"issues\\\":[]}},\\\"pageLayout\\\":{},\\\"filters\\\":[],\\\"issues\\\":[]}}\",\"status\":\"completed\",\"type\":\"function_call_output\"},{\"arguments\":\"{}\",\"call_id\":\"⟦run1⟧-preflight-1\",\"name\":\"view_plan\",\"status\":\"completed\",\"type\":\"function_call\"},{\"call_id\":\"⟦run1⟧-preflight-1\",\"output\":\"{\\\"success\\\":true,\\\"response\\\":\\\"No plan.\\\",\\\"data\\\":{\\\"plan\\\":null}}\",\"status\":\"completed\",\"type\":\"function_call_output\"}],\"instructions\":\"You are the page manager. You create, position, arrange, and remove widgets on the grid,\\nand manage page-level filters. You know nothing about data - you work purely with\\nwidget types, IDs, grid positions, and filters.\\n\\nYou work on one page, reputation, and every tool you have acts on it. There is no page to\\nchoose and no way to reach another one, so nothing you call takes a page.\\nReport the page id (reputation) in your completion summary, so the Orchestrator can hand it to the Widget agents.\\n\\nYou cannot inspect or change a widget's internal configuration (data mappings, formatting,\\ntitles). For modify entries in the plan, your only job is repositioning or resizing the\\nwidget per the new layout - config changes are someone else's problem; you don't need to\\ncoordinate with the Widget agent.\\n\\n## Data Overview\\nPACT escrow ledger. A pact is a deal between a buyer and a seller; PayPal holds the money (authorization) and PACT releases it milestone by milestone after an AI Verifier approves evidence. Verdicts are AI or human decisions: verifier (approved / rejected / needs_more), arbiter (release / partial / refund), human (appeal review). \\\"refused\\\" means rejected or refunded. Money is in USD major units.\\n\\n## Tables\\n\\n### Pacts\\nOne row per pact. held = still authorized, released = captured to the seller net of refunds, refunded = returned after capture, voided = authorization released without charging.\\nRelationships: milestones → pacts (many-to-one), verdicts → pacts (many-to-one), payments → pacts (many-to-one)\\n\\n### Milestones\\nOne row per milestone of a pact (key = pactId:milestoneId).\\nRelationships: milestones → pacts (many-to-one), verdicts → milestones (many-to-one)\\n\\n### Verdicts\\nAI Verifier, AI Arbiter and human decisions. refused = rejected or refund.\\nRelationships: verdicts → pacts (many-to-one), verdicts → milestones (many-to-one)\\n\\n### Payments\\nPayPal operations recorded by PACT: order, authorization, capture, refund, void, reauthorization, payout.\\nRelationships: payments → pacts (many-to-one)\\n\\n### Reputation\\nBayesian-smoothed reputation per party (score 0-100). trend = past scores, comma-separated.\\n\\n### Money Flows\\nWhere escrowed money went: source → target, value in USD.\\n\\n### PayPal Transactions\\nPayPal Transaction Search, last 30 days (activity can take up to 3 hours to appear). matched = PACT knows this PayPal id.\\n\\n### Calendar\\n\\nThe above frames what's in the data. You'll occasionally need exact field IDs when adding page filters - call view_schema to look them up. You don't need it for layout work.\\n\\n## Loading Page State\\nCall `view_page` to see current widgets, their positions, active page filters, and grid dimensions. Do this at the start of any task - you can't place or position widgets without knowing the grid. The response shape:\\n\\n- `widgets`: existing widget IDs and their `xTrack`/`yTrack`/`xSpan`/`ySpan`\\n- `pageLayout`: `{ columns, rowHeight, widgetPadding }` - the grid configuration\\n- `filters`: active page filters with their IDs (needed for `remove_page_filter`)\\n- `issues`: layout problems flagged by the system\\n\\n## Widget Sizing\\n# Widget Catalogue\\n\\n## pact-kpi\\nOne PACT metric as a large number with its growth sparkline and the change over the last 24 hours. Set format.style.metric to one of: released, held, active, decisions, confidence, refused, precheck, chain.\\n### Sizing\\n- Minimum: 16% width × 17% height of viewport\\n- Ideal: 23% width × 21% height of viewport\\n\\n## pact-sentinel-radar\\nLive findings of the PACT Sentinel rules engine (refund spikes, seller refund concentration, repeated rejections, low-confidence releases, expiring PayPal authorizations, failed operations, open disputes, pending appeals, stalled funding): severity, metric vs baseline, money at stake and the affected pacts. format.style.focus = a rule id to pin first; format.style.headline = a one-line briefing.\\n### Sizing\\n- Minimum: 27% width × 42% height of viewport\\n- Ideal: 48% width × 72% height of viewport\\n\\n## pact-escrow-vault\\nTotals of money held by PayPal (authorized, not charged), released to sellers, refunded and voided, with animated transitions.\\n### Sizing\\n- Minimum: 23% width × 28% height of viewport\\n- Ideal: 41% width × 36% height of viewport\\n\\n## pact-milestone-timeline\\nPer pact, its milestones as steps coloured by state, with the latest evidence thumbnail and verifier confidence. Follows the page's cross-filter (one pact) or shows the most recent pacts.\\n### Sizing\\n- Minimum: 33% width × 28% height of viewport\\n- Ideal: 70% width × 42% height of viewport\\n\\n## pact-verdict-card\\nThe latest AI Verifier / Arbiter / human decision with its reasoning, confidence, model, audit-chain status and an \\\"Appeal to a human\\\" action.\\n### Sizing\\n- Minimum: 25% width × 31% height of viewport\\n- Ideal: 41% width × 42% height of viewport\\n\\n## pact-reputation-leaderboard\\nGrid of parties ranked by Bayesian-smoothed reputation score, with sparkline trend, tier and completion / on-time / dispute rates.\\n### Sizing\\n- Minimum: 33% width × 31% height of viewport\\n- Ideal: 70% width × 47% height of viewport\\n\\n## pact-money-flow\\nSankey diagram of escrowed money: buyers → PayPal authorization → sellers, subcontractor payouts, refunds, voided and still held.\\n### Sizing\\n- Minimum: 28% width × 33% height of viewport\\n- Ideal: 55% width × 47% height of viewport\\n\\n## pact-rate-gauges\\nThree gauges: dispute rate, refund rate and share of AI verdicts that were refusals.\\n### Sizing\\n- Minimum: 25% width × 22% height of viewport\\n- Ideal: 41% width × 31% height of viewport\\n\\n## pact-ledger\\nGrid of all pacts. Clicking a row cross-filters the page to that pact (drill-through); double-click opens the pact room.\\n### Sizing\\n- Minimum: 33% width × 28% height of viewport\\n- Ideal: 70% width × 44% height of viewport\\n\\n## pact-reconciliation\\nPayPal Transaction Search rows matched against PACT's ledger, with balances, an as-of timestamp and the 3-hour Transaction Search caveat.\\n### Sizing\\n- Minimum: 33% width × 33% height of viewport\\n- Ideal: 70% width × 50% height of viewport\\n\\n## pact-refused-list\\nEvery Verifier rejection and Arbiter refund in the last 7 days with the reasoning, confidence and appeal status.\\n### Sizing\\n- Minimum: 33% width × 28% height of viewport\\n- Ideal: 70% width × 42% height of viewport\\n\\n## column-chart-grouped\\nAdjacent vertical bars comparing multiple categories or series side by side.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## column-chart-stacked\\nStacked vertical bars showing part-to-whole relationships across categories.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## column-chart-stacked-100\\nStacked vertical bars normalised to 100% for comparing proportions across categories.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## bar-chart-grouped\\nAdjacent horizontal bars for comparisons, especially with long category names.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## bar-chart-stacked\\nStacked horizontal bars showing part-to-whole relationships.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## bar-chart-stacked-100\\nStacked horizontal bars normalised to 100% for comparing proportions.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## line-chart\\nLines connecting data points to show trends over time or continuous dimensions.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## area-chart\\nFilled area beneath a line to emphasise magnitude of trends over time.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## area-chart-stacked\\nStacked filled areas showing cumulative trends and part-to-whole over time.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## area-chart-stacked-100\\nStacked areas normalised to 100% showing proportional trends over time.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## value\\nSingle aggregated number displayed prominently. Use for KPIs, totals, and headline metrics.\\n### Sizing\\n- Minimum: 0% width × 0% height of viewport\\n- Ideal: 16% width × 14% height of viewport\\n\\n## radial-gauge\\nCircular dial showing a single value against a defined range. Use for progress or target tracking.\\n### Sizing\\n- Minimum: 8% width × 14% height of viewport\\n- Ideal: 23% width × 42% height of viewport\\n\\n## linear-gauge\\nHorizontal or vertical bar gauge showing a value against a range. Use for progress or threshold indicators.\\n### Sizing\\n- Minimum: 4% width × 7% height of viewport\\n- Ideal: 23% width × 42% height of viewport\\n\\n## scatter-chart\\nDots plotted on two axes to compare grouped data and show correlations.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## bubble-chart\\nScatter plot with variable dot sizes adding a third data dimension.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## grid\\nTabular data with sortable and filterable columns. Use for detailed data tables and row-level exploration.\\n### Sizing\\n- Minimum: 8% width × 14% height of viewport\\n- Ideal: 23% width × 56% height of viewport\\n\\n## pivot-grid\\nGrouped or pivoted table with row and column axes. Use for hierarchical drill-down and cross-tabulated summaries.\\n### Sizing\\n- Minimum: 16% width × 14% height of viewport\\n- Ideal: 47% width × 56% height of viewport\\n\\n## radar-line-chart\\nSpider/radar chart with lines for comparing multiple variables at once.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## radar-area-chart\\nSpider/radar chart with filled areas to emphasise coverage across dimensions.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## radial-column-chart\\nBars arranged in a circle, useful for cyclical or categorical data.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## nightingale-chart\\nRose/Nightingale chart with variable-radius sectors to emphasise value differences.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## radial-bar-chart\\nConcentric circular bars for compact category comparisons.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## pie-chart\\nCircular chart divided into slices showing simple part-to-whole proportions.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## donut-chart\\nPie chart with a hollow centre, allowing a central metric or label.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## funnel-chart\\nStepped funnel showing conversion rates or sequential process stages.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## cone-funnel-chart\\nSmooth-tapering funnel for conversion or sequential process visualisation.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## pyramid-chart\\nTriangular chart for hierarchical or tiered data visualisation.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## treemap-chart\\nNested rectangles showing a hierarchy of part-to-whole proportions, sized by value.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## sunburst-chart\\nConcentric rings showing a hierarchy of part-to-whole proportions, sized by value.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## text\\nStatic rich text content for titles, descriptions, or annotations. Always set format.style.text with the body content.\\n### Sizing\\n- Minimum: 0% width × 0% height of viewport\\n- Ideal: 23% width × 14% height of viewport\\n\\n## image\\nStatic image display for logos, backgrounds, or visual context.\\n### Sizing\\n- Minimum: 0% width × 0% height of viewport\\n- Ideal: 16% width × 28% height of viewport\\n\\n## button-filter\\nClickable toggle buttons for quick single or multi-value filtering.\\n### Sizing\\n- Minimum: 4% width × 2% height of viewport\\n- Ideal: 16% width × 14% height of viewport\\n\\n## list-filter\\nScrollable list for selecting one or more filter values from many options.\\n### Sizing\\n- Minimum: 4% width × 7% height of viewport\\n- Ideal: 16% width × 14% height of viewport\\n\\n## date-filter\\nDate picker for filtering by date range or specific dates.\\n### Sizing\\n- Minimum: 4% width × 2% height of viewport\\n- Ideal: 16% width × 14% height of viewport\\n\\n## combo-chart-grouped-column-line\\nAdjacent vertical bars comparing multiple categories or series side by side combined with lines connecting data points to show trends over time or continuous dimensions.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\n## combo-chart-stacked-column-line\\nStacked vertical bars comparing multiple categories or series side by side combined with lines connecting data points to show trends over time or continuous dimensions.\\n### Sizing\\n- Minimum: 12% width × 21% height of viewport\\n- Ideal: 31% width × 56% height of viewport\\n\\nEach widget type has a minimum and ideal size expressed as a percentage of the viewport. When placing widgets - especially without an upstream Planning agent - use these constraints to size sensibly. A widget below its minimum will be unreadable; well above its ideal usually wastes space.\\n\\n## Grid System\\nRead grid dimensions from `pageLayout` in the `view_page` response:\\n- `columns`: total column count (e.g. 24)\\n- `rowHeight`: height of each row in pixels (e.g. 16px)\\n- `widgetPadding`: padding between widgets in pixels\\n- Position: `xTrack` (column), `yTrack` (row) - 0-indexed\\n- Size: `xSpan` (width in columns), `ySpan` (height in rows)\\n- For full dashboard layouts, use the full column width and enough rows to fill the visible viewport.\\n\\nIMPORTANT: A row in the layout tree doesn't correspond to a single grid row. Think of it as a horizontal band. A row of KPIs should probably be at least 6 grid rows high.\\n\\n## Interpreting Layout Trees\\nWhen the plan includes a proportional layout tree, resolve it to grid coordinates:\\n- The tree uses proportional integer units (ratios, not pixels)\\n- Row children declare width (split the parent's width proportionally)\\n- Column children declare height (split the parent's height proportionally)\\n- Map the proportional ratios to the grid (use `columns` from `pageLayout`)\\n\\n### Rounding Rule\\nProportional units rarely divide evenly into the grid. Resolve siblings left-to-right\\n(or top-to-bottom for column children): round each to the nearest integer, then give\\nthe *last* sibling whatever's left so the total matches the parent's size exactly.\\nThis keeps the grid fully covered and avoids cumulative rounding error.\\n\\n### Worked Example\\nGiven `pageLayout.columns = 24` and a target dashboard height of 54 rows (a value the agent picks based on dashboard scope - see `viewportRows` in `pageLayout` once available; until then, use a sensible default for full-page builds), and this layout tree:\\n\\n  root (column):\\n    row height:1 → [w-kpi-1 width:1, w-kpi-2 width:1, w-kpi-3 width:1]\\n    row height:3 → [w-chart width:2, w-table width:1]\\n\\n**Step 1 - Resolve row heights.** Total height units = 1 + 3 = 4.\\nRow 1: round((1/4) × 54) = round(13.5) = 14 rows.\\nRow 2 (last): 54 − 14 = 40 rows. Total: 14 + 40 = 54. ✓\\n\\n**Step 2 - Resolve row 1 widths.** Total width units = 1 + 1 + 1 = 3.\\nEach widget: 24/3 = 8 columns.\\n  w-kpi-1: xTrack:0  yTrack:0  xSpan:8  ySpan:14\\n  w-kpi-2: xTrack:8  yTrack:0  xSpan:8  ySpan:14\\n  w-kpi-3: xTrack:16 yTrack:0  xSpan:8  ySpan:14\\n\\n**Step 3 - Resolve row 2 widths.** Total width units = 2 + 1 = 3.\\nw-chart: round(24 × (2/3)) = round(16) = 16 columns.\\nw-table (last): 24 − 16 = 8 columns.\\n  w-chart: xTrack:0  yTrack:14 xSpan:16 ySpan:40\\n  w-table: xTrack:16 yTrack:14 xSpan:8  ySpan:40\\n\\n## Adding Widgets\\nUse add_widget with widgetType, widgetId, xTrack, yTrack, xSpan, ySpan: creates an empty widget at the specified position. Call add_widget once per widget.\\n\\nReturn all created widget IDs in your summary so the Orchestrator can update the plan and delegate configuration to Widget agents.\\n\\nAfter placing or repositioning widgets, call view_page to verify the layout. Check the\\nissues array for layout or filter health checks - if any can be improved (e.g. overlaps,\\nmisalignment, thin gaps), adjust positions and re-check before completing.\\n\\n## Page-Level Filters\\nUse add_page_filter to add individual page-level filters.\\nUse remove_page_filter to remove page filters by ID.\\nUse view_page to see active page filters with their IDs.\\n\\nEach filter targets a field and carries a `model` condition (or an AND/OR group). Operators by field type: all types support `isNull`/`isNotNull`/`isBlank`/`isNotBlank`/`isIn`; number supports `equals`/`notEqual`/`greaterThan`/`greaterThanOrEqual`/`lessThan`/`lessThanOrEqual`/`between`; string supports `equals`/`notEqual`/`contains`/`notContains`/`startsWith`/`endsWith`; date additionally supports `inRelativeRange` (a rolling window `{ type: \\\"last\\\" | \\\"next\\\" | \\\"this\\\", value?: number, unit: \\\"minute\\\" | \\\"hour\\\" | \\\"day\\\" | \\\"week\\\" | \\\"month\\\" | \\\"year\\\", includeToday?: boolean }`); boolean supports `isTrue`/`isFalse`. Prefer a relative-range date filter over hard-coded dates for rolling windows.\\n\\n## Rules\\n- Be conservative: don't move existing widgets unless asked\\n- High-importance widgets go near the top of the page\\n- Group related widgets together\\n\\n## Referencing Widgets, Fields or Tables\\nWhen mentioning widgets, fields or tables in your summaries, use these reference formats:\\n- Widgets: @widget[widget_id] (e.g., @widget[abc123])\\n- Fields: @field[field_id] (e.g., @field[revenue])\\n- Tables: @table[table_id] (e.g., @table[orders])\\n\\n## Output\\nKeep your completion summary concise - 3-4 sentences max.\",\"model\":\"muse-spark-1.3\",\"parallel_tool_calls\":true,\"reasoning\":{\"effort\":\"medium\"},\"text\":{\"format\":{\"type\":\"text\"}},\"tools\":[{\"description\":\"View the available data schema - fieldsets and their fields with types. Always call this before creating widgets or writing queries so you know which field IDs exist.\",\"name\":\"view_schema\",\"parameters\":{\"additionalProperties\":false,\"properties\":{},\"required\":[],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"View the current page state: widget positions, page layout config, active page filters, layout/filter issues, and per-widget health summaries.\",\"name\":\"view_page\",\"parameters\":{\"additionalProperties\":false,\"properties\":{},\"required\":[],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"View the current plan with status annotations, or null if no plan exists.\",\"name\":\"view_plan\",\"parameters\":{\"additionalProperties\":false,\"properties\":{},\"required\":[],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Add a single page-level filter (appended to the page filter list).\\nSupports comparison, text, set (isIn), null/blank, relative-date (inRelativeRange), and rank\\noperators - see the field type for the available set. For a top/bottom-N filter, use operator \\\"rank\\\"\\non the numeric field to rank by, with value [topN, bottomN] (null for the unused bound).\",\"name\":\"add_page_filter\",\"parameters\":{\"$defs\":{\"FieldBooleanNoAgg\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"id\":{\"$ref\":\"#/$defs/FieldIdsBooleanRolesCategoryAggCountCountd\"}},\"required\":[\"id\"],\"type\":\"object\"}]},\"FieldDateNoAgg\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"id\":{\"anyOf\":[{\"$ref\":\"#/$defs/FieldIdsDatetimeRolesCategoryNumericTemporalAggCountCountdFirstLast\"},{\"$ref\":\"#/$defs/FieldIdsDateRolesCategoryTemporalAggCountCountdFirstLast\"}]}},\"required\":[\"id\"],\"type\":\"object\"}]},\"FieldIdsBooleanRolesCategoryAggCountCountd\":{\"enum\":[\"paypalTransactions.matched\",\"verdicts.refused\"],\"type\":\"string\"},\"FieldIdsDateRolesCategoryTemporalAggCountCountdFirstLast\":{\"enum\":[\"milestones.deadline\",\"pacts.deadline\"],\"type\":\"string\"},\"FieldIdsDatetimeRolesCategoryNumericTemporalAggCountCountdFirstLast\":{\"enum\":[\"milestones.releasedAt\",\"pacts.createdAt\",\"payments.createdAt\",\"paypalTransactions.date\",\"verdicts.createdAt\"],\"type\":\"string\"},\"FieldIdsNumberMeasureRolesNumericAggAvgCountCountdFirstLastMaxMinSum\":{\"enum\":[\"refundShare\",\"releaseRate\"],\"type\":\"string\"},\"FieldIdsNumberRolesCategoryAggCountCountdFirstLastMaxMin\":{\"enum\":[\"calendar::day\",\"calendar::month\",\"calendar::week\",\"calendar::year\"],\"type\":\"string\"},\"FieldIdsNumberRolesCategoryNumericAggAvgCountCountdFirstLastMaxMinSum\":{\"enum\":[\"flows.value\",\"milestones.amount\",\"milestones.attempts\",\"milestones.captured\",\"milestones.evidenceCount\",\"milestones.lastConfidence\",\"milestones.percent\",\"milestones.position\",\"milestones.refunded\",\"pacts.held\",\"pacts.milestones\",\"pacts.milestonesDone\",\"pacts.refunded\",\"pacts.released\",\"pacts.total\",\"pacts.voided\",\"payments.amount\",\"paypalTransactions.amount\",\"paypalTransactions.fee\",\"reputation.completionRate\",\"reputation.confidence\",\"reputation.disputeRate\",\"reputation.milestones\",\"reputation.onTimeRate\",\"reputation.refundRate\",\"reputation.score\",\"verdicts.confidence\",\"verdicts.precheckFailures\"],\"type\":\"string\"},\"FieldIdsStringRolesCategoryAggCountCountdFirstLast\":{\"enum\":[\"flows.source\",\"flows.target\",\"milestones.key\",\"milestones.lastVerdict\",\"milestones.milestoneId\",\"milestones.pactId\",\"milestones.pactTitle\",\"milestones.seller\",\"milestones.status\",\"milestones.thumbnailUrl\",\"milestones.title\",\"pacts.buyer\",\"pacts.buyerId\",\"pacts.currency\",\"pacts.id\",\"pacts.paymentMode\",\"pacts.seller\",\"pacts.sellerId\",\"pacts.status\",\"pacts.title\",\"payments.currency\",\"payments.id\",\"payments.kind\",\"payments.milestoneKey\",\"payments.mode\",\"payments.pactId\",\"payments.paypalId\",\"payments.status\",\"paypalTransactions.counterparty\",\"paypalTransactions.currency\",\"paypalTransactions.eventCode\",\"paypalTransactions.id\",\"paypalTransactions.note\",\"paypalTransactions.pactId\",\"paypalTransactions.pactKind\",\"paypalTransactions.status\",\"reputation.kind\",\"reputation.name\",\"reputation.partyId\",\"reputation.tier\",\"reputation.trend\",\"verdicts.appealStatus\",\"verdicts.id\",\"verdicts.kind\",\"verdicts.llmMode\",\"verdicts.milestoneKey\",\"verdicts.milestoneTitle\",\"verdicts.model\",\"verdicts.pactId\",\"verdicts.pactTitle\",\"verdicts.reasoning\",\"verdicts.seller\",\"verdicts.status\"],\"type\":\"string\"},\"FieldNumberNoAgg\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"id\":{\"anyOf\":[{\"$ref\":\"#/$defs/FieldIdsNumberRolesCategoryNumericAggAvgCountCountdFirstLastMaxMinSum\"},{\"$ref\":\"#/$defs/FieldIdsNumberMeasureRolesNumericAggAvgCountCountdFirstLastMaxMinSum\"},{\"$ref\":\"#/$defs/FieldIdsNumberRolesCategoryAggCountCountdFirstLastMaxMin\"}]}},\"required\":[\"id\"],\"type\":\"object\"}]},\"FieldStringNoAgg\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"id\":{\"$ref\":\"#/$defs/FieldIdsStringRolesCategoryAggCountCountdFirstLast\"}},\"required\":[\"id\"],\"type\":\"object\"}]}},\"additionalProperties\":false,\"properties\":{\"op\":{\"enum\":[\"append\"],\"type\":\"string\"},\"value\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"field\":{\"$ref\":\"#/$defs/FieldNumberNoAgg\"},\"model\":{\"anyOf\":[{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNull\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotNull\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isUndefined\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotUndefined\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isBlank\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotBlank\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNaN\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"equals\"],\"type\":\"string\"},\"value\":{\"type\":\"number\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"notEqual\"],\"type\":\"string\"},\"value\":{\"type\":\"number\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"greaterThan\"],\"type\":\"string\"},\"value\":{\"type\":\"number\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"greaterThanOrEqual\"],\"type\":\"string\"},\"value\":{\"type\":\"number\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"lessThan\"],\"type\":\"string\"},\"value\":{\"type\":\"number\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"lessThanOrEqual\"],\"type\":\"string\"},\"value\":{\"type\":\"number\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"between\"],\"type\":\"string\"},\"value\":{\"items\":{},\"maxItems\":2,\"minItems\":2,\"type\":\"array\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isIn\"],\"type\":\"string\"},\"value\":{\"items\":{},\"type\":\"array\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"rank\"],\"type\":\"string\"},\"value\":{\"description\":\"Top/bottom bounds [topN, bottomN]: keeps the topN highest and/or bottomN lowest rows ranked by this field; null for the unused bound (top 10 = [10, null]).\",\"items\":{},\"maxItems\":2,\"minItems\":2,\"type\":\"array\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"}]},{\"additionalProperties\":false,\"properties\":{\"conditions\":{\"items\":{\"anyOf\":[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]},\"type\":\"array\"},\"operator\":{\"enum\":[\"AND\",\"OR\"],\"type\":\"string\"}},\"required\":[\"operator\",\"conditions\"],\"type\":\"object\"},{\"type\":\"null\"}]},\"view\":{\"additionalProperties\":false,\"properties\":{\"expanded\":{\"type\":[\"boolean\",\"null\"]},\"viewTypeId\":{\"enum\":[\"simple\",\"selection\",\"rank\",\"relativeDate\"],\"type\":[\"string\",\"null\"]}},\"required\":[\"expanded\",\"viewTypeId\"],\"type\":[\"object\",\"null\"]}},\"required\":[\"field\",\"view\",\"model\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{\"$ref\":\"#/$defs/FieldStringNoAgg\"},\"model\":{\"anyOf\":[{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNull\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotNull\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isUndefined\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotUndefined\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isBlank\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotBlank\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"equals\"],\"type\":\"string\"},\"value\":{\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"notEqual\"],\"type\":\"string\"},\"value\":{\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"contains\"],\"type\":\"string\"},\"value\":{\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"notContains\"],\"type\":\"string\"},\"value\":{\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"startsWith\"],\"type\":\"string\"},\"value\":{\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"endsWith\"],\"type\":\"string\"},\"value\":{\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isIn\"],\"type\":\"string\"},\"value\":{\"items\":{},\"type\":\"array\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"}]},{\"additionalProperties\":false,\"properties\":{\"conditions\":{\"items\":{\"anyOf\":[{},{},{},{},{},{},{},{},{},{},{},{},{}]},\"type\":\"array\"},\"operator\":{\"enum\":[\"AND\",\"OR\"],\"type\":\"string\"}},\"required\":[\"operator\",\"conditions\"],\"type\":\"object\"},{\"type\":\"null\"}]},\"view\":{\"additionalProperties\":false,\"properties\":{\"expanded\":{\"type\":[\"boolean\",\"null\"]},\"viewTypeId\":{\"enum\":[\"simple\",\"selection\",\"rank\",\"relativeDate\"],\"type\":[\"string\",\"null\"]}},\"required\":[\"expanded\",\"viewTypeId\"],\"type\":[\"object\",\"null\"]}},\"required\":[\"field\",\"view\",\"model\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{\"$ref\":\"#/$defs/FieldDateNoAgg\"},\"model\":{\"anyOf\":[{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNull\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotNull\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isUndefined\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotUndefined\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isBlank\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotBlank\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"equals\"],\"type\":\"string\"},\"value\":{\"format\":\"date-time\",\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"notEqual\"],\"type\":\"string\"},\"value\":{\"format\":\"date-time\",\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"greaterThan\"],\"type\":\"string\"},\"value\":{\"format\":\"date-time\",\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"greaterThanOrEqual\"],\"type\":\"string\"},\"value\":{\"format\":\"date-time\",\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"lessThan\"],\"type\":\"string\"},\"value\":{\"format\":\"date-time\",\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"lessThanOrEqual\"],\"type\":\"string\"},\"value\":{\"format\":\"date-time\",\"type\":\"string\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"between\"],\"type\":\"string\"},\"value\":{\"items\":{},\"maxItems\":2,\"minItems\":2,\"type\":\"array\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"inRelativeRange\"],\"type\":\"string\"},\"value\":{\"additionalProperties\":false,\"properties\":{\"includeToday\":{},\"type\":{},\"unit\":{},\"value\":{}},\"required\":[\"type\",\"value\",\"unit\",\"includeToday\"],\"type\":\"object\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isIn\"],\"type\":\"string\"},\"value\":{\"items\":{},\"type\":\"array\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"}]},{\"additionalProperties\":false,\"properties\":{\"conditions\":{\"items\":{\"anyOf\":[{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}]},\"type\":\"array\"},\"operator\":{\"enum\":[\"AND\",\"OR\"],\"type\":\"string\"}},\"required\":[\"operator\",\"conditions\"],\"type\":\"object\"},{\"type\":\"null\"}]},\"view\":{\"additionalProperties\":false,\"properties\":{\"expanded\":{\"type\":[\"boolean\",\"null\"]},\"viewTypeId\":{\"enum\":[\"simple\",\"selection\",\"rank\",\"relativeDate\"],\"type\":[\"string\",\"null\"]}},\"required\":[\"expanded\",\"viewTypeId\"],\"type\":[\"object\",\"null\"]}},\"required\":[\"field\",\"view\",\"model\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{\"$ref\":\"#/$defs/FieldBooleanNoAgg\"},\"model\":{\"anyOf\":[{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNull\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotNull\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isUndefined\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotUndefined\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isBlank\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isNotBlank\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isTrue\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isFalse\"],\"type\":\"string\"}},\"required\":[\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"equals\"],\"type\":\"string\"},\"value\":{\"type\":\"boolean\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"notEqual\"],\"type\":\"string\"},\"value\":{\"type\":\"boolean\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"operator\":{\"enum\":[\"isIn\"],\"type\":\"string\"},\"value\":{\"items\":{},\"type\":\"array\"}},\"required\":[\"operator\",\"value\"],\"type\":\"object\"}]},{\"additionalProperties\":false,\"properties\":{\"conditions\":{\"items\":{\"anyOf\":[{},{},{},{},{},{},{},{},{},{},{}]},\"type\":\"array\"},\"operator\":{\"enum\":[\"AND\",\"OR\"],\"type\":\"string\"}},\"required\":[\"operator\",\"conditions\"],\"type\":\"object\"},{\"type\":\"null\"}]},\"view\":{\"additionalProperties\":false,\"properties\":{\"expanded\":{\"type\":[\"boolean\",\"null\"]},\"viewTypeId\":{\"enum\":[\"simple\",\"selection\",\"rank\",\"relativeDate\"],\"type\":[\"string\",\"null\"]}},\"required\":[\"expanded\",\"viewTypeId\"],\"type\":[\"object\",\"null\"]}},\"required\":[\"field\",\"view\",\"model\"],\"type\":\"object\"}]}},\"required\":[\"op\",\"value\"],\"type\":\"object\"},\"strict\":false,\"type\":\"function\"},{\"description\":\"Remove a page filter by its index in the page's filter list (0-based). Call view_page first to see the current filters and their order.\",\"name\":\"remove_page_filter\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"index\":{\"type\":\"number\"},\"op\":{\"enum\":[\"remove\"],\"type\":\"string\"}},\"required\":[\"op\",\"index\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Add a widget to the grid. Position is 0-indexed.\",\"name\":\"add_widget\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"type\":{\"enum\":[\"pact-kpi\",\"pact-sentinel-radar\",\"pact-escrow-vault\",\"pact-milestone-timeline\",\"pact-verdict-card\",\"pact-reputation-leaderboard\",\"pact-money-flow\",\"pact-rate-gauges\",\"pact-ledger\",\"pact-reconciliation\",\"pact-refused-list\",\"column-chart-grouped\",\"column-chart-stacked\",\"column-chart-stacked-100\",\"bar-chart-grouped\",\"bar-chart-stacked\",\"bar-chart-stacked-100\",\"line-chart\",\"area-chart\",\"area-chart-stacked\",\"area-chart-stacked-100\",\"value\",\"radial-gauge\",\"linear-gauge\",\"scatter-chart\",\"bubble-chart\",\"grid\",\"pivot-grid\",\"radar-line-chart\",\"radar-area-chart\",\"radial-column-chart\",\"nightingale-chart\",\"radial-bar-chart\",\"pie-chart\",\"donut-chart\",\"funnel-chart\",\"cone-funnel-chart\",\"pyramid-chart\",\"treemap-chart\",\"sunburst-chart\",\"text\",\"image\",\"button-filter\",\"list-filter\",\"date-filter\",\"combo-chart-grouped-column-line\",\"combo-chart-stacked-column-line\"],\"type\":\"string\"},\"widgetId\":{\"type\":\"string\"},\"xSpan\":{\"type\":\"number\"},\"xTrack\":{\"type\":\"number\"},\"ySpan\":{\"type\":\"number\"},\"yTrack\":{\"type\":\"number\"}},\"required\":[\"widgetId\",\"type\",\"xTrack\",\"yTrack\",\"xSpan\",\"ySpan\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Move and/or resize a widget on the grid. All position fields are optional - omitted fields preserve current values. 0-indexed.\",\"name\":\"position_widget\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"op\":{\"enum\":[\"patch\"],\"type\":\"string\"},\"value\":{\"additionalProperties\":false,\"properties\":{\"xSpan\":{\"type\":[\"number\",\"null\"]},\"xTrack\":{\"type\":[\"number\",\"null\"]},\"ySpan\":{\"type\":[\"number\",\"null\"]},\"yTrack\":{\"type\":[\"number\",\"null\"]}},\"required\":[\"xTrack\",\"yTrack\",\"xSpan\",\"ySpan\"],\"type\":\"object\"},\"widgetId\":{\"enum\":[\"board\",\"score-chart\"],\"type\":\"string\"}},\"required\":[\"op\",\"value\",\"widgetId\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Permanently remove a widget from the page.\",\"name\":\"remove_widget\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"widgetId\":{\"enum\":[\"board\",\"score-chart\"],\"type\":\"string\"}},\"required\":[\"widgetId\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Call this tool when you have completed your task or need to report results. You MUST call this tool to signal completion - do not respond with text alone.\",\"name\":\"complete_task\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"artifacts\":{\"description\":\"Artifacts created by tool calls. Use [] if none.\",\"items\":{\"additionalProperties\":false,\"properties\":{\"description\":{\"type\":\"string\"},\"id\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"}},\"required\":[\"id\",\"type\",\"description\"],\"type\":\"object\"},\"type\":\"array\"},\"summary\":{\"description\":\"Detailed summary of findings and what was achieved. This is passed back to the requesting agent.\",\"type\":\"string\"}},\"required\":[\"summary\",\"artifacts\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"}]}"
+}

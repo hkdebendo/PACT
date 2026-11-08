@@ -20,7 +20,7 @@ import type { TowerContext } from './widgets/common';
 
 export const PROMPT_STARTERS: AgAiPromptStarter[] = [
   { label: 'Why was the production photo refused?', prompt: 'Why was the production photo refused? Show all refused milestones this week.' },
-  { label: 'Is the audit chain intact?', prompt: 'Is the audit chain intact? Summarise what the AI decided today.' },
+  { label: 'Is the audit chain intact?', prompt: 'Is the audit chain intact? Summarise the AI decisions on the ledger by outcome.' },
   { label: 'Who is most reliable?', prompt: 'Which seller has the best reputation, and why? Add a chart of reputation by party.' },
   { label: 'What needs attention right now?', prompt: 'What needs attention right now? Run the Sentinel and show me the riskiest finding.' },
 ];

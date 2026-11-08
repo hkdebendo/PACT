@@ -14,6 +14,8 @@ import { resolve } from 'node:path';
 import { canonical, denormaliseOutput, normaliseOutput, normaliseVolatile } from '@pact/llm/cache';
 import { boundSchemaDepth } from '../unroll-schema';
 
+const RUN_ID = /\brun-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/g;
+
 const ROOT = resolve(process.cwd(), '..', '..');
 const CACHE_DIR = resolve(ROOT, 'fixtures', 'llm-cache', 'studio');
 const MAX_OUTPUT_TOKENS = 16_000;
@@ -107,6 +109,14 @@ export async function POST(request: Request) {
 
   // Cache key over the request without volatile values; the reasoning effort is part of it.
   const norm = normaliseVolatile({ ...upstreamBody, stream: undefined, max_output_tokens: undefined });
+  // Studio's built-in agents seed each run with preflight tool calls whose ids embed a random run
+  // uuid (run-<uuid>-preflight-0). Number them by first appearance so the key is run-independent.
+  const runIds: string[] = [];
+  norm.text = norm.text.replace(RUN_ID, (m) => {
+    let i = runIds.indexOf(m);
+    if (i < 0) i = runIds.push(m) - 1;
+    return `⟦run${i + 1}⟧`;
+  });
   const key = createHash('sha256').update(canonical({ model, prompt: norm.text })).digest('hex');
   const file = resolve(CACHE_DIR, key.slice(0, 2), `${key}.json`);
 

@@ -1,0 +1,1508 @@
+{
+  "role": "studio.pact-auditor",
+  "model": "muse-spark-1.3",
+  "output": {
+    "top_logprobs": 0,
+    "temperature": 1,
+    "top_p": 1,
+    "service_tier": "default",
+    "model": "muse-spark-1.3",
+    "reasoning": {
+      "effort": "medium"
+    },
+    "background": false,
+    "text": {
+      "format": {
+        "type": "text"
+      }
+    },
+    "tools": [
+      {
+        "type": "function",
+        "name": "view_schema",
+        "description": "View the available data schema - fieldsets and their fields with types. Always call this before creating widgets or writing queries so you know which field IDs exist.",
+        "parameters": {
+          "type": "object",
+          "required": [],
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "view_page",
+        "description": "View the current page state: widget positions, page layout config, active page filters, layout/filter issues, and per-widget health summaries.",
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "execute_query",
+        "description": "Execute a query against the data source.\nTwo modes:\n- aggregation: group by dimensions with aggregated measures (sum, avg, count, etc.)\n- projection: return raw rows with selected columns (no aggregation)\n\nSupports joins, filters, sorting, and pagination.\n\nAliases ('as'): every 'as' value in the query must be unique across dimensions,\nmeasures, projections, and windows — they share one output namespace. Reusing a\nname (e.g. setting 'as: \"total_revenue\"' on both a dimension and a measure) is\nrejected with validationAliasCollision; pick distinct names per output.",
+        "parameters": {
+          "required": [
+            "query"
+          ],
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "query": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "axes": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "dimensions": {
+                            "items": {
+                              "anyOf": [
+                                {},
+                                {}
+                              ]
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "dimensions"
+                        ],
+                        "type": "object"
+                      },
+                      "type": [
+                        "array",
+                        "null"
+                      ]
+                    },
+                    "filter": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "anyOf": [
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                }
+                              ]
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "combinator": {
+                                  "enum": [
+                                    "and",
+                                    "or",
+                                    "not"
+                                  ],
+                                  "type": "string"
+                                },
+                                "conditions": {
+                                  "items": {},
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "combinator",
+                                "conditions"
+                              ],
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "filterAggregated": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "anyOf": [
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                }
+                              ]
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "combinator": {
+                                  "enum": [
+                                    "and",
+                                    "or",
+                                    "not"
+                                  ],
+                                  "type": "string"
+                                },
+                                "conditions": {
+                                  "items": {},
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "combinator",
+                                "conditions"
+                              ],
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "enum": [
+                        "apiQuery"
+                      ],
+                      "type": "string"
+                    },
+                    "limit": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "count": {
+                          "type": "number"
+                        },
+                        "offset": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "count",
+                        "offset"
+                      ],
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    },
+                    "measures": {
+                      "items": {
+                        "anyOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "as": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "field": {
+                                "anyOf": [
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {}
+                                ]
+                              },
+                              "fillPolicy": {
+                                "enum": [
+                                  "zero"
+                                ],
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "orderBy": {
+                                "items": {},
+                                "type": [
+                                  "array",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "field",
+                              "orderBy",
+                              "fillPolicy",
+                              "as"
+                            ],
+                            "type": "object"
+                          },
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "as": {
+                                "type": "string"
+                              },
+                              "expression": {
+                                "anyOf": [
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {}
+                                ]
+                              },
+                              "fillPolicy": {
+                                "enum": [
+                                  "zero"
+                                ],
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "orderBy": {
+                                "items": {},
+                                "type": [
+                                  "array",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "expression",
+                              "as",
+                              "orderBy",
+                              "fillPolicy"
+                            ],
+                            "type": "object"
+                          }
+                        ]
+                      },
+                      "type": [
+                        "array",
+                        "null"
+                      ]
+                    },
+                    "sort": {
+                      "items": {
+                        "anyOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "direction": {
+                                "enum": [
+                                  "asc",
+                                  "desc"
+                                ],
+                                "type": "string"
+                              },
+                              "field": {
+                                "anyOf": [
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {}
+                                ]
+                              }
+                            },
+                            "required": [
+                              "field",
+                              "direction"
+                            ],
+                            "type": "object"
+                          },
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "by": {
+                                "type": "string"
+                              },
+                              "direction": {
+                                "enum": [
+                                  "asc",
+                                  "desc"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "by",
+                              "direction"
+                            ],
+                            "type": "object"
+                          }
+                        ]
+                      },
+                      "type": [
+                        "array",
+                        "null"
+                      ]
+                    },
+                    "variant": {
+                      "enum": [
+                        "aggregation"
+                      ],
+                      "type": "string"
+                    },
+                    "window": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "as": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "field": {
+                            "anyOf": [
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "aggregation": {},
+                                  "id": {}
+                                },
+                                "required": [
+                                  "id",
+                                  "aggregation"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "aggregation": {},
+                                  "id": {}
+                                },
+                                "required": [
+                                  "id",
+                                  "aggregation"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "aggregation": {},
+                                  "id": {}
+                                },
+                                "required": [
+                                  "id",
+                                  "aggregation"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "aggregation": {},
+                                  "id": {}
+                                },
+                                "required": [
+                                  "id",
+                                  "aggregation"
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "additionalProperties": false,
+                                "properties": {
+                                  "id": {}
+                                },
+                                "required": [
+                                  "id"
+                                ],
+                                "type": "object"
+                              }
+                            ]
+                          },
+                          "functionType": {
+                            "enum": [
+                              "rank",
+                              "denseRank",
+                              "rowNumber"
+                            ],
+                            "type": "string"
+                          },
+                          "orderBy": {
+                            "items": {
+                              "anyOf": [
+                                {},
+                                {}
+                              ]
+                            },
+                            "type": [
+                              "array",
+                              "null"
+                            ]
+                          },
+                          "partitionBy": {
+                            "items": {
+                              "anyOf": [
+                                {}
+                              ]
+                            },
+                            "type": [
+                              "array",
+                              "null"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "field",
+                          "functionType",
+                          "partitionBy",
+                          "orderBy",
+                          "as"
+                        ],
+                        "type": "object"
+                      },
+                      "type": [
+                        "array",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "variant",
+                    "kind",
+                    "axes",
+                    "measures",
+                    "filter",
+                    "filterAggregated",
+                    "sort",
+                    "window",
+                    "limit"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "distinct": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "filter": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "anyOf": [
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                },
+                                {
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "field": {},
+                                    "operator": {},
+                                    "value": {}
+                                  },
+                                  "required": [
+                                    "field",
+                                    "operator",
+                                    "value"
+                                  ],
+                                  "type": "object"
+                                }
+                              ]
+                            },
+                            {
+                              "additionalProperties": false,
+                              "properties": {
+                                "combinator": {
+                                  "enum": [
+                                    "and",
+                                    "or",
+                                    "not"
+                                  ],
+                                  "type": "string"
+                                },
+                                "conditions": {
+                                  "items": {},
+                                  "type": "array"
+                                }
+                              },
+                              "required": [
+                                "combinator",
+                                "conditions"
+                              ],
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "kind": {
+                      "enum": [
+                        "apiQuery"
+                      ],
+                      "type": "string"
+                    },
+                    "limit": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "count": {
+                          "type": "number"
+                        },
+                        "offset": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "count",
+                        "offset"
+                      ],
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    },
+                    "projection": {
+                      "items": {
+                        "anyOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "as": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "field": {
+                                "anyOf": [
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {}
+                                ]
+                              }
+                            },
+                            "required": [
+                              "field",
+                              "as"
+                            ],
+                            "type": "object"
+                          },
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "as": {
+                                "type": "string"
+                              },
+                              "expression": {
+                                "anyOf": [
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {}
+                                ]
+                              }
+                            },
+                            "required": [
+                              "expression",
+                              "as"
+                            ],
+                            "type": "object"
+                          }
+                        ]
+                      },
+                      "type": "array"
+                    },
+                    "sort": {
+                      "items": {
+                        "anyOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "direction": {
+                                "enum": [
+                                  "asc",
+                                  "desc"
+                                ],
+                                "type": "string"
+                              },
+                              "field": {
+                                "anyOf": [
+                                  {},
+                                  {},
+                                  {},
+                                  {},
+                                  {}
+                                ]
+                              }
+                            },
+                            "required": [
+                              "field",
+                              "direction"
+                            ],
+                            "type": "object"
+                          },
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "by": {
+                                "type": "string"
+                              },
+                              "direction": {
+                                "enum": [
+                                  "asc",
+                                  "desc"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "by",
+                              "direction"
+                            ],
+                            "type": "object"
+                          }
+                        ]
+                      },
+                      "type": [
+                        "array",
+                        "null"
+                      ]
+                    },
+                    "variant": {
+                      "enum": [
+                        "projection"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "variant",
+                    "kind",
+                    "projection",
+                    "filter",
+                    "sort",
+                    "limit",
+                    "distinct"
+                  ],
+                  "type": "object"
+                }
+              ]
+            }
+          }
+        },
+        "strict": false
+      },
+      {
+        "type": "function",
+        "name": "get_verdict",
+        "description": "Fetch one PACT verdict (AI Verifier, AI Arbiter or human) with its per-criterion results, reasoning, confidence, model and appeal status. Omit verdictId for the most recent verdict.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "verdictId": {
+              "description": "Verdict id (vd_...). Omit for the latest.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "verdictId"
+          ]
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "list_refused_milestones",
+        "description": "List milestones the AI refused (Verifier \"rejected\" or Arbiter \"refund\") in the last N days, newest first, with pact, milestone, reasoning and confidence.",
+        "parameters": {
+          "properties": {
+            "days": {
+              "description": "Look-back window in days. Defaults to 7.",
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "days"
+          ],
+          "type": "object"
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "explain_decision",
+        "description": "Everything behind one decision: the milestone criteria, the evidence descriptions the Verifier produced (step 1, written without seeing the criteria), the per-criterion judgement (step 2), deterministic pre-check failures, and the audit-log entries for that verdict with the chain status.",
+        "parameters": {
+          "additionalProperties": false,
+          "properties": {
+            "verdictId": {
+              "description": "Verdict id (vd_...)",
+              "type": "string"
+            }
+          },
+          "required": [
+            "verdictId"
+          ],
+          "type": "object"
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "open_pact_drilldown",
+        "description": "Open a pact's room (timeline, evidence, verdicts, audit trail) in a new browser tab, optionally scrolled to one milestone. Only when the user asks to open or see a pact or its evidence.",
+        "parameters": {
+          "required": [
+            "pactId",
+            "milestoneId"
+          ],
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "milestoneId": {
+              "description": "Milestone id, e.g. m2",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "pactId": {
+              "description": "Pact id (pact_...)",
+              "type": "string"
+            }
+          }
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "verify_audit_chain",
+        "description": "Recompute every SHA-256 link of the append-only audit log and report whether it is intact.",
+        "parameters": {
+          "properties": {},
+          "required": [],
+          "additionalProperties": false,
+          "type": "object"
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "add_refused_milestones_widget",
+        "description": "Add a \"Refused milestones\" widget to the current page: every Verifier rejection and Arbiter refund in the last 7 days, with reasoning, confidence and appeal status. Use this when the user asks to SEE refused milestones.",
+        "parameters": {
+          "properties": {
+            "title": {
+              "description": "Widget title. Defaults to \"Refused milestones this week\".",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "title"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "delegate_to",
+        "description": "Delegate a subtask to a specialised sub-agent, which runs it and returns a summary. You retain control of the conversation. Pick the target agent and give it a concise task.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "instructions": {
+              "description": "Concise task for the delegate. Schema/layout context is automatic - only include task-specific details.",
+              "type": "string"
+            },
+            "type": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "description": "Create a structured plan for complex builds (3+ widgets or structural changes).",
+                  "properties": {
+                    "id": {
+                      "enum": [
+                        "planning"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "description": "Explore the data schema, run queries, and answer data questions.",
+                  "properties": {
+                    "id": {
+                      "enum": [
+                        "data"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "description": "Place widgets on the grid, move existing widgets, and manage page-level filters.",
+                  "properties": {
+                    "id": {
+                      "enum": [
+                        "page"
+                      ],
+                      "type": "string"
+                    },
+                    "pageId": {
+                      "enum": [
+                        "overview",
+                        "verdicts",
+                        "reputation",
+                        "reconciliation",
+                        "sentinel"
+                      ],
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "pageId"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "description": "Configure a single widget - its data mapping, title, and formatting.",
+                  "properties": {
+                    "id": {
+                      "enum": [
+                        "widget"
+                      ],
+                      "type": "string"
+                    },
+                    "pageId": {
+                      "enum": [
+                        "overview",
+                        "verdicts",
+                        "reputation",
+                        "reconciliation",
+                        "sentinel"
+                      ],
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "widgetId": {
+                      "enum": [
+                        "kpi-released",
+                        "kpi-active",
+                        "kpi-decisions",
+                        "kpi-chain",
+                        "vault",
+                        "gauges",
+                        "verdict",
+                        "timeline",
+                        "ledger",
+                        "flow",
+                        "kpi-decisions",
+                        "kpi-confidence",
+                        "kpi-refused",
+                        "kpi-precheck",
+                        "status-filter",
+                        "by-agent",
+                        "outcomes",
+                        "refused",
+                        "list",
+                        "board",
+                        "score-chart",
+                        "kpi-held",
+                        "kpi-released",
+                        "recon",
+                        "ops",
+                        "radar",
+                        "kpi-refused",
+                        "kpi-held",
+                        "ms-status"
+                      ],
+                      "type": "string"
+                    },
+                    "widgetType": {
+                      "enum": [
+                        "pact-kpi",
+                        "pact-sentinel-radar",
+                        "pact-escrow-vault",
+                        "pact-milestone-timeline",
+                        "pact-verdict-card",
+                        "pact-reputation-leaderboard",
+                        "pact-money-flow",
+                        "pact-rate-gauges",
+                        "pact-ledger",
+                        "pact-reconciliation",
+                        "pact-refused-list",
+                        "column-chart-grouped",
+                        "column-chart-stacked",
+                        "column-chart-stacked-100",
+                        "bar-chart-grouped",
+                        "bar-chart-stacked",
+                        "bar-chart-stacked-100",
+                        "line-chart",
+                        "area-chart",
+                        "area-chart-stacked",
+                        "area-chart-stacked-100",
+                        "value",
+                        "radial-gauge",
+                        "linear-gauge",
+                        "scatter-chart",
+                        "bubble-chart",
+                        "grid",
+                        "pivot-grid",
+                        "radar-line-chart",
+                        "radar-area-chart",
+                        "radial-column-chart",
+                        "nightingale-chart",
+                        "radial-bar-chart",
+                        "pie-chart",
+                        "donut-chart",
+                        "funnel-chart",
+                        "cone-funnel-chart",
+                        "pyramid-chart",
+                        "treemap-chart",
+                        "sunburst-chart",
+                        "text",
+                        "image",
+                        "button-filter",
+                        "list-filter",
+                        "date-filter",
+                        "combo-chart-grouped-column-line",
+                        "combo-chart-stacked-column-line"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "widgetType",
+                    "widgetId",
+                    "pageId"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "description": "PACT Sentinel: runs the deterministic anomaly rules over the escrow ledger (refund spikes, seller refund concentration, repeated rejections, low-confidence releases, expiring PayPal authorizations, failed operations, open disputes, pending appeals, stalled funding), explains the findings, pins them on the Anomaly Radar and has Studio build a chart for the most important one. Delegate to it for any question about risk, fraud, anomalies or what needs attention.",
+                  "properties": {
+                    "id": {
+                      "enum": [
+                        "pact-sentinel"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "instructions"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ],
+    "tool_choice": "auto",
+    "truncation": "disabled",
+    "id": "resp_6af0cbb3125958b0f8a7469b",
+    "object": "response",
+    "status": "completed",
+    "created_at": 1794165682,
+    "completed_at": 1794165683,
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+      {
+        "type": "reasoning",
+        "id": "rs_6af0cbb3125958b0f8a7469b:rs_bc377541-175a-452c-aec3-92c535e386af",
+        "summary": [],
+        "status": "completed"
+      },
+      {
+        "type": "message",
+        "id": "rs_43642e06-9add-4988-b51e-f41daca56a1d",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Audit chain is intact — now tallying the outcomes for you.",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "phase": "commentary",
+        "status": "completed"
+      },
+      {
+        "type": "function_call",
+        "id": "fc_241be903-7f7d-41ab-9b59-ac2889f59871",
+        "call_id": "call_241be903-7f7d-41ab-9b59-ac2889f59871",
+        "name": "delegate_to",
+        "arguments": "{\"instructions\":\"Summarise the AI decisions on the ledger by outcome: query Verdicts grouped by Verdict outcome/status (and if useful by Decided By kind), with counts. Return the numbers to relay.\",\"type\":{\"id\":\"data\"}}",
+        "status": "completed"
+      }
+    ],
+    "instructions": "You are the PACT Auditor inside the PACT Control Tower, an AG Studio dashboard over an escrow ledger.\nPACT: buyers and sellers (often AI agents) agree a deal; PayPal holds the money with an authorization; PACT captures each milestone share only after the AI Verifier approves evidence; disputes go to an AI Arbiter; every decision can be appealed to a human and is written to a SHA-256 hash-chained audit log.\nRuntime: PayPal SIMULATED adapter (say so if asked about payments). Audit chain verified (298 entries).\nDashboard tables: Pacts, Milestones, Verdicts, Payments, Reputation, Money Flows, PayPal Transactions, Calendar.\nHow to work:\n- \"Why was X refused/approved?\": call list_refused_milestones or get_verdict to find the verdict, then explain_decision. Quote the failed criterion and the facts from the evidence description. Mention the confidence and that the decision can be appealed.\n- \"Show/list/add ...\" for refused milestones: call add_refused_milestones_widget. For any other new chart or widget, delegate to the built-in agents with delegate_to (page to place widgets, widget to configure one, data for numeric questions, planning for multi-widget layouts).\n- Risk, anomalies, fraud, \"what needs attention\": delegate to pact-sentinel with delegate_to (it runs the deterministic rules, pins the finding on the Anomaly Radar and has a chart built), then relay its summary.\n- Call open_pact_drilldown only when the user asks to open or see a pact or its evidence; otherwise mention that the evidence can be opened.\n- Never invent ids, amounts or reasons: everything you state must come from a tool result.\nAnswer in plain English, 2-5 short sentences, no markdown tables.",
+    "usage": {
+      "input_tokens": 7937,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 451,
+      "output_tokens_details": {
+        "reasoning_tokens": 322
+      },
+      "total_tokens": 8388
+    },
+    "parallel_tool_calls": true,
+    "store": true,
+    "max_output_tokens": 16000
+  },
+  "recordedAt": "2026-11-08T19:21:23.535Z",
+  "prompt": "{\"input\":[{\"content\":[{\"text\":\"Is the audit chain intact? Summarise the AI decisions on the ledger by outcome.\",\"type\":\"input_text\"}],\"role\":\"user\",\"status\":\"completed\",\"type\":\"message\"},{\"id\":\"rs_6af0cbab44caefb1255c415a:rs_795e7c62-4b6a-418b-b36a-489d0d88366c\",\"summary\":[],\"type\":\"reasoning\"},{\"content\":[{\"annotations\":[],\"text\":\"Checking the audit chain and pulling the decision tally.\",\"type\":\"output_text\"}],\"role\":\"assistant\",\"status\":\"completed\",\"type\":\"message\"},{\"arguments\":\"{}\",\"call_id\":\"call_bb1e3161-0e0d-4c81-8597-5df5b1099528\",\"name\":\"verify_audit_chain\",\"status\":\"completed\",\"type\":\"function_call\"},{\"call_id\":\"call_bb1e3161-0e0d-4c81-8597-5df5b1099528\",\"output\":\"{\\\"success\\\":true,\\\"response\\\":\\\"Chain intact: 298 entries, head ⟦v1⟧.\\\",\\\"data\\\":{\\\"ok\\\":true,\\\"count\\\":298,\\\"headHash\\\":\\\"⟦v1⟧\\\",\\\"brokenAt\\\":null,\\\"reason\\\":null,\\\"verifiedAt\\\":\\\"⟦v2⟧\\\"}}\",\"status\":\"completed\",\"type\":\"function_call_output\"},{\"arguments\":\"{}\",\"call_id\":\"call_e77afcb7-95fb-453a-9189-cd1179825575\",\"name\":\"view_schema\",\"status\":\"completed\",\"type\":\"function_call\"},{\"call_id\":\"call_e77afcb7-95fb-453a-9189-cd1179825575\",\"output\":\"{\\\"success\\\":true,\\\"response\\\":\\\"Pacts [pacts]\\\\n\\\\tPact ID [pacts.id]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tPact [pacts.title]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tPact Status [pacts.status]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tBuyer [pacts.buyer]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tSeller [pacts.seller]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tTotal [pacts.total]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tHeld [pacts.held]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tReleased [pacts.released]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tRefunded [pacts.refunded]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tVoided [pacts.voided]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tMilestones [pacts.milestones]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tMilestones Settled [pacts.milestonesDone]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tPayment Mode [pacts.paymentMode]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tCreated [pacts.createdAt]\\\\n\\\\t\\\\tType: column, Data Type: datetime, supportedBuckets: year, quarter, month, week, day, hour, minute, monthOfYear, dayOfWeek, hourOfDay\\\\n\\\\tDeadline [pacts.deadline]\\\\n\\\\t\\\\tType: column, Data Type: date, supportedBuckets: year, quarter, month, week, day, monthOfYear, dayOfWeek\\\\n\\\\tRelease Rate [releaseRate]\\\\n\\\\t\\\\tType: measure, Data Type: number, depends: [pacts.released, pacts.total]\\\\n\\\\tRefund Share [refundShare]\\\\n\\\\t\\\\tType: measure, Data Type: number, depends: [pacts.refunded, pacts.total]\\\\nMilestones [milestones]\\\\n\\\\tMilestone Key [milestones.key]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tPact ID [milestones.pactId]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tMilestone Pact [milestones.pactTitle]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tMilestone ID [milestones.milestoneId]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tStep [milestones.position]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tMilestone [milestones.title]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tShare % [milestones.percent]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tMilestone Amount [milestones.amount]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tCaptured [milestones.captured]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tMilestone Refunded [milestones.refunded]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tMilestone Status [milestones.status]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tEvidence Attempts [milestones.attempts]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tMilestone Deadline [milestones.deadline]\\\\n\\\\t\\\\tType: column, Data Type: date, supportedBuckets: year, quarter, month, week, day, monthOfYear, dayOfWeek\\\\n\\\\tReleased At [milestones.releasedAt]\\\\n\\\\t\\\\tType: column, Data Type: datetime, supportedBuckets: year, quarter, month, week, day, hour, minute, monthOfYear, dayOfWeek, hourOfDay\\\\n\\\\tLast Verdict [milestones.lastVerdict]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tLast Confidence [milestones.lastConfidence]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tEvidence Files [milestones.evidenceCount]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tThumbnail [milestones.thumbnailUrl]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tMilestone Seller [milestones.seller]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\nVerdicts [verdicts]\\\\n\\\\tVerdict ID [verdicts.id]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tPact ID [verdicts.pactId]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tVerdict Pact [verdicts.pactTitle]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tMilestone Key [verdicts.milestoneKey]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tVerdict Milestone [verdicts.milestoneTitle]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tDecided By [verdicts.kind]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tVerdict [verdicts.status]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tRefused [verdicts.refused]\\\\n\\\\t\\\\tType: column, Data Type: boolean\\\\n\\\\tConfidence [verdicts.confidence]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tReasoning [verdicts.reasoning]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tModel [verdicts.model]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tLLM Mode [verdicts.llmMode]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tAppeal [verdicts.appealStatus]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tPre-check Failures [verdicts.precheckFailures]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tDecided At [verdicts.createdAt]\\\\n\\\\t\\\\tType: column, Data Type: datetime, supportedBuckets: year, quarter, month, week, day, hour, minute, monthOfYear, dayOfWeek, hourOfDay\\\\n\\\\tVerdict Seller [verdicts.seller]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\nPayments [payments]\\\\n\\\\tPact ID [payments.pactId]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tMilestone Key [payments.milestoneKey]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tOperation [payments.kind]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tOperation Amount [payments.amount]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tPayPal Status [payments.status]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tMode [payments.mode]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tPayPal ID [payments.paypalId]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tOperation Time [payments.createdAt]\\\\n\\\\t\\\\tType: column, Data Type: datetime, supportedBuckets: year, quarter, month, week, day, hour, minute, monthOfYear, dayOfWeek, hourOfDay\\\\nReputation [reputation]\\\\n\\\\tParty [reputation.name]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tParty Kind [reputation.kind]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tReputation [reputation.score]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tTier [reputation.tier]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tCompletion Rate [reputation.completionRate]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tOn-time Rate [reputation.onTimeRate]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tDispute Rate [reputation.disputeRate]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tRefund Rate [reputation.refundRate]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tScore Confidence [reputation.confidence]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tSettled Milestones [reputation.milestones]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tTrend [reputation.trend]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\nMoney Flows [flows]\\\\n\\\\tFrom [flows.source]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tTo [flows.target]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tFlow [flows.value]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\nPayPal Transactions [paypalTransactions]\\\\n\\\\tTransaction ID [paypalTransactions.id]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tTransaction Date [paypalTransactions.date]\\\\n\\\\t\\\\tType: column, Data Type: datetime, supportedBuckets: year, quarter, month, week, day, hour, minute, monthOfYear, dayOfWeek, hourOfDay\\\\n\\\\tEvent Code [paypalTransactions.eventCode]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tTransaction Status [paypalTransactions.status]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tTransaction Amount [paypalTransactions.amount]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tFee [paypalTransactions.fee]\\\\n\\\\t\\\\tType: column, Data Type: number\\\\n\\\\tCounterparty [paypalTransactions.counterparty]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tNote [paypalTransactions.note]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tMatched Pact [paypalTransactions.pactId]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tPACT Operation [paypalTransactions.pactKind]\\\\n\\\\t\\\\tType: column, Data Type: string\\\\n\\\\tMatched [paypalTransactions.matched]\\\\n\\\\t\\\\tType: column, Data Type: boolean\\\\nCalendar [calendar:calendar]\\\\n\\\\tYear [calendar::year]\\\\n\\\\t\\\\tType: column, Data Type: number, calendarFragment: chronological\\\\n\\\\tMonth [calendar::month]\\\\n\\\\t\\\\tType: column, Data Type: number, calendarFragment: chronological\\\\n\\\\tWeek [calendar::week]\\\\n\\\\t\\\\tType: column, Data Type: number, calendarFragment: chronological\\\\n\\\\tDay [calendar::day]\\\\n\\\\t\\\\tType: column, Data Type: number, calendarFragment: chronological\\\",\\\"data\\\":{\\\"totalFieldsets\\\":8,\\\"totalFields\\\":89}}\",\"status\":\"completed\",\"type\":\"function_call_output\"}],\"instructions\":\"You are the PACT Auditor inside the PACT Control Tower, an AG Studio dashboard over an escrow ledger.\\nPACT: buyers and sellers (often AI agents) agree a deal; PayPal holds the money with an authorization; PACT captures each milestone share only after the AI Verifier approves evidence; disputes go to an AI Arbiter; every decision can be appealed to a human and is written to a SHA-256 hash-chained audit log.\\nRuntime: PayPal SIMULATED adapter (say so if asked about payments). Audit chain verified (298 entries).\\nDashboard tables: Pacts, Milestones, Verdicts, Payments, Reputation, Money Flows, PayPal Transactions, Calendar.\\nHow to work:\\n- \\\"Why was X refused/approved?\\\": call list_refused_milestones or get_verdict to find the verdict, then explain_decision. Quote the failed criterion and the facts from the evidence description. Mention the confidence and that the decision can be appealed.\\n- \\\"Show/list/add ...\\\" for refused milestones: call add_refused_milestones_widget. For any other new chart or widget, delegate to the built-in agents with delegate_to (page to place widgets, widget to configure one, data for numeric questions, planning for multi-widget layouts).\\n- Risk, anomalies, fraud, \\\"what needs attention\\\": delegate to pact-sentinel with delegate_to (it runs the deterministic rules, pins the finding on the Anomaly Radar and has a chart built), then relay its summary.\\n- Call open_pact_drilldown only when the user asks to open or see a pact or its evidence; otherwise mention that the evidence can be opened.\\n- Never invent ids, amounts or reasons: everything you state must come from a tool result.\\nAnswer in plain English, 2-5 short sentences, no markdown tables.\",\"model\":\"muse-spark-1.3\",\"parallel_tool_calls\":true,\"reasoning\":{\"effort\":\"medium\"},\"text\":{\"format\":{\"type\":\"text\"}},\"tools\":[{\"description\":\"View the available data schema - fieldsets and their fields with types. Always call this before creating widgets or writing queries so you know which field IDs exist.\",\"name\":\"view_schema\",\"parameters\":{\"additionalProperties\":false,\"properties\":{},\"required\":[],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"View the current page state: widget positions, page layout config, active page filters, layout/filter issues, and per-widget health summaries.\",\"name\":\"view_page\",\"parameters\":{\"additionalProperties\":false,\"properties\":{},\"required\":[],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Execute a query against the data source.\\nTwo modes:\\n- aggregation: group by dimensions with aggregated measures (sum, avg, count, etc.)\\n- projection: return raw rows with selected columns (no aggregation)\\n\\nSupports joins, filters, sorting, and pagination.\\n\\nAliases ('as'): every 'as' value in the query must be unique across dimensions,\\nmeasures, projections, and windows — they share one output namespace. Reusing a\\nname (e.g. setting 'as: \\\"total_revenue\\\"' on both a dimension and a measure) is\\nrejected with validationAliasCollision; pick distinct names per output.\",\"name\":\"execute_query\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"query\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"axes\":{\"items\":{\"additionalProperties\":false,\"properties\":{\"dimensions\":{\"items\":{\"anyOf\":[{},{}]},\"type\":\"array\"}},\"required\":[\"dimensions\"],\"type\":\"object\"},\"type\":[\"array\",\"null\"]},\"filter\":{\"anyOf\":[{\"anyOf\":[{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{}},\"required\":[\"field\",\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"}]},{\"additionalProperties\":false,\"properties\":{\"combinator\":{\"enum\":[\"and\",\"or\",\"not\"],\"type\":\"string\"},\"conditions\":{\"items\":{},\"type\":\"array\"}},\"required\":[\"combinator\",\"conditions\"],\"type\":\"object\"}]},{\"type\":\"null\"}]},\"filterAggregated\":{\"anyOf\":[{\"anyOf\":[{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{}},\"required\":[\"field\",\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"}]},{\"additionalProperties\":false,\"properties\":{\"combinator\":{\"enum\":[\"and\",\"or\",\"not\"],\"type\":\"string\"},\"conditions\":{\"items\":{},\"type\":\"array\"}},\"required\":[\"combinator\",\"conditions\"],\"type\":\"object\"}]},{\"type\":\"null\"}]},\"kind\":{\"enum\":[\"apiQuery\"],\"type\":\"string\"},\"limit\":{\"additionalProperties\":false,\"properties\":{\"count\":{\"type\":\"number\"},\"offset\":{\"type\":[\"number\",\"null\"]}},\"required\":[\"count\",\"offset\"],\"type\":[\"object\",\"null\"]},\"measures\":{\"items\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"as\":{\"type\":[\"string\",\"null\"]},\"field\":{\"anyOf\":[{},{},{},{},{}]},\"fillPolicy\":{\"enum\":[\"zero\"],\"type\":[\"string\",\"null\"]},\"orderBy\":{\"items\":{},\"type\":[\"array\",\"null\"]}},\"required\":[\"field\",\"orderBy\",\"fillPolicy\",\"as\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"as\":{\"type\":\"string\"},\"expression\":{\"anyOf\":[{},{},{},{},{},{},{},{},{},{}]},\"fillPolicy\":{\"enum\":[\"zero\"],\"type\":[\"string\",\"null\"]},\"orderBy\":{\"items\":{},\"type\":[\"array\",\"null\"]}},\"required\":[\"expression\",\"as\",\"orderBy\",\"fillPolicy\"],\"type\":\"object\"}]},\"type\":[\"array\",\"null\"]},\"sort\":{\"items\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"direction\":{\"enum\":[\"asc\",\"desc\"],\"type\":\"string\"},\"field\":{\"anyOf\":[{},{},{},{},{}]}},\"required\":[\"field\",\"direction\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"by\":{\"type\":\"string\"},\"direction\":{\"enum\":[\"asc\",\"desc\"],\"type\":\"string\"}},\"required\":[\"by\",\"direction\"],\"type\":\"object\"}]},\"type\":[\"array\",\"null\"]},\"variant\":{\"enum\":[\"aggregation\"],\"type\":\"string\"},\"window\":{\"items\":{\"additionalProperties\":false,\"properties\":{\"as\":{\"type\":[\"string\",\"null\"]},\"field\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"aggregation\":{},\"id\":{}},\"required\":[\"id\",\"aggregation\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"aggregation\":{},\"id\":{}},\"required\":[\"id\",\"aggregation\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"aggregation\":{},\"id\":{}},\"required\":[\"id\",\"aggregation\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"aggregation\":{},\"id\":{}},\"required\":[\"id\",\"aggregation\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"id\":{}},\"required\":[\"id\"],\"type\":\"object\"}]},\"functionType\":{\"enum\":[\"rank\",\"denseRank\",\"rowNumber\"],\"type\":\"string\"},\"orderBy\":{\"items\":{\"anyOf\":[{},{}]},\"type\":[\"array\",\"null\"]},\"partitionBy\":{\"items\":{\"anyOf\":[{}]},\"type\":[\"array\",\"null\"]}},\"required\":[\"field\",\"functionType\",\"partitionBy\",\"orderBy\",\"as\"],\"type\":\"object\"},\"type\":[\"array\",\"null\"]}},\"required\":[\"variant\",\"kind\",\"axes\",\"measures\",\"filter\",\"filterAggregated\",\"sort\",\"window\",\"limit\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"distinct\":{\"type\":[\"boolean\",\"null\"]},\"filter\":{\"anyOf\":[{\"anyOf\":[{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{}},\"required\":[\"field\",\"operator\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"field\":{},\"operator\":{},\"value\":{}},\"required\":[\"field\",\"operator\",\"value\"],\"type\":\"object\"}]},{\"additionalProperties\":false,\"properties\":{\"combinator\":{\"enum\":[\"and\",\"or\",\"not\"],\"type\":\"string\"},\"conditions\":{\"items\":{},\"type\":\"array\"}},\"required\":[\"combinator\",\"conditions\"],\"type\":\"object\"}]},{\"type\":\"null\"}]},\"kind\":{\"enum\":[\"apiQuery\"],\"type\":\"string\"},\"limit\":{\"additionalProperties\":false,\"properties\":{\"count\":{\"type\":\"number\"},\"offset\":{\"type\":[\"number\",\"null\"]}},\"required\":[\"count\",\"offset\"],\"type\":[\"object\",\"null\"]},\"projection\":{\"items\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"as\":{\"type\":[\"string\",\"null\"]},\"field\":{\"anyOf\":[{},{},{},{},{}]}},\"required\":[\"field\",\"as\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"as\":{\"type\":\"string\"},\"expression\":{\"anyOf\":[{},{},{},{},{},{},{},{},{},{}]}},\"required\":[\"expression\",\"as\"],\"type\":\"object\"}]},\"type\":\"array\"},\"sort\":{\"items\":{\"anyOf\":[{\"additionalProperties\":false,\"properties\":{\"direction\":{\"enum\":[\"asc\",\"desc\"],\"type\":\"string\"},\"field\":{\"anyOf\":[{},{},{},{},{}]}},\"required\":[\"field\",\"direction\"],\"type\":\"object\"},{\"additionalProperties\":false,\"properties\":{\"by\":{\"type\":\"string\"},\"direction\":{\"enum\":[\"asc\",\"desc\"],\"type\":\"string\"}},\"required\":[\"by\",\"direction\"],\"type\":\"object\"}]},\"type\":[\"array\",\"null\"]},\"variant\":{\"enum\":[\"projection\"],\"type\":\"string\"}},\"required\":[\"variant\",\"kind\",\"projection\",\"filter\",\"sort\",\"limit\",\"distinct\"],\"type\":\"object\"}]}},\"required\":[\"query\"],\"type\":\"object\"},\"strict\":false,\"type\":\"function\"},{\"description\":\"Fetch one PACT verdict (AI Verifier, AI Arbiter or human) with its per-criterion results, reasoning, confidence, model and appeal status. Omit verdictId for the most recent verdict.\",\"name\":\"get_verdict\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"verdictId\":{\"description\":\"Verdict id (vd_...). Omit for the latest.\",\"type\":[\"string\",\"null\"]}},\"required\":[\"verdictId\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"List milestones the AI refused (Verifier \\\"rejected\\\" or Arbiter \\\"refund\\\") in the last N days, newest first, with pact, milestone, reasoning and confidence.\",\"name\":\"list_refused_milestones\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"days\":{\"description\":\"Look-back window in days. Defaults to 7.\",\"type\":[\"number\",\"null\"]}},\"required\":[\"days\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Everything behind one decision: the milestone criteria, the evidence descriptions the Verifier produced (step 1, written without seeing the criteria), the per-criterion judgement (step 2), deterministic pre-check failures, and the audit-log entries for that verdict with the chain status.\",\"name\":\"explain_decision\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"verdictId\":{\"description\":\"Verdict id (vd_...)\",\"type\":\"string\"}},\"required\":[\"verdictId\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Open a pact's room (timeline, evidence, verdicts, audit trail) in a new browser tab, optionally scrolled to one milestone. Only when the user asks to open or see a pact or its evidence.\",\"name\":\"open_pact_drilldown\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"milestoneId\":{\"description\":\"Milestone id, e.g. m2\",\"type\":[\"string\",\"null\"]},\"pactId\":{\"description\":\"Pact id (pact_...)\",\"type\":\"string\"}},\"required\":[\"pactId\",\"milestoneId\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Recompute every SHA-256 link of the append-only audit log and report whether it is intact.\",\"name\":\"verify_audit_chain\",\"parameters\":{\"additionalProperties\":false,\"properties\":{},\"required\":[],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Add a \\\"Refused milestones\\\" widget to the current page: every Verifier rejection and Arbiter refund in the last 7 days, with reasoning, confidence and appeal status. Use this when the user asks to SEE refused milestones.\",\"name\":\"add_refused_milestones_widget\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"title\":{\"description\":\"Widget title. Defaults to \\\"Refused milestones this week\\\".\",\"type\":[\"string\",\"null\"]}},\"required\":[\"title\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"},{\"description\":\"Delegate a subtask to a specialised sub-agent, which runs it and returns a summary. You retain control of the conversation. Pick the target agent and give it a concise task.\",\"name\":\"delegate_to\",\"parameters\":{\"additionalProperties\":false,\"properties\":{\"instructions\":{\"description\":\"Concise task for the delegate. Schema/layout context is automatic - only include task-specific details.\",\"type\":\"string\"},\"type\":{\"anyOf\":[{\"additionalProperties\":false,\"description\":\"Create a structured plan for complex builds (3+ widgets or structural changes).\",\"properties\":{\"id\":{\"enum\":[\"planning\"],\"type\":\"string\"}},\"required\":[\"id\"],\"type\":\"object\"},{\"additionalProperties\":false,\"description\":\"Explore the data schema, run queries, and answer data questions.\",\"properties\":{\"id\":{\"enum\":[\"data\"],\"type\":\"string\"}},\"required\":[\"id\"],\"type\":\"object\"},{\"additionalProperties\":false,\"description\":\"Place widgets on the grid, move existing widgets, and manage page-level filters.\",\"properties\":{\"id\":{\"enum\":[\"page\"],\"type\":\"string\"},\"pageId\":{\"enum\":[\"overview\",\"verdicts\",\"reputation\",\"reconciliation\",\"sentinel\"],\"type\":[\"string\",\"null\"]}},\"required\":[\"id\",\"pageId\"],\"type\":\"object\"},{\"additionalProperties\":false,\"description\":\"Configure a single widget - its data mapping, title, and formatting.\",\"properties\":{\"id\":{\"enum\":[\"widget\"],\"type\":\"string\"},\"pageId\":{\"enum\":[\"overview\",\"verdicts\",\"reputation\",\"reconciliation\",\"sentinel\"],\"type\":[\"string\",\"null\"]},\"widgetId\":{\"enum\":[\"kpi-released\",\"kpi-active\",\"kpi-decisions\",\"kpi-chain\",\"vault\",\"gauges\",\"verdict\",\"timeline\",\"ledger\",\"flow\",\"kpi-decisions\",\"kpi-confidence\",\"kpi-refused\",\"kpi-precheck\",\"status-filter\",\"by-agent\",\"outcomes\",\"refused\",\"list\",\"board\",\"score-chart\",\"kpi-held\",\"kpi-released\",\"recon\",\"ops\",\"radar\",\"kpi-refused\",\"kpi-held\",\"ms-status\"],\"type\":\"string\"},\"widgetType\":{\"enum\":[\"pact-kpi\",\"pact-sentinel-radar\",\"pact-escrow-vault\",\"pact-milestone-timeline\",\"pact-verdict-card\",\"pact-reputation-leaderboard\",\"pact-money-flow\",\"pact-rate-gauges\",\"pact-ledger\",\"pact-reconciliation\",\"pact-refused-list\",\"column-chart-grouped\",\"column-chart-stacked\",\"column-chart-stacked-100\",\"bar-chart-grouped\",\"bar-chart-stacked\",\"bar-chart-stacked-100\",\"line-chart\",\"area-chart\",\"area-chart-stacked\",\"area-chart-stacked-100\",\"value\",\"radial-gauge\",\"linear-gauge\",\"scatter-chart\",\"bubble-chart\",\"grid\",\"pivot-grid\",\"radar-line-chart\",\"radar-area-chart\",\"radial-column-chart\",\"nightingale-chart\",\"radial-bar-chart\",\"pie-chart\",\"donut-chart\",\"funnel-chart\",\"cone-funnel-chart\",\"pyramid-chart\",\"treemap-chart\",\"sunburst-chart\",\"text\",\"image\",\"button-filter\",\"list-filter\",\"date-filter\",\"combo-chart-grouped-column-line\",\"combo-chart-stacked-column-line\"],\"type\":\"string\"}},\"required\":[\"id\",\"widgetType\",\"widgetId\",\"pageId\"],\"type\":\"object\"},{\"additionalProperties\":false,\"description\":\"PACT Sentinel: runs the deterministic anomaly rules over the escrow ledger (refund spikes, seller refund concentration, repeated rejections, low-confidence releases, expiring PayPal authorizations, failed operations, open disputes, pending appeals, stalled funding), explains the findings, pins them on the Anomaly Radar and has Studio build a chart for the most important one. Delegate to it for any question about risk, fraud, anomalies or what needs attention.\",\"properties\":{\"id\":{\"enum\":[\"pact-sentinel\"],\"type\":\"string\"}},\"required\":[\"id\"],\"type\":\"object\"}]}},\"required\":[\"type\",\"instructions\"],\"type\":\"object\"},\"strict\":true,\"type\":\"function\"}]}"
+}

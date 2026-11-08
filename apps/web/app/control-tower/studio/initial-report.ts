@@ -16,9 +16,9 @@ const tile = (metric: string) => ({ type: 'pact-kpi', dataMapping: {}, format: {
 
 export const PAGE_TITLES: Record<string, string> = {
   overview: 'Overview',
-  verdicts: 'Verdicts & audit',
+  verdicts: 'Verdicts',
   reputation: 'Reputation',
-  reconciliation: 'PayPal reconciliation',
+  reconciliation: 'Reconciliation',
   sentinel: 'Sentinel',
 };
 
