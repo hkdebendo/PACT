@@ -2093,6 +2093,84 @@
         }
       }
     },
+    "/api/sentinel/scan": {
+      "get": {
+        "summary": "Run the Sentinel rules over the ledger: deterministic anomalies with severity, metric vs baseline and affected pacts",
+        "tags": [
+          "sentinel"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sentinel/brief": {
+      "post": {
+        "summary": "Scan, then have Muse write a plain-English briefing of the findings (deterministic template when no model answer is available)",
+        "tags": [
+          "sentinel"
+        ],
+        "parameters": [
+          {
+            "name": "x-pact-actor",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Who is acting, e.g. buyer:Ada (demo identity, not authentication)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "4XX": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/admin/usage": {
       "get": {
         "summary": "Muse token usage and cost",

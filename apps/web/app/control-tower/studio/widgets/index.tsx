@@ -4,6 +4,7 @@
 // under a "PACT" menu group, ahead of Studio's own widgets, so users and the AI agents can add them.
 import { createWidgets } from 'ag-studio-react';
 import { KPI_METRICS, KpiTileWidget } from './kpi';
+import { AnomalyRadarWidget } from './sentinel';
 import { EscrowVaultWidget, MoneyFlowWidget, RateGaugesWidget } from './money';
 import { MilestoneTimelineWidget, PactLedgerWidget, ReconciliationWidget, RefusedListWidget, ReputationLeaderboardWidget, VerdictCardWidget } from './pacts';
 
@@ -20,6 +21,7 @@ const ICONS = {
   ledger: icon('<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'),
   reconcile: icon('<path d="M4 7h11l-3-3M20 17H9l3 3"/>'),
   refused: icon('<circle cx="12" cy="12" r="9"/><path d="M8 8l8 8"/>'),
+  radar: icon('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6-6"/><circle cx="12" cy="12" r="1" fill="currentColor"/>'),
   kpi: icon('<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 15l3-3 2.5 2L17 9"/>'),
 };
 
@@ -45,6 +47,7 @@ const def = (id: string, label: string, comp: any, ico: string, description: str
 
 export const PACT_WIDGET_IDS = [
   'pact-kpi',
+  'pact-sentinel-radar',
   'pact-escrow-vault',
   'pact-milestone-timeline',
   'pact-verdict-card',
@@ -68,6 +71,15 @@ export const buildWidgets = () => (defaults: any) =>
         [300, 150],
         [200, 120],
         withSelect('format.style.metric', 'Metric', 'released', Object.entries(KPI_METRICS).map(([value, label]) => ({ value, label }))),
+      ),
+      def(
+        'pact-sentinel-radar',
+        'Anomaly Radar',
+        AnomalyRadarWidget,
+        ICONS.radar,
+        "Live findings of the PACT Sentinel rules engine (refund spikes, seller refund concentration, repeated rejections, low-confidence releases, expiring PayPal authorizations, failed operations, open disputes, pending appeals, stalled funding): severity, metric vs baseline, money at stake and the affected pacts. format.style.focus = a rule id to pin first; format.style.headline = a one-line briefing.",
+        [620, 520],
+        [340, 300],
       ),
       def('pact-escrow-vault', 'Escrow Vault', EscrowVaultWidget, ICONS.vault, 'Totals of money held by PayPal (authorized, not charged), released to sellers, refunded and voided, with animated transitions.', [520, 260], [300, 200]),
       def('pact-milestone-timeline', 'Milestone Timeline', MilestoneTimelineWidget, ICONS.timeline, "Per pact, its milestones as steps coloured by state, with the latest evidence thumbnail and verifier confidence. Follows the page's cross-filter (one pact) or shows the most recent pacts.", [900, 300], [420, 200]),

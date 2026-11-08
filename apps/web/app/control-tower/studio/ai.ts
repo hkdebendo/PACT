@@ -8,14 +8,21 @@
 // (planning, data, page, widget) through tools.delegateTo. Its instructions are re-resolved every
 // run from live PACT context (runtime modes, ledger totals, audit chain) plus Studio's own
 // agent context (api.getAiContext().schema()).
+//
+// Second agent "pact-sentinel" (sentinel-agent.ts): a loop of our own plugged in with
+// clientToolRunner. PACT's deterministic rules engine finds the anomalies, Muse writes the
+// briefing, and Studio executes the tools the Sentinel asks for, including delegate_to Studio's
+// built-in Page agent. The Auditor delegates risk questions to it; users can also chat with it.
 import { createAiHarness, directLlmRunner, type AgAiHarnessSetup, type AgAiPromptStarter, type AgStudioApi } from 'ag-studio';
 import { openaiAdapter } from './openai-adapter';
+import { buildSentinelAgent } from './sentinel-agent';
 import type { TowerContext } from './widgets/common';
 
 export const PROMPT_STARTERS: AgAiPromptStarter[] = [
   { label: 'Why was the production photo refused?', prompt: 'Why was the production photo refused? Show all refused milestones this week.' },
   { label: 'Is the audit chain intact?', prompt: 'Is the audit chain intact? Summarise what the AI decided today.' },
   { label: 'Who is most reliable?', prompt: 'Which seller has the best reputation, and why? Add a chart of reputation by party.' },
+  { label: 'What needs attention right now?', prompt: 'What needs attention right now? Run the Sentinel and show me the riskiest finding.' },
 ];
 
 async function getJson(apiUrl: string, path: string, signal?: AbortSignal) {
@@ -134,10 +141,13 @@ export function buildAi(getContext: () => TowerContext): AgAiHarnessSetup {
     createAiHarness(api, ({ tools, builtIn }: any) => {
       const custom = pactTools(api, getContext);
       const delegates = ['planning', 'data', 'page', 'widget'];
+      // The Sentinel's loop is ours (rules engine + Muse briefing), Studio runs its tools.
+      const sentinel = buildSentinelAgent(api, getContext, tools);
       return {
         agents: [
           directLlmRunner({
             id: 'pact-auditor',
+            name: 'PACT Auditor',
             adapter,
             description: 'PACT Auditor: explains escrow decisions and audits the PACT ledger.',
             schema: (s: any) => s.undefined(),
@@ -154,13 +164,15 @@ export function buildAi(getContext: () => TowerContext): AgAiHarnessSetup {
                 'How to work:',
                 '- "Why was X refused/approved?": call list_refused_milestones or get_verdict to find the verdict, then explain_decision. Quote the failed criterion and the facts from the evidence description. Mention the confidence and that the decision can be appealed.',
                 '- "Show/list/add ..." for refused milestones: call add_refused_milestones_widget. For any other new chart or widget, delegate to the built-in agents with delegate_to (page to place widgets, widget to configure one, data for numeric questions, planning for multi-widget layouts).',
+                '- Risk, anomalies, fraud, "what needs attention": delegate to pact-sentinel with delegate_to (it runs the deterministic rules, pins the finding on the Anomaly Radar and has a chart built), then relay its summary.',
                 '- Call open_pact_drilldown only when the user asks to open or see a pact or its evidence; otherwise mention that the evidence can be opened.',
                 '- Never invent ids, amounts or reasons: everything you state must come from a tool result.',
                 'Answer in plain English, 2-5 short sentences, no markdown tables.',
               ].join('\n');
             },
-            tools: () => [tools.studio.viewSchema(), tools.studio.viewPage(), tools.studio.executeQuery(), ...custom, tools.delegateTo(delegates)],
+            tools: () => [tools.studio.viewSchema(), tools.studio.viewPage(), tools.studio.executeQuery(), ...custom, tools.delegateTo([...delegates, 'pact-sentinel'])],
           }),
+          sentinel,
           ...delegates.map((id) => directLlmRunner({ ...builtIn[id], adapter })),
         ],
         primary: 'pact-auditor',

@@ -25,7 +25,7 @@ const initials = (name: string) =>
     .slice(0, 2)
     .map((w) => w[0]?.toUpperCase() ?? '')
     .join('');
-const AVATAR = ['var(--pact-navy)', 'var(--pact-chart-7)', 'var(--pact-chart-6)', 'var(--pact-held)', 'var(--pact-chart-10)', 'var(--pact-released)'];
+const AVATAR = ['var(--pact-navy)', 'var(--pact-chart-3)', 'var(--pact-chart-5)', 'var(--pact-held)', 'var(--pact-chart-6)', 'var(--pact-chart-4)'];
 const avatarColor = (name: string) => AVATAR[[...String(name)].reduce((a, c) => a + c.charCodeAt(0), 0) % AVATAR.length];
 
 // --- 2. Milestone Timeline -----------------------------------------------------------------

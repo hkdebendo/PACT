@@ -38,10 +38,10 @@ const COLOR: Record<KpiMetric, string> = {
   released: 'var(--pact-released)',
   held: 'var(--pact-held)',
   active: 'var(--pact-navy)',
-  decisions: 'var(--pact-chart-5)',
-  confidence: 'var(--pact-chart-7)',
+  decisions: 'var(--pact-chart-4)',
+  confidence: 'var(--pact-chart-3)',
   refused: 'var(--pact-refund)',
-  precheck: 'var(--pact-chart-6)',
+  precheck: 'var(--pact-chart-5)',
   chain: 'var(--pact-released)',
 };
 

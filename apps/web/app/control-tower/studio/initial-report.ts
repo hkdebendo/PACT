@@ -19,6 +19,7 @@ export const PAGE_TITLES: Record<string, string> = {
   verdicts: 'Verdicts & audit',
   reputation: 'Reputation',
   reconciliation: 'PayPal reconciliation',
+  sentinel: 'Sentinel',
 };
 
 export const initialReport = (): AgReportState =>
@@ -111,6 +112,20 @@ export const initialReport = (): AgReportState =>
           },
         },
         widgetLayout: { recon: at(0, 0, 16, 30), 'kpi-held': at(16, 0, 8, 8), 'kpi-released': at(16, 8, 8, 8), ops: at(16, 16, 8, 14) },
+      },
+      {
+        id: 'sentinel',
+        widgets: {
+          radar: custom('pact-sentinel-radar', 'Anomaly radar', 'PACT Sentinel · deterministic rules, re-run on every live update'),
+          'kpi-refused': tile('refused'),
+          'kpi-held': tile('held'),
+          'ms-status': {
+            type: 'donut-chart',
+            dataMapping: { categoryKey: [{ id: 'milestones.status' }], valueKey: [{ id: 'milestones.key', aggregation: 'count' }] },
+            format: { ...title('Milestone outcomes', 'Every milestone on the ledger'), style: donutStyle },
+          },
+        },
+        widgetLayout: { radar: at(0, 0, 14, 32), 'kpi-refused': at(14, 0, 5, 8), 'kpi-held': at(19, 0, 5, 8), 'ms-status': at(14, 8, 10, 24) },
       },
     ],
   }) as unknown as AgReportState;

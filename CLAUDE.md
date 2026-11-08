@@ -5,7 +5,7 @@ On resume: read `PROGRESS.md`, run `npm test`, continue at the first unchecked i
 
 ## Hard rules
 - Runtime AI = **Meta Muse via the Meta Model API** (OpenAI-compatible, `https://api.meta.ai/v1`). Never use the Anthropic API/SDK at runtime.
-- **Zero spending**, **no Docker**, SQLite only, in-process jobs. `npm install && npm run dev` must work.
+- **No paid services except Meta Muse usage** (Muse calls are fine; nothing else that costs money), **no Docker**, SQLite only, in-process jobs. `npm install && npm run dev` must work.
 - **Secrets** live only in `.env.local` (git-ignored). Never print or commit them. Check env with `npm run env:check` (prints set / not set only). Run `npm run secret-scan` before every commit.
 - Everything public in **English**. No third-party logos/trademarks in UI, fixtures, demo.
 - Simulated behaviour must be **labelled** in code (`SIMULATED` comments), UI badges and README. Never present it as real PayPal behaviour.

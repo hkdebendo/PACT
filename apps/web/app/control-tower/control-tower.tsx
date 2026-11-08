@@ -15,6 +15,7 @@ import { initialReport, PAGE_TITLES } from './studio/initial-report';
 import { PACT_THEME_MODES, pactStudioTheme } from './studio/theme';
 import { buildWidgets } from './studio/widgets';
 import type { TowerContext } from './studio/widgets/common';
+import { fetchScan, type SentinelScan } from './studio/widgets/sentinel';
 import './tower.css';
 
 if (process.env.NODE_ENV !== 'production') enableStudioDevValidations();
@@ -29,11 +30,12 @@ const PAGE_ICONS: Record<string, React.ReactNode> = {
   verdicts: ico(<><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" /><path d="M9 12l2 2 4-4" /></>),
   reputation: ico(<><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z" /></>),
   reconciliation: ico(<><path d="M4 7h12l-3-3M20 17H8l3 3" /></>),
+  sentinel: ico(<><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4.5" /><path d="M12 12l5.5-5.5" /></>),
 };
 const SPARK = ico(<><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" /><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" /></>);
 const PENCIL = ico(<><path d="M4 20h4L19 9l-4-4L4 16z" /><path d="M13.5 6.5l4 4" /></>);
 
-const STORAGE_KEY = 'pact-control-tower-report-v2';
+const STORAGE_KEY = 'pact-control-tower-report-v3';
 
 // The PACT Auditor's tools read the latest context lazily (one Control Tower per page).
 let liveContext: TowerContext | null = null;
@@ -103,6 +105,17 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
     timer.current = setTimeout(loadDash, 350);
   });
 
+  // The Sentinel's rules re-run with every ledger refresh; the toolbar shows the result.
+  const [risk, setRisk] = useState<SentinelScan | null>(null);
+  useEffect(() => {
+    if (!dash) return;
+    const ac = new AbortController();
+    fetchScan(API_URL, ac.signal)
+      .then(setRisk)
+      .catch(() => {});
+    return () => ac.abort();
+  }, [dash]);
+
   // Data structure is fixed at init; later calls only replace rows (Studio's sync-data reload).
   const data = useMemo(() => (dash ? buildStudioData(dash, rec) : undefined), [dash, rec]);
   const widgets = useMemo(() => buildWidgets(), []);
@@ -135,6 +148,7 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
   const style = useMemo(() => ({ height: '100%', width: '100%' }), []);
   // Every non-primitive Studio prop must keep its reference between renders.
   const layout = useMemo(() => ({ widgetBorderEnabled: true }), []);
+  const localeText = useMemo(() => ({ panelTitleAi: 'PACT agents', aiMessageInputPlaceholder: 'Ask the PACT Auditor…' }), []);
 
   // Studio shows its AI panel in edit mode: open it with the Compose and Data panels folded away.
   const askAuditor = () => {
@@ -179,6 +193,19 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
             {live ? 'Live' : 'Offline'} · {dash ? new Date(dash.asOf).toLocaleTimeString('en-GB') : '—'}
           </span>
           <ChainBadge />
+          {risk && (
+            <button
+              onClick={() => goTo('sentinel')}
+              className={cx(
+                'inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium whitespace-nowrap transition-opacity hover:opacity-80',
+                risk.status === 'critical' ? 'bg-refund-soft text-refund' : risk.status === 'warning' ? 'bg-held-soft text-held' : 'bg-released-soft text-released',
+              )}
+              title={risk.anomalies.map((a) => `${a.severity}: ${a.title}`).join(' · ') || 'Every Sentinel rule passed'}
+            >
+              <span className={cx('size-1.5 rounded-full bg-current', risk.status !== 'clear' && 'animate-pulse')} />
+              Sentinel · {risk.anomalies.length ? `${risk.anomalies.length} finding${risk.anomalies.length === 1 ? '' : 's'}` : 'all clear'}
+            </button>
+          )}
           {dash?.paymentMode === 'simulated' && <Badge tone="held">SIMULATED PayPal</Badge>}
           {dash?.llmMode === 'replay' && <Badge tone="held">Replay: recorded responses</Badge>}
           {!licenseKey && <Badge tone="neutral">No AG Studio licence (watermark)</Badge>}
@@ -241,6 +268,7 @@ export function ControlTower({ licenseKey, aiEnabled }: { licenseKey?: string; a
               initialState={initialState}
               mode={mode}
               layout={layout}
+              localeText={localeText}
               onApiReady={(e) => {
                 apiRef.current = e.api;
               }}

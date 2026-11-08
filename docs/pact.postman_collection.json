@@ -945,6 +945,65 @@
       ]
     },
     {
+      "name": "sentinel",
+      "item": [
+        {
+          "name": "Run the Sentinel rules over the ledger: deterministic anomalies with severity, metric vs baseline and affected pacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sentinel/scan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sentinel",
+                "scan"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Scan, then have Muse write a plain-English briefing of the findings (deterministic template when no model answer is available)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sentinel/brief",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sentinel",
+                "brief"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "admin",
       "item": [
         {

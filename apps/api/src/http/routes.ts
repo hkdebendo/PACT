@@ -16,6 +16,7 @@ import { getReputation, leaderboard } from '../services/reputation';
 import { verdictView } from '../services/views';
 import { buildDashboard } from '../services/dashboard';
 import { buildReconciliation } from '../services/reconciliation-view';
+import { runSentinelScan, sentinelBrief } from '../services/sentinel';
 import { defineRoute } from './route';
 
 const PactId = z.object({ id: z.string() });
@@ -219,6 +220,19 @@ export function registerRoutes(app: FastifyInstance, ctx: AppContext, pacts: Pac
   // --- dashboard & reconciliation -------------------------------------------------------------
   r({ method: 'GET', url: '/api/dashboard', summary: 'Flattened tables for the AG Studio Control Tower', tags: ['dashboard'], handler: () => buildDashboard(ctx) });
   r({ method: 'GET', url: '/api/reconciliation', summary: 'PayPal Transaction Search + balances vs. PACT ledger (as-of timestamp, 3-hour caveat)', tags: ['dashboard'], handler: () => buildReconciliation(ctx) });
+
+  // --- sentinel (anomaly detection) ------------------------------------------------------------
+  r({ method: 'GET', url: '/api/sentinel/scan', summary: 'Run the Sentinel rules over the ledger: deterministic anomalies with severity, metric vs baseline and affected pacts', tags: ['sentinel'], handler: () => runSentinelScan(ctx) });
+  r({
+    method: 'POST',
+    url: '/api/sentinel/brief',
+    summary: 'Scan, then have Muse write a plain-English briefing of the findings (deterministic template when no model answer is available)',
+    tags: ['sentinel'],
+    handler: async () => {
+      const scan = runSentinelScan(ctx);
+      return { scan, brief: await sentinelBrief(ctx, scan) };
+    },
+  });
 
   // --- admin -----------------------------------------------------------------------------------
   r({

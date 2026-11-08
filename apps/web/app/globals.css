@@ -30,16 +30,18 @@
   --pact-display: var(--font-display), Georgia, serif;
   --pact-mono: var(--font-mono), ui-monospace, monospace;
 
+  /* Categorical palette: series get colours by order, so red and green (which mean refund and
+     release elsewhere in PACT) come late, where they are least likely to land on the wrong status. */
   --pact-chart-1: #1d2b4f;
   --pact-chart-2: #b97a12;
-  --pact-chart-3: #1b7a50;
-  --pact-chart-4: #c0432b;
-  --pact-chart-5: #5b7bd5;
-  --pact-chart-6: #8a6bbf;
-  --pact-chart-7: #3c9aa5;
+  --pact-chart-3: #3c9aa5;
+  --pact-chart-4: #5b7bd5;
+  --pact-chart-5: #8a6bbf;
+  --pact-chart-6: #a65f84;
+  --pact-chart-7: #7a8597;
   --pact-chart-8: #d29a4a;
-  --pact-chart-9: #7a8597;
-  --pact-chart-10: #a65f84;
+  --pact-chart-9: #1b7a50;
+  --pact-chart-10: #c0432b;
   color-scheme: light;
 }
 
@@ -66,8 +68,13 @@
     --pact-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 10px 30px -14px rgba(0, 0, 0, 0.6);
     --pact-chart-1: #8fa3df;
     --pact-chart-2: #e3a63c;
-    --pact-chart-3: #44b884;
-    --pact-chart-4: #ea6d52;
+    --pact-chart-3: #5cc2cc;
+    --pact-chart-4: #8aa0ee;
+    --pact-chart-5: #b49be0;
+    --pact-chart-6: #cf8db0;
+    --pact-chart-7: #9aa3b2;
+    --pact-chart-9: #44b884;
+    --pact-chart-10: #ea6d52;
     color-scheme: dark;
   }
 }
@@ -94,8 +101,13 @@
   --pact-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 10px 30px -14px rgba(0, 0, 0, 0.6);
   --pact-chart-1: #8fa3df;
   --pact-chart-2: #e3a63c;
-  --pact-chart-3: #44b884;
-  --pact-chart-4: #ea6d52;
+  --pact-chart-3: #5cc2cc;
+  --pact-chart-4: #8aa0ee;
+  --pact-chart-5: #b49be0;
+  --pact-chart-6: #cf8db0;
+  --pact-chart-7: #9aa3b2;
+  --pact-chart-9: #44b884;
+  --pact-chart-10: #ea6d52;
   color-scheme: dark;
 }
 
