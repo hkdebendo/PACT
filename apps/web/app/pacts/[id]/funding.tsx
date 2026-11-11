@@ -7,7 +7,7 @@ import type { PactView } from '@pact/core/browser';
 import { api, ApiError } from '@/lib/api';
 import { Button, ErrorNote, money } from '@/components/ui';
 
-export function Funding({ pact, paypalClientId }: { pact: PactView; paypalClientId: string | null }) {
+export function Funding({ pact, paypalClientId, onChange }: { pact: PactView; paypalClientId: string | null; onChange?: () => void }) {
   const [err, setErr] = useState<ApiError | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -20,6 +20,7 @@ export function Funding({ pact, paypalClientId }: { pact: PactView; paypalClient
     setErr(null);
     try {
       await api('POST', `/api/pacts/${pact.id}/fund/confirm`);
+      onChange?.();
     } catch (e) {
       setErr(e as ApiError);
     } finally {
@@ -32,6 +33,7 @@ export function Funding({ pact, paypalClientId }: { pact: PactView; paypalClient
     try {
       if (!pact.orderId) await createOrder();
       await api('POST', `/api/pacts/${pact.id}/simulated-approve`);
+      onChange?.();
     } catch (e) {
       setErr(e as ApiError);
     } finally {

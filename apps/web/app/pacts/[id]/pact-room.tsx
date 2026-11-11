@@ -31,7 +31,9 @@ interface LiveOverview {
   milestones: Record<string, LiveInfo>;
 }
 
-function useAction() {
+/** Runs an action, then refreshes the views (`after`) so the page never depends on the live event
+ *  stream alone: if Server-Sent Events are interrupted, a click still shows its result. */
+function useAction(after?: () => void) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
   const run = async (key: string, fn: () => Promise<unknown>) => {
@@ -39,6 +41,7 @@ function useAction() {
     setError(null);
     try {
       await fn();
+      after?.();
     } catch (e) {
       setError(e as ApiError);
     } finally {
@@ -127,7 +130,7 @@ const OPEN_FOR_EVIDENCE = ['pending', 'rejected', 'needs_more', 'evidence_submit
 
 /** Live video proof on one milestone: the buyer's switch, the seller's capture link, the recordings. */
 function LiveProof({ pact, m, role, info, onChange }: { pact: PactView; m: MilestoneView; role: Role; info: LiveInfo | undefined; onChange: () => void }) {
-  const { busy, error, run } = useAction();
+  const { busy, error, run } = useAction(onChange);
   const [link, setLink] = useState<{ url: string; expiresAt: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const required = !!info?.required;
@@ -223,7 +226,7 @@ function LiveProof({ pact, m, role, info, onChange }: { pact: PactView; m: Miles
 }
 
 function Milestone({ pact, m, index, role, focused, liveInfo, onLiveChange }: { pact: PactView; m: MilestoneView; index: number; role: Role; focused: boolean; liveInfo: LiveInfo | undefined; onLiveChange: () => void }) {
-  const { busy, error, run } = useAction();
+  const { busy, error, run } = useAction(onLiveChange);
   const [statement, setStatement] = useState('');
   const dispute = pact.disputes.find((d) => d.milestoneId === m.id && d.status === 'open');
   const uploadTypes = liveInfo?.required ? m.evidenceTypes.filter((t) => t !== 'photo') : m.evidenceTypes;
@@ -300,7 +303,7 @@ function Milestone({ pact, m, index, role, focused, liveInfo, onLiveChange }: { 
         {live && (
           <div className="mt-3 space-y-3">
             {role === 'seller' && ['pending', 'rejected', 'needs_more', 'evidence_submitted'].includes(m.status) && pact.status !== 'completed' && (
-              uploadTypes.length > 0 && <EvidenceUpload key={uploadTypes.join()} pact={pact} m={m} types={uploadTypes} onDone={() => undefined} />
+              uploadTypes.length > 0 && <EvidenceUpload key={uploadTypes.join()} pact={pact} m={m} types={uploadTypes} onDone={onLiveChange} />
             )}
             <div className="flex flex-wrap gap-2">
               {m.status === 'evidence_submitted' && (
@@ -417,10 +420,14 @@ function AuditTrail({ pactId }: { pactId: string }) {
 }
 
 export function PactRoom({ id, paypalClientId }: { id: string; paypalClientId: string | null }) {
-  const { data: pact, error } = useLive<PactView>(`/api/pacts/${id}`, (e) => ('pactId' in e ? e.pactId === id : true));
+  const { data: pact, error, reload } = useLive<PactView>(`/api/pacts/${id}`, (e) => ('pactId' in e ? e.pactId === id : true));
   const { data: liveProof, reload: reloadLive } = useLive<LiveOverview>(`/api/pacts/${id}/live`, (e) => 'pactId' in e && e.pactId === id);
+  const refresh = () => {
+    reload();
+    reloadLive();
+  };
   const [role, setRoleState] = useState<Role>('buyer');
-  const { busy, error: actionError, run } = useAction();
+  const { busy, error: actionError, run } = useAction(refresh);
   const params = useSearchParams();
   const focus = params.get('milestone');
   const setRole = (r: Role) => {
@@ -506,7 +513,7 @@ export function PactRoom({ id, paypalClientId }: { id: string; paypalClientId: s
             )}
           </div>
         )}
-        {pact.status === 'proposed' && pact.sellerAccepted && (role === 'buyer' ? <Funding pact={pact} paypalClientId={paypalClientId} /> : <p className="text-[14px] text-ink-2">Accepted. Waiting for the buyer to secure the funds with PayPal.</p>)}
+        {pact.status === 'proposed' && pact.sellerAccepted && (role === 'buyer' ? <Funding pact={pact} paypalClientId={paypalClientId} onChange={refresh} /> : <p className="text-[14px] text-ink-2">Accepted. Waiting for the buyer to secure the funds with PayPal.</p>)}
         <ErrorNote error={actionError} />
       </div>
 
@@ -514,7 +521,7 @@ export function PactRoom({ id, paypalClientId }: { id: string; paypalClientId: s
         <h2 className="font-display mb-5 text-2xl">Milestones</h2>
         <ol>
           {pact.milestones.map((m, i) => (
-            <Milestone key={m.id} pact={pact} m={m} index={i} role={role} focused={focus === m.id} liveInfo={liveProof?.milestones[m.id]} onLiveChange={reloadLive} />
+            <Milestone key={m.id} pact={pact} m={m} index={i} role={role} focused={focus === m.id} liveInfo={liveProof?.milestones[m.id]} onLiveChange={refresh} />
           ))}
         </ol>
       </section>

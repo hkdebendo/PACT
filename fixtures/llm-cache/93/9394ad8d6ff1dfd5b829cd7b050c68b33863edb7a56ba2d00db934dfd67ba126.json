@@ -1,0 +1,28 @@
+{
+  "role": "parser",
+  "model": "muse-spark-1.3",
+  "output": {
+    "assumptions": [],
+    "contract": null,
+    "questions": [
+      "The seller is listed as 'Kofi Textiles' in the header but as 'Kofi Electronics' in the deal text - please confirm the correct seller name for the contract.",
+      "How should the seller objectively show the used controller is in 'good working condition' in a photo (e.g., powered on with indicator light visible, front/back views showing no major damage)?"
+    ],
+    "status": "needs_clarification"
+  },
+  "usage": {
+    "role": "parser",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 1298,
+    "outputTokens": 2105,
+    "reasoningTokens": 2004,
+    "cachedTokens": 0,
+    "costUsd": 0.01056875,
+    "latencyMs": 34911
+  },
+  "recordedAt": "2026-11-11T12:52:01.089Z",
+  "today": "2026-11-11",
+  "prompt": "[{\"content\":\"You are PACT's Contract Parser. You turn a natural-language deal between a buyer and a seller into a structured escrow contract.\\n\\nRules:\\n- Only use facts stated or clearly implied. Never invent quantities, prices, dates or parties.\\n- If something essential is missing or ambiguous (total price, currency when no hint exists, what is delivered, how payment is split, a deadline), return status \\\"needs_clarification\\\" with specific questions, contract null.\\n- Minor gaps may be filled with sensible defaults; list each one in \\\"assumptions\\\" (e.g. \\\"Currency assumed USD\\\", \\\"Dispute window set to 72 hours\\\").\\n- Milestone percentages must sum to exactly 100. Use ids m1, m2, ... in order; criterion ids c1, c2, ... inside each milestone.\\n- Criteria must be objectively checkable from the evidence that will be submitted (photo, document, code, tracking), not \\\"good quality\\\".\\n- A photo cannot count stacked or packed items one by one, nor prove how something was made. Phrase quantity criteria so a visible quantity label, packing note or a count consistent with stacks can prove them (e.g. \\\"About 50 t-shirts are shown, or a quantity label shows 50\\\"), and phrase visual requirements as what can be seen (e.g. \\\"A small blue star is visible on the front of the shirts\\\"), not as a manufacturing technique.\\n- Each milestone checks what happens at that stage only. Do not repeat a criterion already proven by an earlier milestone: a delivery milestone checks delivery (e.g. tracking shows delivered), not the product attributes checked at production, unless the deal explicitly asks for it.\\n- Choose evidence types that can actually prove each criterion: production → photo; delivery → tracking (and optionally photo); software → code; paperwork → document.\\n- Dates: resolve relative dates (\\\"before Friday\\\") against TODAY given by the user message, format YYYY-MM-DD. A milestone deadline may be null to mean the contract deadline.\\n- Dispute policy resolution is always \\\"ai_arbiter_with_human_appeal\\\". Default windowHours 72.\\n- subcontractors: only if the text names someone to be paid out of a milestone; otherwise [].\",\"role\":\"system\"},{\"content\":\"TODAY: ⟦v1⟧\\nBUYER: Ada (buyer)\\nSELLER: Kofi Textiles\\nDEAL:\\nI want to buy one used white wireless game controller in good working condition from Kofi Electronics. Total price 35 USD: 40% when the seller shows the controller is ready, 60% at delivery, within 5 days.\",\"role\":\"user\"}]"
+}
