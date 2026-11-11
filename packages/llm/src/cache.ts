@@ -32,6 +32,9 @@ export interface CachedCall {
   /** The normalised prompt that produced the key: shows exactly what was asked, and lets a replay
    *  miss be diffed against the recordings. */
   prompt?: string;
+  /** sha256 of every image in the request, in order. Image bytes are not part of the normalised
+   *  prompt (their hash would be normalised away as a volatile value), so they are keyed here. */
+  images?: string[];
 }
 
 export function canonical(value: unknown): string {

@@ -1,0 +1,42 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.88,
+    "criteria": [
+      {
+        "confidence": 0.85,
+        "criterionId": "c1",
+        "passed": false,
+        "reasoning": "Description states 50 white t-shirt graphics / t-shirt icons in flat illustrated style, not physical shirts. Label reads QTY: 50 PCS but visible items are graphics, so not consistent with proof of 50 real shirts."
+      },
+      {
+        "confidence": 0.85,
+        "criterionId": "c2",
+        "passed": false,
+        "reasoning": "Small blue star on upper front centre where chest is is described only on t-shirt icons in flat illustrated style, not on physical shirts, so real embroidered star is not established."
+      }
+    ],
+    "missing": [
+      "Clear photo of the actual 50 physical white t-shirts, not illustrations or graphics",
+      "Close-up view confirming small blue star on the chest of the physical shirts"
+    ],
+    "reasoning": "The evidence shows drawings of shirts rather than real physical shirts. The count and star appear only as flat illustrated icons, so production of actual shirts cannot be confirmed. A photo of the real shirts is needed to approve.",
+    "status": "needs_more"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 827,
+    "outputTokens": 3928,
+    "reasoningTokens": 3676,
+    "cachedTokens": 0,
+    "costUsd": 0.01772775,
+    "latencyMs": 47756
+  },
+  "recordedAt": "2026-11-11T11:31:03.319Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the second step of PACT's evidence Verifier. You compare factual evidence descriptions with a milestone's acceptance criteria.\\n\\nRules:\\n- Judge each criterion separately, citing the specific facts from the descriptions. If the descriptions do not establish a criterion, it is NOT passed.\\n- status \\\"approved\\\" only if every criterion passed with high confidence.\\n- status \\\"rejected\\\" if the evidence clearly contradicts a criterion (wrong item, wrong count, wrong colour, failed delivery).\\n- status \\\"needs_more\\\" if the evidence is insufficient, unreadable or ambiguous. Say exactly what is missing.\\n- confidence is your calibrated probability (0..1) that your status is correct. Be conservative: a wrong approval releases real money.\\n- Pre-check failures listed by the system are facts; take them into account.\\n- When a criterion accepts a quantity label or packing note, a legible label in the evidence counts as proof of quantity, provided what is visible is consistent with it (e.g. several full stacks for \\\"50 shirts\\\").\\n- Write reasoning for a non-expert in 2-4 sentences. No markdown.\",\"role\":\"system\"},{\"content\":\"{\\n \\\"deal\\\": {\\n  \\\"title\\\": \\\"50 embroidered t-shirts\\\",\\n  \\\"description\\\": \\\"Kofi Textiles will produce 50 plain white t-shirts with a small blue star on the chest and deliver them to Ada within 7 days for 450 USD.\\\"\\n },\\n \\\"milestone\\\": {\\n  \\\"id\\\": \\\"m1\\\",\\n  \\\"title\\\": \\\"Production complete\\\",\\n  \\\"criteria\\\": [\\n   {\\n    \\\"id\\\": \\\"c1\\\",\\n    \\\"text\\\": \\\"About 50 white t-shirts are shown, or a quantity label shows 50\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c2\\\",\\n    \\\"text\\\": \\\"A small blue star is visible on the chest of the shirts\\\"\\n   }\\n  ],\\n  \\\"acceptedEvidence\\\": [\\n   \\\"photo\\\"\\n  ]\\n },\\n \\\"precheckFailures\\\": [],\\n \\\"evidenceDescriptions\\\": [\\n  {\\n   \\\"evidenceId\\\": \\\"E1\\\",\\n   \\\"type\\\": \\\"photo\\\",\\n   \\\"description\\\": {\\n    \\\"summary\\\": \\\"The image shows 50 white t-shirt graphics with blue stars arranged in five rows on a tan lined background with a quantity label in the bottom right.\\\",\\n    \\\"objects\\\": [\\n     {\\n      \\\"name\\\": \\\"t-shirt icons\\\",\\n      \\\"count\\\": 50,\\n      \\\"attributes\\\": [\\n       \\\"white\\\",\\n       \\\"small blue star on upper front, centre where the chest is\\\",\\n       \\\"flat illustrated style, uniform appearance\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"label\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"white rectangular paper, tilted, in bottom right corner\\\",\\n       \\\"black typewritten text on front surface\\\"\\n      ]\\n     }\\n    ],\\n    \\\"visibleText\\\": [\\n     \\\"QTY: 50 PCS\\\",\\n     \\\"WHITE / BLUE STAR\\\"\\n    ],\\n    \\\"dates\\\": [],\\n    \\\"quality\\\": {\\n     \\\"legible\\\": true,\\n     \\\"issues\\\": []\\n    }\\n   }\\n  }\\n ]\\n}\",\"role\":\"user\"}]"
+}

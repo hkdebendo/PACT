@@ -1,0 +1,39 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.9,
+    "criteria": [
+      {
+        "confidence": 0.95,
+        "criterionId": "c1",
+        "passed": true,
+        "reasoning": "Visible text 'QTY 50' is legible with no quality issues and a paper label is attached to the shelf, plus five tall stacks of folded white garments with three more below are visible and consistent with 50."
+      },
+      {
+        "confidence": 0.9,
+        "criterionId": "c2",
+        "passed": true,
+        "reasoning": "Small blue star marking is described on the upper area slightly right of centre of the top garment in each of the five stacks and on each of the three lower garments, matching a chest position."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The photo shows several tall stacks of folded white garments with a legible QTY 50 label on the shelf, which matches the required quantity. Small blue stars are clearly visible on the upper chest area of the tops in each stack. Together this satisfies both the quantity and design requirements.",
+    "status": "approved"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 990,
+    "outputTokens": 2367,
+    "reasoningTokens": 2112,
+    "cachedTokens": 0,
+    "costUsd": 0.01129725,
+    "latencyMs": 28157
+  },
+  "recordedAt": "2026-11-11T11:20:48.010Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the second step of PACT's evidence Verifier. You compare factual evidence descriptions with a milestone's acceptance criteria.\\n\\nRules:\\n- Judge each criterion separately, citing the specific facts from the descriptions. If the descriptions do not establish a criterion, it is NOT passed.\\n- status \\\"approved\\\" only if every criterion passed with high confidence.\\n- status \\\"rejected\\\" if the evidence clearly contradicts a criterion (wrong item, wrong count, wrong colour, failed delivery).\\n- status \\\"needs_more\\\" if the evidence is insufficient, unreadable or ambiguous. Say exactly what is missing.\\n- confidence is your calibrated probability (0..1) that your status is correct. Be conservative: a wrong approval releases real money.\\n- Pre-check failures listed by the system are facts; take them into account.\\n- When a criterion accepts a quantity label or packing note, a legible label in the evidence counts as proof of quantity, provided what is visible is consistent with it (e.g. several full stacks for \\\"50 shirts\\\").\\n- Write reasoning for a non-expert in 2-4 sentences. No markdown.\",\"role\":\"system\"},{\"content\":\"{\\n \\\"deal\\\": {\\n  \\\"title\\\": \\\"50 embroidered t-shirts\\\",\\n  \\\"description\\\": \\\"Kofi Textiles will produce 50 plain white t-shirts with a small blue star on the chest and deliver them to Ada within 7 days for 450 USD.\\\"\\n },\\n \\\"milestone\\\": {\\n  \\\"id\\\": \\\"m1\\\",\\n  \\\"title\\\": \\\"Production complete\\\",\\n  \\\"criteria\\\": [\\n   {\\n    \\\"id\\\": \\\"c1\\\",\\n    \\\"text\\\": \\\"About 50 white t-shirts are shown, or a quantity label shows 50\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c2\\\",\\n    \\\"text\\\": \\\"A small blue star is visible on the chest of the shirts\\\"\\n   }\\n  ],\\n  \\\"acceptedEvidence\\\": [\\n   \\\"photo\\\"\\n  ]\\n },\\n \\\"precheckFailures\\\": [],\\n \\\"evidenceDescriptions\\\": [\\n  {\\n   \\\"evidenceId\\\": \\\"E1\\\",\\n   \\\"type\\\": \\\"photo\\\",\\n   \\\"description\\\": {\\n    \\\"summary\\\": \\\"The photo shows five stacks of folded white garments with small blue star markings on a wooden shelf with a QTY 50 label, with more folded garments below and storage items in the background.\\\",\\n    \\\"objects\\\": [\\n     {\\n      \\\"name\\\": \\\"stacks of folded white garments\\\",\\n      \\\"count\\\": 5,\\n      \\\"attributes\\\": [\\n       \\\"white colour\\\",\\n       \\\"folded and stacked in five tall stacks on upper shelf\\\",\\n       \\\"small blue star marking on upper area of top garment in each stack, slightly right of centre\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"folded white garments on lower shelf\\\",\\n      \\\"count\\\": 3,\\n      \\\"attributes\\\": [\\n       \\\"white colour\\\",\\n       \\\"partially cropped by bottom edge of image\\\",\\n       \\\"small blue star marking visible on each\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"paper label\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"white paper\\\",\\n       \\\"attached to front edge of wooden shelf, centre, below middle stack\\\",\\n       \\\"handwritten text\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"wooden shelving unit\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"light brown wood\\\",\\n       \\\"horizontal shelf with vertical supports\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"cardboard boxes and stacked storage items\\\",\\n      \\\"count\\\": null,\\n      \\\"attributes\\\": [\\n       \\\"out of focus in background\\\",\\n       \\\"on rear shelves\\\"\\n      ]\\n     }\\n    ],\\n    \\\"visibleText\\\": [\\n     \\\"QTY 50\\\"\\n    ],\\n    \\\"dates\\\": [],\\n    \\\"quality\\\": {\\n     \\\"legible\\\": true,\\n     \\\"issues\\\": []\\n    }\\n   }\\n  }\\n ]\\n}\",\"role\":\"user\"}]"
+}

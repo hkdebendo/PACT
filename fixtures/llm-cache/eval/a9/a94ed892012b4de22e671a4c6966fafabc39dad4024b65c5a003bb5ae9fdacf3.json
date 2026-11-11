@@ -1,0 +1,39 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.9,
+    "criteria": [
+      {
+        "confidence": 0.95,
+        "criterionId": "c1",
+        "passed": true,
+        "reasoning": "Legible visibleText 'QTY 50' on taped paper sign plus five tall stacks of white folded t-shirts is consistent with 50 shirts, satisfying the quantity-label alternative."
+      },
+      {
+        "confidence": 0.9,
+        "criterionId": "c2",
+        "passed": false,
+        "reasoning": "Criterion requires a small blue star, but objects describe 'small brown-orange star marking on upper front' of the top shirt in each stack, which is the wrong colour."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The photo shows five tall stacks of white shirts with a clear QTY 50 sign, so the quantity requirement is met. However the stars on the shirts are described as brown-orange, not blue as required. Because the colour does not match, the order requirement is not satisfied.",
+    "status": "rejected"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 875,
+    "outputTokens": 1205,
+    "reasoningTokens": 986,
+    "cachedTokens": 0,
+    "costUsd": 0.006215,
+    "latencyMs": 13921
+  },
+  "recordedAt": "2026-11-11T11:28:06.529Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the second step of PACT's evidence Verifier. You compare factual evidence descriptions with a milestone's acceptance criteria.\\n\\nRules:\\n- Judge each criterion separately, citing the specific facts from the descriptions. If the descriptions do not establish a criterion, it is NOT passed.\\n- status \\\"approved\\\" only if every criterion passed with high confidence.\\n- status \\\"rejected\\\" if the evidence clearly contradicts a criterion (wrong item, wrong count, wrong colour, failed delivery).\\n- status \\\"needs_more\\\" if the evidence is insufficient, unreadable or ambiguous. Say exactly what is missing.\\n- confidence is your calibrated probability (0..1) that your status is correct. Be conservative: a wrong approval releases real money.\\n- Pre-check failures listed by the system are facts; take them into account.\\n- When a criterion accepts a quantity label or packing note, a legible label in the evidence counts as proof of quantity, provided what is visible is consistent with it (e.g. several full stacks for \\\"50 shirts\\\").\\n- Write reasoning for a non-expert in 2-4 sentences. No markdown.\",\"role\":\"system\"},{\"content\":\"{\\n \\\"deal\\\": {\\n  \\\"title\\\": \\\"50 embroidered t-shirts\\\",\\n  \\\"description\\\": \\\"Kofi Textiles will produce 50 plain white t-shirts with a small blue star on the chest and deliver them to Ada within 7 days for 450 USD.\\\"\\n },\\n \\\"milestone\\\": {\\n  \\\"id\\\": \\\"m1\\\",\\n  \\\"title\\\": \\\"Production complete\\\",\\n  \\\"criteria\\\": [\\n   {\\n    \\\"id\\\": \\\"c1\\\",\\n    \\\"text\\\": \\\"About 50 white t-shirts are shown, or a quantity label shows 50\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c2\\\",\\n    \\\"text\\\": \\\"A small blue star is visible on the chest of the shirts\\\"\\n   }\\n  ],\\n  \\\"acceptedEvidence\\\": [\\n   \\\"photo\\\"\\n  ]\\n },\\n \\\"precheckFailures\\\": [],\\n \\\"evidenceDescriptions\\\": [\\n  {\\n   \\\"evidenceId\\\": \\\"E1\\\",\\n   \\\"type\\\": \\\"photo\\\",\\n   \\\"description\\\": {\\n    \\\"summary\\\": \\\"Five tall stacks of folded white t-shirts with small star markings sit on a blue shelf with a handwritten QTY 50 sign taped to the front.\\\",\\n    \\\"objects\\\": [\\n     {\\n      \\\"name\\\": \\\"stacks of folded t-shirts\\\",\\n      \\\"count\\\": 5,\\n      \\\"attributes\\\": [\\n       \\\"white fabric\\\",\\n       \\\"neatly folded in tall stacks\\\",\\n       \\\"small brown-orange star marking on upper front, right of centre of the top shirt in each stack\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"paper sign\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"white paper\\\",\\n       \\\"handwritten dark text\\\",\\n       \\\"taped at top centre to front edge of blue shelf\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"shelf\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"light blue painted wood\\\",\\n       \\\"holding t-shirt stacks\\\"\\n      ]\\n     }\\n    ],\\n    \\\"visibleText\\\": [\\n     \\\"QTY 50\\\"\\n    ],\\n    \\\"dates\\\": [],\\n    \\\"quality\\\": {\\n     \\\"legible\\\": true,\\n     \\\"issues\\\": []\\n    }\\n   }\\n  }\\n ]\\n}\",\"role\":\"user\"}]"
+}

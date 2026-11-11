@@ -1,0 +1,39 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.96,
+    "criteria": [
+      {
+        "confidence": 0.98,
+        "criterionId": "c1",
+        "passed": false,
+        "reasoning": "The description lists only 20 t-shirt illustrations and visible text QTY: 20 PCS, not about 50 shirts or a label showing 50."
+      },
+      {
+        "confidence": 0.95,
+        "criterionId": "c2",
+        "passed": true,
+        "reasoning": "The description states each illustration has a small blue star marking on upper front centre chest area, with visible text WHITE / BLUE STAR confirming the design."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The evidence shows 20 shirt illustrations and a label reading QTY: 20 PCS, which is far short of the required about 50. The blue star requirement is met because each shirt has a small blue star on the chest. Since the quantity clearly contradicts the requirement, the milestone is rejected.",
+    "status": "rejected"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 835,
+    "outputTokens": 1521,
+    "reasoningTokens": 1309,
+    "cachedTokens": 0,
+    "costUsd": 0.007508,
+    "latencyMs": 16485
+  },
+  "recordedAt": "2026-11-11T11:28:31.518Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the second step of PACT's evidence Verifier. You compare factual evidence descriptions with a milestone's acceptance criteria.\\n\\nRules:\\n- Judge each criterion separately, citing the specific facts from the descriptions. If the descriptions do not establish a criterion, it is NOT passed.\\n- status \\\"approved\\\" only if every criterion passed with high confidence.\\n- status \\\"rejected\\\" if the evidence clearly contradicts a criterion (wrong item, wrong count, wrong colour, failed delivery).\\n- status \\\"needs_more\\\" if the evidence is insufficient, unreadable or ambiguous. Say exactly what is missing.\\n- confidence is your calibrated probability (0..1) that your status is correct. Be conservative: a wrong approval releases real money.\\n- Pre-check failures listed by the system are facts; take them into account.\\n- When a criterion accepts a quantity label or packing note, a legible label in the evidence counts as proof of quantity, provided what is visible is consistent with it (e.g. several full stacks for \\\"50 shirts\\\").\\n- Write reasoning for a non-expert in 2-4 sentences. No markdown.\",\"role\":\"system\"},{\"content\":\"{\\n \\\"deal\\\": {\\n  \\\"title\\\": \\\"50 embroidered t-shirts\\\",\\n  \\\"description\\\": \\\"Kofi Textiles will produce 50 plain white t-shirts with a small blue star on the chest and deliver them to Ada within 7 days for 450 USD.\\\"\\n },\\n \\\"milestone\\\": {\\n  \\\"id\\\": \\\"m1\\\",\\n  \\\"title\\\": \\\"Production complete\\\",\\n  \\\"criteria\\\": [\\n   {\\n    \\\"id\\\": \\\"c1\\\",\\n    \\\"text\\\": \\\"About 50 white t-shirts are shown, or a quantity label shows 50\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c2\\\",\\n    \\\"text\\\": \\\"A small blue star is visible on the chest of the shirts\\\"\\n   }\\n  ],\\n  \\\"acceptedEvidence\\\": [\\n   \\\"photo\\\"\\n  ]\\n },\\n \\\"precheckFailures\\\": [],\\n \\\"evidenceDescriptions\\\": [\\n  {\\n   \\\"evidenceId\\\": \\\"E1\\\",\\n   \\\"type\\\": \\\"photo\\\",\\n   \\\"description\\\": {\\n    \\\"summary\\\": \\\"The image shows twenty white t-shirt icons with blue stars in two rows on a tan lined background with a quantity label in the bottom right corner.\\\",\\n    \\\"objects\\\": [\\n     {\\n      \\\"name\\\": \\\"t-shirt illustration\\\",\\n      \\\"count\\\": 20,\\n      \\\"attributes\\\": [\\n       \\\"white\\\",\\n       \\\"digital illustration\\\",\\n       \\\"small blue star marking on upper front centre chest area\\\",\\n       \\\"uniform and intact\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"paper label\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"white rectangular\\\",\\n       \\\"paper appearance in bottom right corner\\\",\\n       \\\"black printed text on front surface\\\",\\n       \\\"slightly tilted, intact\\\"\\n      ]\\n     }\\n    ],\\n    \\\"visibleText\\\": [\\n     \\\"QTY: 20 PCS\\\",\\n     \\\"WHITE / BLUE STAR\\\"\\n    ],\\n    \\\"dates\\\": [],\\n    \\\"quality\\\": {\\n     \\\"legible\\\": true,\\n     \\\"issues\\\": []\\n    }\\n   }\\n  }\\n ]\\n}\",\"role\":\"user\"}]"
+}

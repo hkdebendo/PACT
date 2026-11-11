@@ -18,7 +18,7 @@ An agent that pays another agent, a freelancer or a seller on a chat app pays bl
 
 1. **Natural-language contract.** *"50 embroidered t-shirts before Friday, 30% at production, 70% at delivery."* Meta **Muse** (Contract Parser) turns it into a validated contract with milestones, checkable criteria and accepted evidence types — or asks clarification questions instead of guessing.
 2. **Funds secured by PayPal.** Orders v2 with `intent: AUTHORIZE`: the buyer approves once (PayPal JS SDK buttons), the money is held, not charged. That one approval is the spending cap every agent operates inside.
-3. **Two-step multimodal Verifier.** Deterministic pre-checks (type, size, magic bytes, evidence reused from another pact, deadline), then Muse **describes** the evidence without seeing the criteria, then **judges** the description against each criterion. Low confidence → `needs_more`, never a silent approval.
+3. **Two-step multimodal Verifier.** Deterministic pre-checks (type, size, magic bytes, evidence reused from another pact, deadline), then Muse **describes** the evidence without seeing the criteria, then **judges** the description against each criterion. Low confidence → `needs_more`, never a silent approval. **Measured** on 36 labelled cases (real photos and variants, wrong items, wrong quantities, unreadable photos, courier statuses, a prompt-injection sign): **0 false approvals out of 26** (95% CI 0–13%), 0 missed approvals out of 10, recorded answers replayable without a key. [docs/EVALUATION.md](docs/EVALUATION.md)
 4. **Programmable release.** Approved milestone → **partial capture** of its share (`final_capture: false`); the last one is a final capture; whatever can no longer be earned is **voided**; disputes resolved for the buyer → **refund** of what was captured. Subcontractors can be paid with **Payouts**.
 5. **Transparent AI Arbiter** for disputes: reads contract, evidence, verifier history and both statements; decides release / partial / refund with reasons and cited evidence; **human appeal** always available.
 6. **MCP server** (`create_pact`, `fund_pact`, `submit_evidence`, `verify_milestone`, `release_funds`, `open_dispute`, `get_reputation`, …) so Claude, ChatGPT or any agent can use PACT.
@@ -135,7 +135,7 @@ Open **http://localhost:3000** → *Control Tower* to watch it live, or *New pac
 
 ## Docs
 
-- [Architecture](docs/ARCHITECTURE.md) · [Reputation formula](docs/REPUTATION.md) · [Sandbox limitations, real vs simulated](docs/SANDBOX_LIMITATIONS.md) · [MCP guide](docs/MCP.md) · [Demo script](docs/DEMO_SCRIPT.md) · [Devpost text](docs/DEVPOST_SUBMISSION.md) · [OpenAPI](docs/openapi.json)
+- [Architecture](docs/ARCHITECTURE.md) · [Verifier evaluation](docs/EVALUATION.md) · [Reputation formula](docs/REPUTATION.md) · [Sandbox limitations, real vs simulated](docs/SANDBOX_LIMITATIONS.md) · [MCP guide](docs/MCP.md) · [Demo script](docs/DEMO_SCRIPT.md) · [Devpost text](docs/DEVPOST_SUBMISSION.md) · [OpenAPI](docs/openapi.json)
 
 ## Troubleshooting
 

@@ -1,0 +1,61 @@
+{
+  "role": "verifier.describe",
+  "model": "muse-spark-1.3",
+  "output": {
+    "dates": [],
+    "objects": [
+      {
+        "attributes": [
+          "white fabric",
+          "neatly folded in tall stacks",
+          "small brown-orange star marking on upper front, right of centre of the top shirt in each stack"
+        ],
+        "count": 5,
+        "name": "stacks of folded t-shirts"
+      },
+      {
+        "attributes": [
+          "white paper",
+          "handwritten dark text",
+          "taped at top centre to front edge of blue shelf"
+        ],
+        "count": 1,
+        "name": "paper sign"
+      },
+      {
+        "attributes": [
+          "light blue painted wood",
+          "holding t-shirt stacks"
+        ],
+        "count": 1,
+        "name": "shelf"
+      }
+    ],
+    "quality": {
+      "issues": [],
+      "legible": true
+    },
+    "summary": "Five tall stacks of folded white t-shirts with small star markings sit on a blue shelf with a handwritten QTY 50 sign taped to the front.",
+    "visibleText": [
+      "QTY 50"
+    ]
+  },
+  "usage": {
+    "role": "verifier.describe",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 1885,
+    "outputTokens": 988,
+    "reasoningTokens": 793,
+    "cachedTokens": 369,
+    "costUsd": 0.0061493500000000005,
+    "latencyMs": 15271
+  },
+  "recordedAt": "2026-11-11T11:27:52.607Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the first step of PACT's evidence Verifier. You describe evidence factually. You have NOT been told what the evidence is supposed to prove, and you must not guess.\\n\\nReport only what is observable:\\n- objects and exact counts when they can be counted (null when they cannot be counted reliably),\\n- colours, materials, markings, condition, and WHERE each marking sits on its object (e.g. \\\"upper front, left of centre, where the chest is on a folded shirt\\\"),\\n- any visible text verbatim (labels, tracking numbers, dates, statuses),\\n- quality problems: blur, cropping, glare, signs of editing or a screenshot of a screenshot.\\nDo not judge whether anything is good, correct or compliant. Never mention brands, even if visible; write \\\"a logo\\\" instead.\",\"role\":\"system\"},{\"content\":[{\"text\":\"Evidence E1: type=photo, file=upload-13.jpg, mime=image/jpeg.\",\"type\":\"text\"},{\"sha256\":\"⟦v1⟧\",\"type\":\"image\"}],\"role\":\"user\"}]",
+  "images": [
+    "e7ec15fa6449dc25f4eac3687e27b821f42a423b9c4275d515db22f804ff8920"
+  ]
+}

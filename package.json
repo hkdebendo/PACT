@@ -27,6 +27,8 @@
     "demo": "tsx scripts/demo.ts",
     "openapi": "tsx scripts/openapi.ts",
     "fixtures": "tsx scripts/make-fixtures.ts",
+    "eval:images": "tsx scripts/eval/make-images.ts",
+    "eval:verifier": "tsx scripts/eval/run.ts",
     "env:check": "node scripts/env-check.mjs",
     "secret-scan": "node scripts/secret-scan.mjs"
   },

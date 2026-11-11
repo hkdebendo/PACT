@@ -1,0 +1,39 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.98,
+    "criteria": [
+      {
+        "confidence": 0.95,
+        "criterionId": "c1",
+        "passed": true,
+        "reasoning": "Description reports 50 white t-shirt illustrations in five rows of ten and legible visible text QTY: 50 PCS, which satisfies about 50 shown or label shows 50."
+      },
+      {
+        "confidence": 0.99,
+        "criterionId": "c2",
+        "passed": false,
+        "reasoning": "Criterion requires a small blue star, but description states each shirt has a red star marking on upper front centre and visible text reads WHITE / RED STAR."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The photo shows 50 white shirts and a legible label reading QTY: 50 PCS, so the quantity requirement is met. However the stars on the chests are described as red and the label says WHITE / RED STAR, while the milestone requires a small blue star. Because the colour clearly contradicts the requirement, the milestone cannot be approved.",
+    "status": "rejected"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 824,
+    "outputTokens": 1800,
+    "reasoningTokens": 1571,
+    "cachedTokens": 369,
+    "costUsd": 0.0082741,
+    "latencyMs": 20670
+  },
+  "recordedAt": "2026-11-11T11:28:04.063Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the second step of PACT's evidence Verifier. You compare factual evidence descriptions with a milestone's acceptance criteria.\\n\\nRules:\\n- Judge each criterion separately, citing the specific facts from the descriptions. If the descriptions do not establish a criterion, it is NOT passed.\\n- status \\\"approved\\\" only if every criterion passed with high confidence.\\n- status \\\"rejected\\\" if the evidence clearly contradicts a criterion (wrong item, wrong count, wrong colour, failed delivery).\\n- status \\\"needs_more\\\" if the evidence is insufficient, unreadable or ambiguous. Say exactly what is missing.\\n- confidence is your calibrated probability (0..1) that your status is correct. Be conservative: a wrong approval releases real money.\\n- Pre-check failures listed by the system are facts; take them into account.\\n- When a criterion accepts a quantity label or packing note, a legible label in the evidence counts as proof of quantity, provided what is visible is consistent with it (e.g. several full stacks for \\\"50 shirts\\\").\\n- Write reasoning for a non-expert in 2-4 sentences. No markdown.\",\"role\":\"system\"},{\"content\":\"{\\n \\\"deal\\\": {\\n  \\\"title\\\": \\\"50 embroidered t-shirts\\\",\\n  \\\"description\\\": \\\"Kofi Textiles will produce 50 plain white t-shirts with a small blue star on the chest and deliver them to Ada within 7 days for 450 USD.\\\"\\n },\\n \\\"milestone\\\": {\\n  \\\"id\\\": \\\"m1\\\",\\n  \\\"title\\\": \\\"Production complete\\\",\\n  \\\"criteria\\\": [\\n   {\\n    \\\"id\\\": \\\"c1\\\",\\n    \\\"text\\\": \\\"About 50 white t-shirts are shown, or a quantity label shows 50\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c2\\\",\\n    \\\"text\\\": \\\"A small blue star is visible on the chest of the shirts\\\"\\n   }\\n  ],\\n  \\\"acceptedEvidence\\\": [\\n   \\\"photo\\\"\\n  ]\\n },\\n \\\"precheckFailures\\\": [],\\n \\\"evidenceDescriptions\\\": [\\n  {\\n   \\\"evidenceId\\\": \\\"E1\\\",\\n   \\\"type\\\": \\\"photo\\\",\\n   \\\"description\\\": {\\n    \\\"summary\\\": \\\"The image shows 50 white t-shirt illustrations with a small red star on the chest arranged in five rows of ten on a tan lined background with a quantity label in the bottom right.\\\",\\n    \\\"objects\\\": [\\n     {\\n      \\\"name\\\": \\\"t-shirt illustrations\\\",\\n      \\\"count\\\": 50,\\n      \\\"attributes\\\": [\\n       \\\"white\\\",\\n       \\\"red star marking on upper front centre of each shirt\\\",\\n       \\\"illustrated, uniform appearance\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"paper label\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"white\\\",\\n       \\\"rectangular, located in bottom right corner\\\"\\n      ]\\n     }\\n    ],\\n    \\\"visibleText\\\": [\\n     \\\"QTY: 50 PCS\\\",\\n     \\\"WHITE / RED STAR\\\"\\n    ],\\n    \\\"dates\\\": [],\\n    \\\"quality\\\": {\\n     \\\"legible\\\": true,\\n     \\\"issues\\\": []\\n    }\\n   }\\n  }\\n ]\\n}\",\"role\":\"user\"}]"
+}

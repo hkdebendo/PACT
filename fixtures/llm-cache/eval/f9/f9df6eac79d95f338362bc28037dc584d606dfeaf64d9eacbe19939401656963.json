@@ -1,0 +1,35 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.95,
+    "criteria": [
+      {
+        "confidence": 0.96,
+        "criterionId": "c1",
+        "passed": false,
+        "reasoning": "Visible text shows status IN TRANSIT and the status badge reads IN TRANSIT, with only three events ending at In transit to local depot. There is no DELIVERED text or delivered event, so delivery to the buyer is not established."
+      }
+    ],
+    "missing": [
+      "Updated tracking screenshot for PX 9035 2210 87 showing status DELIVERED to Ada"
+    ],
+    "reasoning": "The tracking screen shows parcel PX 9035 2210 87 is still IN TRANSIT with no delivered scan. It names the correct contents and recipient Ada but does not prove delivery happened. Updated tracking showing delivery is needed.",
+    "status": "needs_more"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 881,
+    "outputTokens": 2723,
+    "reasoningTokens": 2544,
+    "cachedTokens": 369,
+    "costUsd": 0.0122681,
+    "latencyMs": 35125
+  },
+  "recordedAt": "2026-11-11T11:30:02.867Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the second step of PACT's evidence Verifier. You compare factual evidence descriptions with a milestone's acceptance criteria.\\n\\nRules:\\n- Judge each criterion separately, citing the specific facts from the descriptions. If the descriptions do not establish a criterion, it is NOT passed.\\n- status \\\"approved\\\" only if every criterion passed with high confidence.\\n- status \\\"rejected\\\" if the evidence clearly contradicts a criterion (wrong item, wrong count, wrong colour, failed delivery).\\n- status \\\"needs_more\\\" if the evidence is insufficient, unreadable or ambiguous. Say exactly what is missing.\\n- confidence is your calibrated probability (0..1) that your status is correct. Be conservative: a wrong approval releases real money.\\n- Pre-check failures listed by the system are facts; take them into account.\\n- When a criterion accepts a quantity label or packing note, a legible label in the evidence counts as proof of quantity, provided what is visible is consistent with it (e.g. several full stacks for \\\"50 shirts\\\").\\n- Write reasoning for a non-expert in 2-4 sentences. No markdown.\",\"role\":\"system\"},{\"content\":\"{\\n \\\"deal\\\": {\\n  \\\"title\\\": \\\"50 embroidered t-shirts\\\",\\n  \\\"description\\\": \\\"Kofi Textiles will produce 50 plain white t-shirts with a small blue star on the chest and deliver them to Ada within 7 days for 450 USD.\\\"\\n },\\n \\\"milestone\\\": {\\n  \\\"id\\\": \\\"m2\\\",\\n  \\\"title\\\": \\\"Delivery\\\",\\n  \\\"criteria\\\": [\\n   {\\n    \\\"id\\\": \\\"c1\\\",\\n    \\\"text\\\": \\\"Tracking shows delivered to the buyer\\\"\\n   }\\n  ],\\n  \\\"acceptedEvidence\\\": [\\n   \\\"tracking\\\"\\n  ]\\n },\\n \\\"precheckFailures\\\": [],\\n \\\"evidenceDescriptions\\\": [\\n  {\\n   \\\"evidenceId\\\": \\\"E1\\\",\\n   \\\"type\\\": \\\"tracking\\\",\\n   \\\"description\\\": {\\n    \\\"summary\\\": \\\"The image shows a courier tracking screen for tracking number PX 9035 2210 87 with status IN TRANSIT and three tracking events.\\\",\\n    \\\"objects\\\": [\\n     {\\n      \\\"name\\\": \\\"courier tracking card\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"white background, rounded corners, centered below dark header bar\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"status badge\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"pale yellow background, brown uppercase text, pill-shaped, positioned upper right of card\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"timeline dot\\\",\\n      \\\"count\\\": 3,\\n      \\\"attributes\\\": [\\n       \\\"vertical line on left side of card, top dot gold-brown, lower two dots grey\\\"\\n      ]\\n     }\\n    ],\\n    \\\"visibleText\\\": [\\n     \\\"Courier tracking\\\",\\n     \\\"Tracking number\\\",\\n     \\\"PX 9035 2210 87\\\",\\n     \\\"IN TRANSIT\\\",\\n     \\\"Contents: 1 parcel, 50 x t-shirt (white)\\\",\\n     \\\"Recipient: Ada, Cafe, front desk. Expected tomorrow.\\\",\\n     \\\"In transit to local depot\\\",\\n     \\\"Departed sorting centre\\\",\\n     \\\"Picked up from sender\\\"\\n    ],\\n    \\\"dates\\\": [],\\n    \\\"quality\\\": {\\n     \\\"legible\\\": true,\\n     \\\"issues\\\": []\\n    }\\n   }\\n  }\\n ]\\n}\",\"role\":\"user\"}]"
+}

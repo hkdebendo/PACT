@@ -1,0 +1,45 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.9,
+    "criteria": [
+      {
+        "confidence": 0.95,
+        "criterionId": "c1",
+        "passed": true,
+        "reasoning": "Description reports count 2 for ceramic mug and summary states photo shows two ceramic mugs displayed with woven baskets."
+      },
+      {
+        "confidence": 0.93,
+        "criterionId": "c2",
+        "passed": true,
+        "reasoning": "Description states one mug with green and beige horizontal stripes in lower left foreground, matching green with stripes."
+      },
+      {
+        "confidence": 0.9,
+        "criterionId": "c3",
+        "passed": true,
+        "reasoning": "Description states the second mug is two-tone beige lower with white and dark speckled upper band and speckled texture, matching cream with dark speckles."
+      }
+    ],
+    "missing": [],
+    "reasoning": "The photo shows two ceramic mugs as required. One is described as green with beige horizontal stripes and the other as beige-white with a dark speckled band. These details match all three criteria with no contradictions.",
+    "status": "approved"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 900,
+    "outputTokens": 1872,
+    "reasoningTokens": 1638,
+    "cachedTokens": 0,
+    "costUsd": 0.009081,
+    "latencyMs": 24985
+  },
+  "recordedAt": "2026-11-11T11:27:22.077Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the second step of PACT's evidence Verifier. You compare factual evidence descriptions with a milestone's acceptance criteria.\\n\\nRules:\\n- Judge each criterion separately, citing the specific facts from the descriptions. If the descriptions do not establish a criterion, it is NOT passed.\\n- status \\\"approved\\\" only if every criterion passed with high confidence.\\n- status \\\"rejected\\\" if the evidence clearly contradicts a criterion (wrong item, wrong count, wrong colour, failed delivery).\\n- status \\\"needs_more\\\" if the evidence is insufficient, unreadable or ambiguous. Say exactly what is missing.\\n- confidence is your calibrated probability (0..1) that your status is correct. Be conservative: a wrong approval releases real money.\\n- Pre-check failures listed by the system are facts; take them into account.\\n- When a criterion accepts a quantity label or packing note, a legible label in the evidence counts as proof of quantity, provided what is visible is consistent with it (e.g. several full stacks for \\\"50 shirts\\\").\\n- Write reasoning for a non-expert in 2-4 sentences. No markdown.\",\"role\":\"system\"},{\"content\":\"{\\n \\\"deal\\\": {\\n  \\\"title\\\": \\\"Two ceramic mugs\\\",\\n  \\\"description\\\": \\\"Two handmade ceramic mugs: one green with stripes, one speckled cream, 40 USD.\\\"\\n },\\n \\\"milestone\\\": {\\n  \\\"id\\\": \\\"m1\\\",\\n  \\\"title\\\": \\\"Mugs finished\\\",\\n  \\\"criteria\\\": [\\n   {\\n    \\\"id\\\": \\\"c1\\\",\\n    \\\"text\\\": \\\"Two ceramic mugs are shown\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c2\\\",\\n    \\\"text\\\": \\\"One mug is green with stripes\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c3\\\",\\n    \\\"text\\\": \\\"One mug is cream with dark speckles\\\"\\n   }\\n  ],\\n  \\\"acceptedEvidence\\\": [\\n   \\\"photo\\\"\\n  ]\\n },\\n \\\"precheckFailures\\\": [],\\n \\\"evidenceDescriptions\\\": [\\n  {\\n   \\\"evidenceId\\\": \\\"E1\\\",\\n   \\\"type\\\": \\\"photo\\\",\\n   \\\"description\\\": {\\n    \\\"summary\\\": \\\"The photo shows two ceramic mugs displayed with woven fiber baskets, one striped green and beige in the foreground and one two-tone beige on a central woven stand.\\\",\\n    \\\"objects\\\": [\\n     {\\n      \\\"name\\\": \\\"ceramic mug\\\",\\n      \\\"count\\\": 2,\\n      \\\"attributes\\\": [\\n       \\\"one with green and beige horizontal stripes in lower left foreground\\\",\\n       \\\"one two-tone beige lower with white and dark speckled upper band on central stand\\\",\\n       \\\"ceramic appearance with speckled texture\\\",\\n       \\\"handles facing right\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"woven basket/stand\\\",\\n      \\\"count\\\": 3,\\n      \\\"attributes\\\": [\\n       \\\"natural tan woven fiber\\\",\\n       \\\"leftmost large basket partially cropped with white woven accents\\\",\\n       \\\"central cylindrical stand\\\",\\n       \\\"rightmost small basket with rope handles\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"tag\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"white\\\",\\n       \\\"oval\\\",\\n       \\\"attached to front centre of central woven stand\\\"\\n      ]\\n     }\\n    ],\\n    \\\"visibleText\\\": [],\\n    \\\"dates\\\": [],\\n    \\\"quality\\\": {\\n     \\\"legible\\\": true,\\n     \\\"issues\\\": [\\n      \\\"blur\\\",\\n      \\\"cropping\\\"\\n     ]\\n    }\\n   }\\n  }\\n ]\\n}\",\"role\":\"user\"}]"
+}

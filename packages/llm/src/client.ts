@@ -146,6 +146,13 @@ export function cacheableMessages(messages: ChatMessage[]): unknown {
   }));
 }
 
+/** sha256 of every image part, in order. */
+export function imageHashes(messages: ChatMessage[]): string[] {
+  return messages.flatMap((m) => (typeof m.content === 'string' ? [] : m.content.flatMap((p) => (p.type === 'image' ? [p.sha256] : []))));
+}
+
+const sameList = (a: string[] | undefined, b: string[]) => !!a && a.length === b.length && a.every((x, i) => x === b[i]);
+
 export class LlmClient {
   private readonly openai: OpenAI | null;
   readonly cache: ReplayCache;
@@ -176,12 +183,34 @@ export class LlmClient {
     for (const s of this.sinks) s({ ...u, pactId });
   }
 
+  /**
+   * Cache key of a structured call. Image hashes are 64-hex values, which the volatile-value
+   * normalisation replaces by placeholders, so they are added to the key separately: two different
+   * photos with the same file name must never share a recorded answer.
+   */
+  keyFor<T extends z.ZodType>(req: Pick<StructuredRequest<T>, 'role' | 'schema' | 'schemaName' | 'messages'>) {
+    const norm = normaliseVolatile(cacheableMessages(req.messages));
+    const parts = { model: this.config.model, role: req.role, schemaName: req.schemaName, schema: toStrictJsonSchema(req.schema), messages: norm.text };
+    const images = imageHashes(req.messages);
+    const legacyKey = cacheKey(parts);
+    return { key: images.length ? cacheKey({ ...parts, images }) : legacyKey, legacyKey, norm, images };
+  }
+
+  private lookup(k: ReturnType<LlmClient['keyFor']>) {
+    if (!k.images.length) return this.cache.get(k.key);
+    const hit = this.cache.get(k.key);
+    if (hit) return sameList(hit.images, k.images) ? hit : null;
+    // Recordings made before images were keyed: valid only if they recorded the same images.
+    const legacy = this.cache.get(k.legacyKey);
+    return legacy && sameList(legacy.images, k.images) ? legacy : null;
+  }
+
   async structured<T extends z.ZodType>(req: StructuredRequest<T>): Promise<StructuredResult<z.infer<T>>> {
     const jsonSchema = toStrictJsonSchema(req.schema);
-    const norm = normaliseVolatile(cacheableMessages(req.messages));
-    const key = cacheKey({ model: this.config.model, role: req.role, schemaName: req.schemaName, schema: jsonSchema, messages: norm.text });
+    const keyed = this.keyFor(req);
+    const { key, norm, images } = keyed;
 
-    const cached = this.cache.get(key);
+    const cached = this.lookup(keyed);
     if (cached) {
       const value = this.validate(req, denormaliseOutput(cached.output, norm.values, cached.today, req.today));
       const usage: UsageRecord = { ...cached.usage, role: req.role, mode: this.config.mode, cacheHit: true, costUsd: 0, latencyMs: 0 };
@@ -229,7 +258,7 @@ export class LlmClient {
       throw new LlmOutputError(`${req.role}: model output is not valid JSON`, text);
     }
     const value = this.validate(req, parsed);
-    this.cache.put(key, { role: req.role, model: usage.model, output: normaliseOutput(parsed, norm.values), usage, recordedAt: new Date().toISOString(), today: req.today ?? null, prompt: norm.text });
+    this.cache.put(key, { role: req.role, model: usage.model, output: normaliseOutput(parsed, norm.values), usage, recordedAt: new Date().toISOString(), today: req.today ?? null, prompt: norm.text, ...(images.length && { images }) });
     this.emit(usage, req.pactId);
     return { value, usage, model: usage.model, mode: 'live', cacheKey: key };
   }

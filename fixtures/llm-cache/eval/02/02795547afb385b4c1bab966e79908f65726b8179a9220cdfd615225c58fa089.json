@@ -1,0 +1,41 @@
+{
+  "role": "verifier.judge",
+  "model": "muse-spark-1.3",
+  "output": {
+    "confidence": 0.85,
+    "criteria": [
+      {
+        "confidence": 0.85,
+        "criterionId": "c1",
+        "passed": true,
+        "reasoning": "Visible text QTY 50 is legible on a paper sign in front of five stacks of folded light-colored garments, which is consistent with 50 shirts, satisfying the quantity-label alternative."
+      },
+      {
+        "confidence": 0.9,
+        "criterionId": "c2",
+        "passed": false,
+        "reasoning": "Description notes only a small star-shaped marking on the upper front of the top item in each stack, with no blue colour stated, and severe darkness and underexposure obscure detail so blue on the chest is not established."
+      }
+    ],
+    "missing": [
+      "A brighter well-lit photo showing the shirts are white with a clear close-up of the small blue star on the chest where colour is visible"
+    ],
+    "reasoning": "The photo shows five stacks of light garments with a legible QTY 50 sign, which meets the quantity option. The lighting is very dark so the star markings are noted but their blue colour cannot be confirmed. A clearer brighter photo is needed to verify the small blue star on the chest.",
+    "status": "needs_more"
+  },
+  "usage": {
+    "role": "verifier.judge",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 858,
+    "outputTokens": 2086,
+    "reasoningTokens": 1825,
+    "cachedTokens": 0,
+    "costUsd": 0.009938,
+    "latencyMs": 23901
+  },
+  "recordedAt": "2026-11-11T11:29:24.529Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the second step of PACT's evidence Verifier. You compare factual evidence descriptions with a milestone's acceptance criteria.\\n\\nRules:\\n- Judge each criterion separately, citing the specific facts from the descriptions. If the descriptions do not establish a criterion, it is NOT passed.\\n- status \\\"approved\\\" only if every criterion passed with high confidence.\\n- status \\\"rejected\\\" if the evidence clearly contradicts a criterion (wrong item, wrong count, wrong colour, failed delivery).\\n- status \\\"needs_more\\\" if the evidence is insufficient, unreadable or ambiguous. Say exactly what is missing.\\n- confidence is your calibrated probability (0..1) that your status is correct. Be conservative: a wrong approval releases real money.\\n- Pre-check failures listed by the system are facts; take them into account.\\n- When a criterion accepts a quantity label or packing note, a legible label in the evidence counts as proof of quantity, provided what is visible is consistent with it (e.g. several full stacks for \\\"50 shirts\\\").\\n- Write reasoning for a non-expert in 2-4 sentences. No markdown.\",\"role\":\"system\"},{\"content\":\"{\\n \\\"deal\\\": {\\n  \\\"title\\\": \\\"50 embroidered t-shirts\\\",\\n  \\\"description\\\": \\\"Kofi Textiles will produce 50 plain white t-shirts with a small blue star on the chest and deliver them to Ada within 7 days for 450 USD.\\\"\\n },\\n \\\"milestone\\\": {\\n  \\\"id\\\": \\\"m1\\\",\\n  \\\"title\\\": \\\"Production complete\\\",\\n  \\\"criteria\\\": [\\n   {\\n    \\\"id\\\": \\\"c1\\\",\\n    \\\"text\\\": \\\"About 50 white t-shirts are shown, or a quantity label shows 50\\\"\\n   },\\n   {\\n    \\\"id\\\": \\\"c2\\\",\\n    \\\"text\\\": \\\"A small blue star is visible on the chest of the shirts\\\"\\n   }\\n  ],\\n  \\\"acceptedEvidence\\\": [\\n   \\\"photo\\\"\\n  ]\\n },\\n \\\"precheckFailures\\\": [],\\n \\\"evidenceDescriptions\\\": [\\n  {\\n   \\\"evidenceId\\\": \\\"E1\\\",\\n   \\\"type\\\": \\\"photo\\\",\\n   \\\"description\\\": {\\n    \\\"summary\\\": \\\"Five stacks of folded light-colored garments sit on a shelf with a paper sign reading QTY 50 in front, in very dark lighting.\\\",\\n    \\\"objects\\\": [\\n     {\\n      \\\"name\\\": \\\"stack of folded garments\\\",\\n      \\\"count\\\": 5,\\n      \\\"attributes\\\": [\\n       \\\"light-colored, appears white or off-white but obscured by darkness\\\",\\n       \\\"small star-shaped marking on upper front of top item in each stack\\\",\\n       \\\"folded and stacked on a shelf in very low light\\\"\\n      ]\\n     },\\n     {\\n      \\\"name\\\": \\\"paper sign\\\",\\n      \\\"count\\\": 1,\\n      \\\"attributes\\\": [\\n       \\\"light-colored paper\\\",\\n       \\\"handwritten marking on front face\\\",\\n       \\\"positioned centered below middle stack on shelf edge\\\"\\n      ]\\n     }\\n    ],\\n    \\\"visibleText\\\": [\\n     \\\"QTY 50\\\"\\n    ],\\n    \\\"dates\\\": [],\\n    \\\"quality\\\": {\\n     \\\"legible\\\": true,\\n     \\\"issues\\\": [\\n      \\\"severe darkness / underexposure\\\",\\n      \\\"low detail visibility\\\"\\n     ]\\n    }\\n   }\\n  }\\n ]\\n}\",\"role\":\"user\"}]"
+}

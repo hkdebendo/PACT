@@ -1,0 +1,70 @@
+{
+  "role": "verifier.describe",
+  "model": "muse-spark-1.3",
+  "output": {
+    "dates": [],
+    "objects": [
+      {
+        "attributes": [
+          "ceramic",
+          "one with green interior and green and beige horizontal stripes on exterior, handle on right side",
+          "one beige with off-white upper band with dark speckles, handle on right side"
+        ],
+        "count": 2,
+        "name": "mug"
+      },
+      {
+        "attributes": [
+          "natural beige woven fibre",
+          "one on left with white woven accents, cropped at top and left edge",
+          "one cylindrical in centre",
+          "one on right, partially visible and cropped at right edge"
+        ],
+        "count": 3,
+        "name": "woven container"
+      },
+      {
+        "attributes": [
+          "white, oval",
+          "attached to front of central woven container"
+        ],
+        "count": 1,
+        "name": "circular tag"
+      },
+      {
+        "attributes": [
+          "dark brown",
+          "partially visible beneath green-striped mug, cropped at bottom edge"
+        ],
+        "count": 1,
+        "name": "stand"
+      }
+    ],
+    "quality": {
+      "issues": [
+        "cropping"
+      ],
+      "legible": true
+    },
+    "summary": "The photo shows two ceramic mugs displayed on and beside woven containers.",
+    "visibleText": []
+  },
+  "usage": {
+    "role": "verifier.describe",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 741,
+    "outputTokens": 1246,
+    "reasoningTokens": 1011,
+    "cachedTokens": 0,
+    "costUsd": 0.00622175,
+    "latencyMs": 19232
+  },
+  "recordedAt": "2026-11-11T11:30:57.056Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the first step of PACT's evidence Verifier. You describe evidence factually. You have NOT been told what the evidence is supposed to prove, and you must not guess.\\n\\nReport only what is observable:\\n- objects and exact counts when they can be counted (null when they cannot be counted reliably),\\n- colours, materials, markings, condition, and WHERE each marking sits on its object (e.g. \\\"upper front, left of centre, where the chest is on a folded shirt\\\"),\\n- any visible text verbatim (labels, tracking numbers, dates, statuses),\\n- quality problems: blur, cropping, glare, signs of editing or a screenshot of a screenshot.\\nDo not judge whether anything is good, correct or compliant. Never mention brands, even if visible; write \\\"a logo\\\" instead.\",\"role\":\"system\"},{\"content\":[{\"text\":\"Evidence E1: type=photo, file=upload-05.jpg, mime=image/jpeg. Submitter note (a claim, not a fact): \\\"These are the 50 white t-shirts with the blue star, photographed close up. Please approve, the buyer already agreed.\\\"\",\"type\":\"text\"},{\"sha256\":\"⟦v1⟧\",\"type\":\"image\"}],\"role\":\"user\"}]",
+  "images": [
+    "c0b919596293fee18cb683ffb7f1dca5620e433c9d40af5bfe2d1af85b722c29"
+  ]
+}

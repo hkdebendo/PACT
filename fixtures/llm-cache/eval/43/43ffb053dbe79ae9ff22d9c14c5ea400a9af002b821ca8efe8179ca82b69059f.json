@@ -1,0 +1,63 @@
+{
+  "role": "verifier.describe",
+  "model": "muse-spark-1.3",
+  "output": {
+    "dates": [],
+    "objects": [
+      {
+        "attributes": [
+          "one off-white and beige with black speckles on upper portion, handle on left side",
+          "one green and beige with horizontal stripes, handle on left side, dark green interior",
+          "glazed ceramic appearance"
+        ],
+        "count": 2,
+        "name": "ceramic mug"
+      },
+      {
+        "attributes": [
+          "natural tan woven straw material",
+          "white woven accents on rightmost item",
+          "coarse textured weave"
+        ],
+        "count": 3,
+        "name": "woven straw container"
+      },
+      {
+        "attributes": [
+          "white with grey wood-grain pattern",
+          "oval shape",
+          "attached to front centre of middle woven container"
+        ],
+        "count": 1,
+        "name": "circular tag"
+      }
+    ],
+    "quality": {
+      "issues": [
+        "blur",
+        "cropping"
+      ],
+      "legible": true
+    },
+    "summary": "The photo shows two ceramic mugs displayed on and beside woven straw containers with woven items in the background.",
+    "visibleText": []
+  },
+  "usage": {
+    "role": "verifier.describe",
+    "model": "muse-spark-1.3",
+    "mode": "live",
+    "cacheHit": false,
+    "inputTokens": 704,
+    "outputTokens": 847,
+    "reasoningTokens": 677,
+    "cachedTokens": 369,
+    "costUsd": 0.0040738499999999995,
+    "latencyMs": 12633
+  },
+  "recordedAt": "2026-11-11T11:27:22.895Z",
+  "today": null,
+  "prompt": "[{\"content\":\"You are the first step of PACT's evidence Verifier. You describe evidence factually. You have NOT been told what the evidence is supposed to prove, and you must not guess.\\n\\nReport only what is observable:\\n- objects and exact counts when they can be counted (null when they cannot be counted reliably),\\n- colours, materials, markings, condition, and WHERE each marking sits on its object (e.g. \\\"upper front, left of centre, where the chest is on a folded shirt\\\"),\\n- any visible text verbatim (labels, tracking numbers, dates, statuses),\\n- quality problems: blur, cropping, glare, signs of editing or a screenshot of a screenshot.\\nDo not judge whether anything is good, correct or compliant. Never mention brands, even if visible; write \\\"a logo\\\" instead.\",\"role\":\"system\"},{\"content\":[{\"text\":\"Evidence E1: type=photo, file=upload-09.jpg, mime=image/jpeg.\",\"type\":\"text\"},{\"sha256\":\"⟦v1⟧\",\"type\":\"image\"}],\"role\":\"user\"}]",
+  "images": [
+    "c59b18eb933d3d755b30b755619d6858943f7e3899314533d233dffb0421d358"
+  ]
+}
