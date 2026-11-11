@@ -44,6 +44,8 @@ interface SimAuth {
   createdAt: string;
   honorEndsAt: string;
   expiresAt: string;
+  /** Set on a reauthorization: the original authorization it was created from. */
+  parentId?: string;
 }
 interface SimCapture {
   id: string;
@@ -247,7 +249,13 @@ export class SimulatedGateway implements PaymentsGateway {
       this.refreshExpiry(a);
       if (a.status === 'CAPTURED' || a.status === 'EXPIRED')
         throw err('authorizations.void', 422, 'CANNOT_BE_VOIDED', `authorization is ${a.status}`);
+      // As observed in the real sandbox (2026-11-11): a reauthorization cannot be voided; voiding the
+      // original authorization voids its reauthorization too.
+      if (a.parentId)
+        throw err('authorizations.void', 422, 'CANNOT_BE_VOIDED', 'A reauthorization cannot be voided. Please void the original parent authorization.');
       a.status = 'VOIDED';
+      for (const child of Object.values(this.state.auths))
+        if (child.parentId === a.id && (child.status === 'CREATED' || child.status === 'PARTIALLY_CAPTURED')) child.status = 'VOIDED';
       return this.auth(a);
     });
   }
@@ -269,6 +277,7 @@ export class SimulatedGateway implements PaymentsGateway {
         createdAt: now.toISOString(),
         honorEndsAt: new Date(now.getTime() + 3 * DAY).toISOString(),
         expiresAt: a.expiresAt, // PayPal keeps the original 29-day validity window
+        parentId: a.id,
       };
       this.state.auths[b.id] = b;
       return this.auth(b);

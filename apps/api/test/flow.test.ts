@@ -179,6 +179,20 @@ describe('PACT money flow (simulated PayPal, scripted Muse)', () => {
     expect(ap.body.appealStatus).toBe('requested');
   });
 
+  it('after a reauthorization, cancelling voids the original authorization (PayPal rule)', async () => {
+    const id = await fundedPact();
+    const sim = ctx.simulated!;
+    const original = (await api('GET', `/api/pacts/${id}`)).body.authorizationId as string;
+    sim.ageAuthorization(original, 4); // past the 3-day honor period
+    expect(await built.pacts.reauthorizeIfNeeded(id)).toMatchObject({ reauthorized: expect.stringMatching(/^SIM-AUTH-/) });
+    const reauth = (await api('GET', `/api/pacts/${id}`)).body.authorizationId as string;
+    expect(reauth).not.toBe(original);
+    const c = await api('POST', `/api/pacts/${id}/cancel`, { reason: 'buyer changed plans' });
+    expect(c.body).toMatchObject({ status: 'cancelled', heldMinor: 0, voidedMinor: 45000 });
+    expect((await sim.getAuthorization(original)).status).toBe('VOIDED');
+    expect((await sim.getAuthorization(reauth)).status).toBe('VOIDED');
+  });
+
   it('dispute after release → partial refund on the capture', async () => {
     const id = await fundedPact();
     llm.script['verifier.describe'] = [description('shirts'), description('delivered')];

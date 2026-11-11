@@ -29,8 +29,9 @@ if (cmd === 'create') {
   console.log('before', before.status, 'expires', before.expiresAt);
   const re = await gw.reauthorize(authId, usd(500), `reauth-check-reauth-${authId}`);
   console.log('reauthorized', re.authorizationId, re.status, 'expires', re.expiresAt);
-  await gw.voidAuthorization(re.authorizationId, `reauth-check-void-${re.authorizationId}`);
-  console.log('voided the reauthorization (cleanup)');
+  // A reauthorization cannot be voided: void the original, which voids both.
+  await gw.voidAuthorization(authId, `reauth-check-void-${authId}`);
+  console.log('voided the original authorization and its reauthorization (cleanup)');
 } else {
   console.log('usage: create | reauth <authorizationId>');
 }

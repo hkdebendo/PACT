@@ -325,6 +325,19 @@ export class PactService {
     return id;
   }
 
+  /** PayPal voids only the original authorization (which also voids its reauthorization). */
+  private voidableAuthorizationId(row: PactRow): string {
+    const original = this.ctx.db
+      .select()
+      .from(tables.payments)
+      .where(eq(tables.payments.pactId, row.id))
+      .all()
+      .find((p) => p.kind === 'authorization');
+    const id = original?.paypalId ?? row.authorizationId;
+    if (!id) throw new ServiceError('NOT_FUNDED', 'Pact has no PayPal authorization', 409);
+    return id;
+  }
+
   // --- evidence ---------------------------------------------------------------------------
 
   async submitEvidence(
@@ -575,7 +588,7 @@ export class PactService {
       this.audit(pactId, actor, 'paypal.authorization.remainder_released', { amountMinor: l.held, reason: 'final_capture' });
       return;
     }
-    const authorizationId = this.authorizationId(row);
+    const authorizationId = this.voidableAuthorizationId(row);
     const auth = await this.paypal(pactId, actor, 'authorizations.void', () => this.ctx.gateway.voidAuthorization(authorizationId, `pact-${pactId}-void`));
     this.recordPayment({ pactId, kind: 'void', paypalId: authorizationId, amountMinor: l.held, currency: row.currency, status: auth.status, requestId: `pact-${pactId}-void`, rawJson: JSON.stringify(auth.raw) });
     this.audit(pactId, actor, 'paypal.authorization.voided', { authorizationId, amountMinor: l.held, status: auth.status });

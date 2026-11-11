@@ -20,11 +20,11 @@ Deadline: **2026-11-12 12:00 PT (21:00 Cotonou)**. Started 2026-11-06.
 - Meta Model API: `muse-spark-1.3` chat completions with strict json_schema → valid JSON; image_url data URL accepted; `/v1/responses` non-streaming with a strict function tool → reasoning + message + function_call items (ids + call_id present); Responses streaming also supported (SSE). reasoning_effort=low still spends ~250 reasoning tokens.
 - npm install attempt 2 failed (two concurrent npm processes + ECONNRESET); cache now ~958 MB; attempt 3 running with --prefer-offline.
 
-## Status by tier (2026-11-08 21:30)
+## Status by tier (2026-11-11 11:30)
 Legend: ✅ built and verified by running it · 🟡 partly verified
 
-- ✅ **Tier 0** — install (clean clone verified), 55 tests, lint, typecheck, production build, CI green (lint, types, tests, build, e2e).
-- ✅ **Tier 1** — real sandbox verified: AUTHORIZE → buyer approval → 30% partial capture → 70% final capture; partial refund; void on cancel (VOIDED); dispute partial capture with remainder released; Payouts batch SUCCESS; poller/buyer race fixed. 🟡 reauthorization: authorization `49V221249H7518322` created 2026-11-07 01:19 UTC → run `npx tsx scripts/dev/reauth-check.ts reauth 49V221249H7518322` on/after **2026-11-10 02:30 UTC**.
+- ✅ **Tier 0** — install (clean clone verified), 56 tests, lint, typecheck, production build, CI green (lint, types, tests, build, e2e).
+- ✅ **Tier 1** — real sandbox verified: AUTHORIZE → buyer approval → 30% partial capture → 70% final capture; partial refund; void on cancel (VOIDED); dispute partial capture with remainder released; Payouts batch SUCCESS; poller/buyer race fixed; reauthorization after the honor period verified 2026-11-11 (void must target the original authorization: fixed).
 - ✅ **Tier 2** — Muse live with Vincent's photos (wrong item 0.99 rejected, conforming 0.93–0.95 approved, tracking approved, Arbiter partial 60%); replay verified in simulated AND sandbox modes, no misses; clean clone runs with no keys.
 - ✅ **Tier 3** — Control Tower redesigned 2026-11-08: 11 custom widgets (new KPI Tile, Anomaly Radar), real inner padding + container-query layouts, PACT AG Grid theme, Studio charts/filters on 5 pages, light/dark, drill-through, edit mode (canvas min width), mobile fixes.
 - ✅ **Tier 4** — MCP agents play the full scenario in the real sandbox and in simulated mode; Payouts verified.
@@ -32,11 +32,11 @@ Legend: ✅ built and verified by running it · 🟡 partly verified
 - ✅ **Tier 6** — docs, screenshots in README, OpenAPI/Postman, e2e, Devpost text updated with verified results.
 
 ## Remaining
-1. Reauthorization check on/after 2026-11-10 (see above), record in docs/SANDBOX_LIMITATIONS.md.
-2. Any change to the Control Tower layout, widget catalogue, agent instructions or tools changes the Studio prompts: re-record the four starters (seed --reset + demo, live, both payment modes) and re-verify in replay. Procedure in the 2026-11-08 log entry.
-3. Vincent: record the video; submit on Devpost. (Rights on order_wrong_item.jpg confirmed 2026-11-08.)
+1. Any change to the Control Tower layout, widget catalogue, agent instructions or tools changes the Studio prompts: re-record the four starters (seed --reset + demo, live, both payment modes) and re-verify in replay. Procedure in the 2026-11-08 log entry.
+2. Vincent: record the video; submit on Devpost. (Rights on order_wrong_item.jpg confirmed 2026-11-08.)
 
 ## Log
+- 2026-11-11 11:05: real-sandbox reauthorization of `49V221249H7518322` (4 days old) succeeded → `6S5777554J0842350`, same expiry as the original. Voiding the reauthorization is refused by PayPal (422 CANNOT_BE_VOIDED); voiding the original voids both. Bug fixed: PACT voided the newest authorization; it now voids the original (`voidableAuthorizationId`). Simulated adapter follows the rule; new API test (reauthorize → cancel → both VOIDED). 56 tests, typecheck, lint green. Recorded in docs/SANDBOX_LIMITATIONS.md.
 - 2026-11-08 20:00–21:30: PACT Sentinel (rules engine + REST + Anomaly Radar widget + clientToolRunner agent + 7 tests, docs/SENTINEL.md); toolbar risk chip; chart palette reordered. Replay re-recorded: seed --reset + npm run demo on a separate DATABASE_URL (data/record*.db, the default pact.db untouched), then the starters live (sequence 'refused' → New → 'attention', plus each starter on a fresh page) in sandbox (294 audit entries) and simulated (298) modes; verified on fresh DBs with LLM_MODE=replay and no META_API_KEY: 0 misses in both modes. Fixed in the Studio proxy: built-in agents' preflight call ids (run-<uuid>-preflight-N) are now numbered in the cache key. 'Today' starter reworded (model-written dates do not replay on another day). README/ARCHITECTURE/DEVPOST/DEMO_SCRIPT updated, screenshots regenerated; e2e green.
 - 2026-11-08 evening: Control Tower redesign for the AG Grid prize. Custom widgets get real inner padding (Studio's studioWidgetPadding is the gap between cards, not padding) and container-query layouts; new PACT KPI Tile widget (8 metrics, sparkline, 24h delta, metric picker in Studio's edit form); Studio charts used properly (stacked column with legendKey, donuts with legend right + total, button filter); PACT AG Grid theme (aligned padding, centred cells, avatars, sparklines with delta); segmented page tabs with icons; canvas min width 1080 so edit mode scrolls instead of squeezing; AG Grid tooltipField deprecation fixed; mobile nav/act-as/audit header fixed. Typecheck, lint, 48 tests green; screenshots reviewed light/dark/mobile.
 - 2026-11-07 01:45–02:30: void + Payouts verified live, party merge + reputation trends, replay verified in both modes, README screenshots, clean-clone test (no keys) passed, .env.example defaults to replay, Devpost text updated, reauth authorization created.

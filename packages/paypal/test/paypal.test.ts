@@ -54,10 +54,16 @@ describe('SimulatedGateway (SIMULATED rules)', () => {
     sim.ageAuthorization(a.authorizationId, 4);
     const re = await sim.reauthorize(a.authorizationId, usd(10000), 're2');
     expect(re.authorizationId).not.toBe(a.authorizationId);
-    const v = await sim.voidAuthorization(re.authorizationId, 'v1');
+    expect(re.expiresAt).toBe((await sim.getAuthorization(a.authorizationId)).expiresAt);
+    // Real sandbox behaviour (verified 2026-11-11): only the parent can be voided, and that voids both.
+    await expect(sim.voidAuthorization(re.authorizationId, 'v0')).rejects.toThrow(/CANNOT_BE_VOIDED/);
+    const v = await sim.voidAuthorization(a.authorizationId, 'v1');
     expect(v.status).toBe('VOIDED');
-    sim.ageAuthorization(a.authorizationId, 30);
-    expect((await sim.getAuthorization(a.authorizationId)).status).toBe('EXPIRED');
+    expect((await sim.getAuthorization(re.authorizationId)).status).toBe('VOIDED');
+    const sim2 = new SimulatedGateway();
+    const b = await authorized(sim2);
+    sim2.ageAuthorization(b.authorizationId, 30);
+    expect((await sim2.getAuthorization(b.authorizationId)).status).toBe('EXPIRED');
   });
 });
 

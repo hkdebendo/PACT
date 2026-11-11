@@ -35,6 +35,7 @@ Every write sends a deterministic `PayPal-Request-Id` (e.g. `pact-<id>-cap-<mile
 - PayPal does not allow reauthorizing an authorization that has already been partially captured; PACT's job skips that case and records why.
 - **Multiple partial captures** against one authorization are allowed with `final_capture: false`; the total may exceed the authorized amount by up to 115% or USD 75, whichever is less. PACT never captures more than the pact total. The final capture (`final_capture: true`) makes PayPal void whatever remains; PACT records that as an `AUTO_VOIDED_BY_FINAL_CAPTURE` ledger row without an extra API call.
 - When the last milestone ends without a capture (refund decision, cancellation, expiry), PACT voids the authorization explicitly.
+- A **reauthorization cannot be voided**: PayPal answers `422 CANNOT_BE_VOIDED` ("Please void the original parent authorization"). Voiding the original authorization voids its reauthorization too, so PACT always voids the original one, while captures go to the newest authorization. Observed in the sandbox on 2026-11-11; the simulated adapter follows the same rule.
 
 ## Verified against the live sandbox
 
@@ -53,7 +54,9 @@ Observed on 2026-11-06 with the project's sandbox app (pact `pact_888b7b6b9fe345
 | Second pact, dispute → Arbiter `partial` 60% → capture 120.00 with `final_capture: true` | ✅ remainder released by PayPal (no separate void call needed) |
 | Full scenario played by the two MCP agents with real photos | ✅ wrong item rejected, conforming photo approved → 135.00 captured, tracking approved → 315.00 final capture |
 | Void of an un-captured authorization (cancel path, pact cancelled after funding) | ✅ authorization `VOIDED`, 12.00 never charged (2026-11-07) |
-| Reauthorization after the honor period | ⏳ needs a 4-day-old authorization; covered by the simulated adapter and the job logic |
+| Reauthorization after the honor period (authorization `49V221249H7518322`, USD 5.00, created 2026-11-07 01:19 UTC, reauthorized 2026-11-11 11:05 UTC) | ✅ new authorization `6S5777554J0842350`; its expiry is the **original** 29-day window (2026-12-06), not a new one; the original still reads `CREATED` |
+| Void the reauthorization | ❌ by design: `422 CANNOT_BE_VOIDED`, "A reauthorization cannot be voided. Please void the original parent authorization." |
+| Void the original authorization after a reauthorization | ✅ both authorizations read `VOIDED`; PACT now voids the original (bug found by this check and fixed, with tests) |
 | Payouts batch (1.00 USD to the sandbox personal account) | ✅ batch `PROCESSING` → item `SUCCESS` → batch `SUCCESS` within ~30 s (2026-11-07) |
 
 ### Notes on automating the sandbox checkout
