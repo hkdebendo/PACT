@@ -52,7 +52,7 @@ export const cacheKey = (parts: unknown): string => createHash('sha256').update(
 
 const VOLATILE = new RegExp(
   [
-    String.raw`\b(?:pact|ev|vd|pay|party|dsp|job|llm)_[0-9a-f]{16}\b`, // PACT ids
+    String.raw`\b(?:pact|ev|vd|pay|party|dsp|job|llm|apr)_[0-9a-f]{16}\b`, // PACT ids
     String.raw`\bSIM-[A-Z]+-[0-9A-F-]{12}\b`, // simulated PayPal ids (uuid slice, may contain a dash)
     String.raw`\b(?=[0-9A-Z]*\d)[0-9A-Z]{17}\b`, // real PayPal order/authorization/capture ids (may be all digits)
     String.raw`\b[0-9a-f]{64}\b`, // sha256 hashes (audit chain links embed timestamps)

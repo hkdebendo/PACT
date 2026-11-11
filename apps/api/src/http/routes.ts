@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
-import { Contract, EvidenceType } from '@pact/core';
+import { Contract, EvidenceType, Mandate, toMinor } from '@pact/core';
 import { desc, tables } from '@pact/db';
 import { costOf, parseContract } from '@pact/llm';
 import { newId } from '../context';
@@ -17,6 +17,7 @@ import { verdictView } from '../services/views';
 import { buildDashboard } from '../services/dashboard';
 import { buildReconciliation } from '../services/reconciliation-view';
 import { runSentinelScan, sentinelBrief } from '../services/sentinel';
+import { checkMandate, decideApproval, mandatesOverview, updateMandate } from '../services/mandates';
 import { defineRoute } from './route';
 
 const PactId = z.object({ id: z.string() });
@@ -233,6 +234,40 @@ export function registerRoutes(app: FastifyInstance, ctx: AppContext, pacts: Pac
       return { scan, brief: await sentinelBrief(ctx, scan) };
     },
   });
+
+  // --- agent mandates ---------------------------------------------------------------------------
+  const AgentParam = z.object({ agent: z.string().min(1).max(80) });
+  const knownAgent = (agent: string) => {
+    if (!ctx.config.app.agentKeys.some((k) => k.name === agent)) throw new ServiceError('NOT_FOUND', `No MCP agent named ${agent} (see AGENT_API_KEYS)`, 404);
+  };
+  r({ method: 'GET', url: '/api/mandates', summary: 'MCP agents with their mandates, open exposure, approval requests and recent mandate decisions', tags: ['mandates'], handler: () => mandatesOverview(ctx) });
+  r({
+    method: 'POST',
+    url: '/api/mandates/:agent',
+    summary: "Set an agent's mandate (per-pact limit, open budget, approval threshold, allowed categories)",
+    tags: ['mandates'],
+    params: AgentParam,
+    body: Mandate.omit({ agent: true }),
+    handler: ({ params, body, actor }) => {
+      knownAgent(params.agent);
+      return updateMandate(ctx, { ...body, agent: params.agent }, actor);
+    },
+  });
+  r({
+    method: 'POST',
+    url: '/api/mandates/:agent/check',
+    summary: 'Dry run: what the mandate would decide for a purchase (allowed, needs the owner, denied) and why. Writes nothing.',
+    tags: ['mandates'],
+    params: AgentParam,
+    body: z.object({ title: z.string().min(1).max(200), description: z.string().max(4000).default(''), amount: z.number().positive(), currency: z.string().length(3).default('USD') }),
+    handler: ({ params, body }) => {
+      knownAgent(params.agent);
+      const { mandate, ...decision } = checkMandate(ctx, params.agent, { title: body.title, text: `${body.title}\n${body.description}`, totalMinor: toMinor(body.amount), currency: body.currency.toUpperCase() });
+      return { agent: params.agent, owner: mandate?.owner ?? null, ...decision };
+    },
+  });
+  r({ method: 'POST', url: '/api/mandates/approvals/:id/approve', summary: "The owner approves an agent's pending pact", tags: ['mandates'], params: PactId, handler: ({ params, actor }) => decideApproval(ctx, params.id, 'approved', actor) });
+  r({ method: 'POST', url: '/api/mandates/approvals/:id/deny', summary: "The owner refuses an agent's pending pact", tags: ['mandates'], params: PactId, handler: ({ params, actor }) => decideApproval(ctx, params.id, 'denied', actor) });
 
   // --- admin -----------------------------------------------------------------------------------
   r({

@@ -185,3 +185,29 @@ export const reputationSnapshots = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.partyId, t.at] })],
 );
+
+export const agentMandates = sqliteTable('agent_mandates', {
+  agent: text('agent').primaryKey(),
+  owner: text('owner').notNull(),
+  active: integer('active', { mode: 'boolean' }).notNull().default(true),
+  currency: text('currency').notNull(),
+  maxPactMinor: integer('max_pact_minor'),
+  maxOpenMinor: integer('max_open_minor'),
+  approvalAboveMinor: integer('approval_above_minor'),
+  categoriesJson: text('categories_json').notNull().default('[]'),
+  updatedAt: text('updated_at').notNull(),
+  updatedBy: text('updated_by').notNull(),
+});
+
+export const mandateApprovals = sqliteTable('mandate_approvals', {
+  id: text('id').primaryKey(),
+  agent: text('agent').notNull(),
+  pactId: text('pact_id').notNull(),
+  totalMinor: integer('total_minor').notNull(),
+  currency: text('currency').notNull(),
+  reasonsJson: text('reasons_json').notNull(),
+  status: text('status').notNull(),
+  createdAt: text('created_at').notNull(),
+  decidedAt: text('decided_at'),
+  decidedBy: text('decided_by'),
+});

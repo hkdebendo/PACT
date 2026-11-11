@@ -1004,6 +1004,168 @@
       ]
     },
     {
+      "name": "mandates",
+      "item": [
+        {
+          "name": "MCP agents with their mandates, open exposure, approval requests and recent mandate decisions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/mandates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mandates"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Set an agent's mandate (per-pact limit, open budget, approval threshold, allowed categories)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/mandates/:agent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mandates",
+                ":agent"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Dry run: what the mandate would decide for a purchase (allowed, needs the owner, denied) and why. Writes nothing.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/mandates/:agent/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mandates",
+                ":agent",
+                "check"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "The owner approves an agent's pending pact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/mandates/approvals/:id/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mandates",
+                "approvals",
+                ":id",
+                "approve"
+              ]
+            }
+          }
+        },
+        {
+          "name": "The owner refuses an agent's pending pact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/mandates/approvals/:id/deny",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mandates",
+                "approvals",
+                ":id",
+                "deny"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "admin",
       "item": [
         {

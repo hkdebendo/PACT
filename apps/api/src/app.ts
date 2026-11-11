@@ -11,6 +11,7 @@ import { registerMcp } from './mcp';
 import { ServiceError } from './services/errors';
 import { JobRunner } from './services/jobs';
 import { PactService } from './services/pacts';
+import { ensureDefaultMandates } from './services/mandates';
 
 export interface BuiltApp {
   app: FastifyInstance;
@@ -86,6 +87,7 @@ export async function buildApp(ctx: AppContext, opts: { logger?: boolean } = {})
   });
 
   registerRoutes(app, ctx, pacts, jobs);
+  ensureDefaultMandates(ctx);
   registerMcp(app, ctx, pacts);
   return { app, pacts, jobs };
 }

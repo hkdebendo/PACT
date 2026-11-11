@@ -32,6 +32,7 @@ const NAV = [
   { href: '/pacts/new', label: 'New pact', short: 'New' },
   { href: '/pacts', label: 'Pacts', short: 'Pacts' },
   { href: '/control-tower', label: 'Control Tower', short: 'Tower' },
+  { href: '/agents', label: 'Agents', short: 'Agents' },
   { href: '/admin', label: 'Admin', short: 'Admin' },
 ];
 
@@ -110,7 +111,7 @@ export function TopNav() {
           <Seal />
           <span className="hidden font-display text-xl tracking-tight text-ink sm:inline">PACT</span>
         </Link>
-        <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
+        <div className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto sm:gap-1">
           {NAV.map((n) => {
             const active = n.href === '/pacts' ? path === '/pacts' || (path.startsWith('/pacts/') && path !== '/pacts/new') : path.startsWith(n.href);
             return (
@@ -118,7 +119,7 @@ export function TopNav() {
                 key={n.href}
                 href={n.href}
                 aria-current={active ? 'page' : undefined}
-                className={cx('rounded-full px-2.5 py-1.5 text-[13px] whitespace-nowrap transition-colors sm:px-3 sm:text-sm', active ? 'bg-ink text-paper' : 'text-ink-2 hover:bg-paper-2')}
+                className={cx('rounded-full px-1.5 py-1.5 text-[12.5px] whitespace-nowrap transition-colors min-[400px]:px-2 sm:px-3 sm:text-sm', active ? 'bg-ink text-paper' : 'text-ink-2 hover:bg-paper-2')}
               >
                 <span className="hidden sm:inline">{n.label}</span>
                 <span className="sm:hidden">{n.short}</span>

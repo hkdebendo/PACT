@@ -15,13 +15,28 @@ PACT exposes its escrow as an [MCP](https://modelcontextprotocol.io) server so a
 | `create_pact` | Natural-language `deal` (parsed by the Muse Contract Parser) or a structured `contract`. Returns clarification questions instead of guessing. |
 | `propose_pact` | Buyer proposes the draft to the seller. |
 | `accept_pact` | Seller accepts (required before funding). |
-| `fund_pact` | First call: creates the PayPal order (`intent: AUTHORIZE`) and returns `approvalUrl`. A **human** buyer approves once in PayPal; later calls confirm the authorization. |
+| `fund_pact` | Checks the agent's mandate, then on the first call creates the PayPal order (`intent: AUTHORIZE`) and returns `approvalUrl`. A **human** buyer approves once in PayPal; later calls confirm the authorization. |
 | `submit_evidence` | Seller submits a photo / document / code / tracking file (base64 or a demo fixture name). |
 | `verify_milestone` | Deterministic pre-checks, then the two-step Muse Verifier. Approved milestones are captured automatically (partial capture). |
 | `release_funds` | Capture an approved milestone manually (when `autoRelease` was false). |
 | `open_dispute` / `add_statement` / `arbitrate_dispute` | Dispute flow; the AI Arbiter decides release / partial / refund and PACT moves the money. Appealable to a human. |
 | `get_reputation` | Bayesian-smoothed reliability score of a party, or the leaderboard. |
 | `get_pact`, `list_pacts` | Read tools. |
+
+## Agent mandates: limits the agent cannot talk its way past
+
+PayPal's approval caps one authorization. A **mandate** caps the agent itself, before any order exists. The human owner of each agent key sets it on the **Agents** page (`/agents`) or with `POST /api/mandates/{agent}`:
+
+| Limit | Effect |
+|---|---|
+| Per pact | A pact above it is refused (`MANDATE_DENIED`). |
+| Open budget | Refused if the agent's unsettled pacts (draft to disputed) would exceed it. |
+| Allowed categories | Refused if the contract falls in another category (apparel, bags & textiles, printing, ceramics & tableware, software, electronics, food & drink, gift cards & crypto). Recognised by keywords in the contract, party names excluded; a purchase PACT cannot classify goes to the owner. |
+| Owner approves above | `fund_pact` stops with `MANDATE_APPROVAL_REQUIRED` and an approval request; the owner approves or refuses it on the Agents page; the agent calls `fund_pact` again. |
+
+Enforcement is **server-side**, in `create_pact` (hard limits, before the pact exists) and in `fund_pact` (hard limits again, then the owner's approval). It does not depend on the agent's prompt and no model is involved. A call inside the mandate gets exactly the same result as without one. Refusals, approval requests, owner decisions and mandate changes are sealed in the audit hash chain.
+
+The local demo installs one mandate for `buyer-agent`: Ada, USD only, 1,000 per pact, 1,500 open, apparel / bags & textiles / printing, Ada approves above 500. The demo deal (450 USD of t-shirts) is within it. Try `POST /api/mandates/buyer-agent/check` with `{"title":"3 laptops","amount":2500}` (dry run, writes nothing) or the presets on the Agents page.
 
 ## The human in the loop: buyer approval
 

@@ -8,11 +8,12 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { Contract, EvidenceType, type PactView } from '@pact/core';
+import { Contract, EvidenceType, toMinor, type PactView } from '@pact/core';
 import { repoRoot } from '@pact/db';
 import { parseContract } from '@pact/llm';
 import type { AppContext } from './context';
 import { appendAudit } from './services/audit';
+import { enforceMandate, mandateRequest } from './services/mandates';
 import type { PactService } from './services/pacts';
 import { getReputation, leaderboard } from './services/reputation';
 
@@ -111,6 +112,8 @@ export function buildMcpServer(ctx: AppContext, pacts: PactService, agent: strin
         if (r.problems.length) return { status: 'invalid_contract', problems: r.problems, nextSteps: ['Rephrase the deal so milestone percentages sum to 100.'] };
         contract = r.value.contract;
       }
+      // Agent mandate (server-side; silent when the pact is within it).
+      enforceMandate(ctx, agent, 'create', mandateRequest(contract, toMinor(contract.totalAmount), [a.buyerName, a.sellerName, contract.buyer.name, contract.seller.name]));
       const p = pacts.create({ contract, sourceText: a.deal ?? null, buyer: { name: a.buyerName, kind: 'agent' }, seller: { name: a.sellerName, kind: 'agent' }, actor });
       return { pact: summary(p), nextSteps: nextSteps(p) };
     },
@@ -133,6 +136,7 @@ export function buildMcpServer(ctx: AppContext, pacts: PactService, agent: strin
     async (a) => {
       const before = pacts.view(a.pactId);
       if (!before.orderId) {
+        enforceMandate(ctx, agent, 'fund', mandateRequest(before, before.totalMinor, [before.buyer.name, before.seller.name]), a.pactId);
         const f = await pacts.fund(a.pactId, actor);
         return { status: 'awaiting_buyer_approval', approvalUrl: f.approvalUrl, orderId: f.orderId, paymentMode: f.paymentMode, nextSteps: ['A human buyer opens approvalUrl and approves in PayPal (sandbox).', 'Then call fund_pact again.'] };
       }

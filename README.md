@@ -25,7 +25,8 @@ An agent that pays another agent, a freelancer or a seller on a chat app pays bl
 7. **Reputation** with Bayesian smoothing (new sellers start at the prior, not at zero). [docs/REPUTATION.md](docs/REPUTATION.md)
 8. **Audit**: append-only SHA-256 hash chain of every state change and AI decision, with a verify endpoint and a "chain verified" badge.
 9. **Real-time** everywhere via Server-Sent Events.
-10. **PACT Sentinel**: nine deterministic anomaly rules (refund spikes, seller refund concentration, repeated rejections, low-confidence releases, expiring authorizations, …), an Anomaly Radar widget, and an agent with its own loop inside AG Studio's Agent Framework. [docs/SENTINEL.md](docs/SENTINEL.md)
+10. **Agent mandates**: each agent's human owner sets a per-pact limit, a budget across open pacts, allowed purchase categories and an amount above which the owner must approve. Enforced on the server in `create_pact` and `fund_pact`, whatever the agent's prompt says; refusals and approvals are sealed in the audit chain. Agents page with a dry-run tester. [docs/MCP.md](docs/MCP.md#agent-mandates-limits-the-agent-cannot-talk-its-way-past)
+11. **PACT Sentinel**: nine deterministic anomaly rules (refund spikes, seller refund concentration, repeated rejections, low-confidence releases, expiring authorizations, …), an Anomaly Radar widget, and an agent with its own loop inside AG Studio's Agent Framework. [docs/SENTINEL.md](docs/SENTINEL.md)
 
 ## The Control Tower (AG Studio)
 
@@ -40,12 +41,14 @@ An agent that pays another agent, a freelancer or a seller on a chat app pays bl
 | The PACT Control Tower (AG Studio, live) | The PACT Auditor explains a refusal and adds a widget |
 |---|---|
 | ![Control Tower](docs/screenshots/control-tower.png) | ![PACT Auditor](docs/screenshots/auditor.png) |
-| **PACT Sentinel**: the Auditor hands off, the finding is pinned on the Anomaly Radar and Studio's Widget agent builds the chart | **Admin**: Muse usage and cost, jobs, PayPal calls |
-| ![PACT Sentinel](docs/screenshots/sentinel.png) | ![Admin](docs/screenshots/admin.png) |
+| **PACT Sentinel**: the Auditor hands off, the finding is pinned on the Anomaly Radar and Studio's Widget agent builds the chart | **Agent mandates**: the owner's limits, enforced on every MCP call (dry run: 2,500 USD of laptops is refused) |
+| ![PACT Sentinel](docs/screenshots/sentinel.png) | ![Agent mandates](docs/screenshots/agents.png) |
 | **Dark mode** (PACT theme, Studio theme modes) | **Mobile** |
 | ![Dark mode](docs/screenshots/control-tower-dark.png) | ![Mobile](docs/screenshots/mobile-pacts.png) |
 | **Reputation leaderboard** (custom AG Grid widget, sparklines) | **Write a deal, Muse drafts the contract** |
 | ![Reputation](docs/screenshots/reputation.png) | ![Composer](docs/screenshots/composer.png) |
+| **Admin**: Muse usage and cost, jobs, PayPal calls | |
+| ![Admin](docs/screenshots/admin.png) | |
 
 The pact room — every AI decision with per-criterion reasoning, confidence, the audit-chain seal and a human-appeal button (real PayPal sandbox captures):
 
@@ -80,7 +83,11 @@ npm run dev               # API on :4000, web on :3000
 npm run demo              # in a second terminal: two agents play the whole scenario
 ```
 
-Open **http://localhost:3000** → *Control Tower* to watch it live, or *New pact* to write your own.
+Open **http://localhost:3000** → *Control Tower* to watch it live, *Agents* to see what the buyer agent may spend, or *New pact* to write your own.
+
+```bash
+npm run eval:verifier     # re-scores the 36-case Verifier evaluation from recorded answers (no key needed)
+```
 
 ### Getting each credential
 
@@ -98,6 +105,8 @@ Open **http://localhost:3000** → *Control Tower* to watch it live, or *New pac
 | Real PayPal sandbox money movements | ❌ | ✅ | ✅ |
 | Control Tower + PACT Auditor / Sentinel chat | ✅ | ✅ suggested prompts only | ✅ with watermark |
 | Anomaly Radar (Sentinel rules) | ✅ | ✅ (rules need no model; briefing replayed) | ✅ with watermark |
+| Agent mandates (limits, owner approval, dry run) | ✅ | ✅ (no model involved) | ✅ |
+| Verifier evaluation report (`npm run eval:verifier`) | ✅ | ✅ recorded answers | ✅ |
 
 ## Environment variables
 
