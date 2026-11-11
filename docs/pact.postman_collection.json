@@ -746,6 +746,228 @@
       ]
     },
     {
+      "name": "live proof",
+      "item": [
+        {
+          "name": "Live video proof state per milestone: requirement, capture sessions, instruction checks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/live",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "live"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buyer requires (or stops requiring) live video proof on a photo milestone: uploads are then refused",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/milestones/:mid/live-proof",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "milestones",
+                ":mid",
+                "live-proof"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "One-time capture link for the seller (valid 30 minutes)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pacts/:id/milestones/:mid/live-sessions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pacts",
+                ":id",
+                "milestones",
+                ":mid",
+                "live-sessions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Capture page data (instructions stay hidden until the recording starts)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/live/:token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "live",
+                ":token"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Start the 20-second recording: draws three random instructions now",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/live/:token/start",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "live",
+                ":token",
+                "start"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload the recording and its timed frames; Muse checks each instruction, then the Verifier judges the milestone",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/live/:token/submit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "live",
+                ":token",
+                "submit"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "New capture link with new instructions after a failed or expired recording",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-pact-actor",
+                "value": "postman:you"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/live/:token/retry",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "live",
+                ":token",
+                "retry"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "reputation",
       "item": [
         {

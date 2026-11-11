@@ -4,13 +4,32 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import type { AuditEntry } from '@pact/core/browser';
-import type { EvidenceType, MilestoneView, PactView, ReputationView } from '@pact/core/browser';
+import type { EvidenceType, LiveChallenge, LiveCheck, MilestoneView, PactView, ReputationView } from '@pact/core/browser';
 import { api, API_URL, ApiError, fileToBase64, setActor, useLive } from '@/lib/api';
 import { ChainBadge, EscrowBar, VerdictCard } from '@/components/pact-parts';
 import { Badge, Button, Card, ErrorNote, MILESTONE_TONE, PACT_TONE, Skeleton, cx, label, money } from '@/components/ui';
 import { Funding } from './funding';
 
 type Role = 'buyer' | 'seller' | 'reviewer';
+
+interface LiveSession {
+  id: string;
+  status: string;
+  createdAt: string;
+  challenges: LiveChallenge[];
+  check: LiveCheck | null;
+  failures: string[];
+  hasVideo: boolean;
+  error: string | null;
+}
+interface LiveInfo {
+  required: boolean;
+  failedAttempts: number;
+  sessions: LiveSession[];
+}
+interface LiveOverview {
+  milestones: Record<string, LiveInfo>;
+}
 
 function useAction() {
   const [busy, setBusy] = useState<string | null>(null);
@@ -70,9 +89,9 @@ function PartyChip({ party, roleLabel }: { party: PactView['buyer']; roleLabel: 
 
 const STEP_ICON: Record<string, string> = { released: '✓', partially_released: '½', refunded: '↺', voided: '∅', rejected: '✗', disputed: '!', approved: '✓', evidence_submitted: '…', needs_more: '?', pending: '' };
 
-function EvidenceUpload({ pact, m, onDone }: { pact: PactView; m: MilestoneView; onDone: () => void }) {
+function EvidenceUpload({ pact, m, types, onDone }: { pact: PactView; m: MilestoneView; types: EvidenceType[]; onDone: () => void }) {
   const [file, setFile] = useState<File | null>(null);
-  const [type, setType] = useState<EvidenceType>(m.evidenceTypes[0]);
+  const [type, setType] = useState<EvidenceType>(types[0]);
   const [note, setNote] = useState('');
   const { busy, error, run } = useAction();
   const input = useRef<HTMLInputElement>(null);
@@ -90,7 +109,7 @@ function EvidenceUpload({ pact, m, onDone }: { pact: PactView; m: MilestoneView;
       <div className="flex flex-wrap items-center gap-2">
         <input ref={input} type="file" accept="image/png,image/jpeg,image/webp,image/gif,.txt,.md,.json,.csv,.ts,.tsx,.js,.py,.html" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="max-w-[230px] text-[13px] file:mr-2 file:rounded-full file:border-0 file:bg-paper-2 file:px-3 file:py-1.5 file:text-[13px]" aria-label="Evidence file" />
         <select value={type} onChange={(e) => setType(e.target.value as EvidenceType)} className="h-8 rounded-lg border border-line bg-surface px-2 text-[13px]" aria-label="Evidence type">
-          {m.evidenceTypes.map((t) => (
+          {types.map((t) => (
             <option key={t}>{t}</option>
           ))}
         </select>
@@ -104,10 +123,110 @@ function EvidenceUpload({ pact, m, onDone }: { pact: PactView; m: MilestoneView;
   );
 }
 
-function Milestone({ pact, m, index, role, focused }: { pact: PactView; m: MilestoneView; index: number; role: Role; focused: boolean }) {
+const OPEN_FOR_EVIDENCE = ['pending', 'rejected', 'needs_more', 'evidence_submitted'];
+
+/** Live video proof on one milestone: the buyer's switch, the seller's capture link, the recordings. */
+function LiveProof({ pact, m, role, info, onChange }: { pact: PactView; m: MilestoneView; role: Role; info: LiveInfo | undefined; onChange: () => void }) {
+  const { busy, error, run } = useAction();
+  const [link, setLink] = useState<{ url: string; expiresAt: string } | null>(null);
+  const [copied, setCopied] = useState(false);
+  const required = !!info?.required;
+  const canToggle = role === 'buyer' && m.evidenceTypes.includes('photo') && ['pending', 'rejected', 'needs_more'].includes(m.status) && !['completed', 'closed', 'cancelled', 'expired'].includes(pact.status);
+  const canFilm = role === 'seller' && required && ['funded', 'in_progress', 'disputed'].includes(pact.status) && OPEN_FOR_EVIDENCE.includes(m.status);
+  const recordings = (info?.sessions ?? []).filter((s) => ['passed', 'failed', 'error'].includes(s.status));
+  if (!canToggle && !required && !recordings.length) return null;
+  const toggle = () =>
+    run('toggle', async () => {
+      await api('POST', `/api/pacts/${pact.id}/milestones/${m.id}/live-proof`, { required: !required });
+      onChange();
+    });
+  const getLink = () =>
+    run('link', async () => {
+      setCopied(false);
+      setLink(await api('POST', `/api/pacts/${pact.id}/milestones/${m.id}/live-sessions`));
+    });
+  return (
+    <div className={cx('mt-3 rounded-xl border p-3', required ? 'border-navy/25 bg-navy/[0.04]' : 'border-dashed border-line')}>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="relative grid size-5 place-items-center" aria-hidden>
+          <span className="size-2.5 rounded-full bg-refund" />
+        </span>
+        <span className="text-[13px] font-semibold text-ink">Live video proof</span>
+        {required ? <Badge tone="navy">Required</Badge> : <Badge>Off</Badge>}
+        {canToggle && (
+          <Button size="sm" variant={required ? 'ghost' : 'secondary'} className="ml-auto" loading={busy === 'toggle'} onClick={toggle}>
+            {required ? 'Allow photo uploads again' : 'Require live video'}
+          </Button>
+        )}
+      </div>
+      <p className="mt-1 text-[12px] text-ink-2">
+        {required
+          ? 'No uploads: the seller films the goods for 20 seconds through a one-time link while performing three random instructions on camera. Muse checks each one before the goods are judged.'
+          : 'Have the seller film the goods live, performing three random instructions on camera, instead of uploading photos.'}
+      </p>
+      {canFilm && (
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <Button size="sm" loading={busy === 'link'} onClick={getLink}>
+            {link ? 'New capture link' : 'Get a capture link'}
+          </Button>
+          {link && (
+            <>
+              <a href={link.url} target="_blank" rel="noreferrer" className="inline-flex h-8 items-center rounded-full bg-released px-3 text-[13px] font-medium text-white hover:opacity-90">
+                Film now on this device
+              </a>
+              <button type="button" className="h-8 rounded-full border border-line bg-surface px-3 text-[13px] hover:border-ink/30" onClick={() => void navigator.clipboard?.writeText(link.url).then(() => setCopied(true))}>
+                {copied ? 'Copied' : 'Copy link for a phone'}
+              </button>
+              <span className="text-[12px] text-muted">valid until {new Date(link.expiresAt).toLocaleTimeString()}</span>
+            </>
+          )}
+        </div>
+      )}
+      {recordings.slice(0, 2).map((s) => (
+        <div key={s.id} className="mt-3 grid gap-3 rounded-lg border border-line-2 bg-surface p-3 sm:grid-cols-[200px_1fr]">
+          {s.hasVideo ? (
+            <video src={`${API_URL}/api/live-sessions/${s.id}/video`} controls playsInline preload="metadata" className="aspect-video w-full rounded-md bg-ink object-cover" />
+          ) : (
+            <div className="grid aspect-video place-items-center rounded-md bg-paper-2 text-[12px] text-muted">no video</div>
+          )}
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge tone={s.status === 'passed' ? 'released' : 'refund'} dot>
+                {s.status === 'passed' ? 'Instructions performed' : s.status === 'error' ? 'Not checked' : 'Instructions missed'}
+              </Badge>
+              <span className="text-[12px] text-muted">{new Date(s.createdAt).toLocaleString()}</span>
+            </div>
+            <ul className="mt-2 space-y-1 text-[13px]">
+              {s.challenges.map((c, i) => {
+                const r = s.check?.instructions.find((x) => x.index === i + 1);
+                return (
+                  <li key={c.id} className="flex gap-2">
+                    <span className={r?.performed ? 'text-released' : 'text-refund'} aria-label={r?.performed ? 'performed' : 'not performed'}>
+                      {r?.performed ? '✓' : '✗'}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="text-ink">{c.text}</span>
+                      {r && <span className="text-muted"> · {r.observation}</span>}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+            {!s.check && s.failures.map((f) => <p key={f} className="mt-1 text-[12px] text-refund">{f}</p>)}
+            {s.error && <p className="mt-1 text-[12px] text-refund">{s.error}</p>}
+          </div>
+        </div>
+      ))}
+      <ErrorNote error={error} />
+    </div>
+  );
+}
+
+function Milestone({ pact, m, index, role, focused, liveInfo, onLiveChange }: { pact: PactView; m: MilestoneView; index: number; role: Role; focused: boolean; liveInfo: LiveInfo | undefined; onLiveChange: () => void }) {
   const { busy, error, run } = useAction();
   const [statement, setStatement] = useState('');
   const dispute = pact.disputes.find((d) => d.milestoneId === m.id && d.status === 'open');
+  const uploadTypes = liveInfo?.required ? m.evidenceTypes.filter((t) => t !== 'photo') : m.evidenceTypes;
   const live = ['funded', 'in_progress', 'disputed', 'completed'].includes(pact.status);
   const tone = MILESTONE_TONE[m.status];
   const ref = useRef<HTMLLIElement>(null);
@@ -144,6 +263,7 @@ function Milestone({ pact, m, index, role, focused }: { pact: PactView; m: Miles
           {m.capturedMinor > 0 && <> · captured {money(m.capturedMinor, pact.currency)}</>}
           {m.refundedMinor > 0 && <> · refunded {money(m.refundedMinor, pact.currency)}</>}
         </div>
+        <LiveProof pact={pact} m={m} role={role} info={liveInfo} onChange={onLiveChange} />
 
         {m.evidence.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
@@ -180,7 +300,7 @@ function Milestone({ pact, m, index, role, focused }: { pact: PactView; m: Miles
         {live && (
           <div className="mt-3 space-y-3">
             {role === 'seller' && ['pending', 'rejected', 'needs_more', 'evidence_submitted'].includes(m.status) && pact.status !== 'completed' && (
-              <EvidenceUpload pact={pact} m={m} onDone={() => undefined} />
+              uploadTypes.length > 0 && <EvidenceUpload key={uploadTypes.join()} pact={pact} m={m} types={uploadTypes} onDone={() => undefined} />
             )}
             <div className="flex flex-wrap gap-2">
               {m.status === 'evidence_submitted' && (
@@ -298,6 +418,7 @@ function AuditTrail({ pactId }: { pactId: string }) {
 
 export function PactRoom({ id, paypalClientId }: { id: string; paypalClientId: string | null }) {
   const { data: pact, error } = useLive<PactView>(`/api/pacts/${id}`, (e) => ('pactId' in e ? e.pactId === id : true));
+  const { data: liveProof, reload: reloadLive } = useLive<LiveOverview>(`/api/pacts/${id}/live`, (e) => 'pactId' in e && e.pactId === id);
   const [role, setRoleState] = useState<Role>('buyer');
   const { busy, error: actionError, run } = useAction();
   const params = useSearchParams();
@@ -393,7 +514,7 @@ export function PactRoom({ id, paypalClientId }: { id: string; paypalClientId: s
         <h2 className="font-display mb-5 text-2xl">Milestones</h2>
         <ol>
           {pact.milestones.map((m, i) => (
-            <Milestone key={m.id} pact={pact} m={m} index={i} role={role} focused={focus === m.id} />
+            <Milestone key={m.id} pact={pact} m={m} index={i} role={role} focused={focus === m.id} liveInfo={liveProof?.milestones[m.id]} onLiveChange={reloadLive} />
           ))}
         </ol>
       </section>

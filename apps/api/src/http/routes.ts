@@ -18,6 +18,7 @@ import { buildDashboard } from '../services/dashboard';
 import { buildReconciliation } from '../services/reconciliation-view';
 import { runSentinelScan, sentinelBrief } from '../services/sentinel';
 import { checkMandate, decideApproval, mandatesOverview, updateMandate } from '../services/mandates';
+import { createLiveSession, liveOverview, liveVideo, publicLiveSession, retryLiveSession, setLiveRequired, startLiveSession, submitLiveSession } from '../services/live';
 import { defineRoute } from './route';
 
 const PactId = z.object({ id: z.string() });
@@ -207,6 +208,42 @@ export function registerRoutes(app: FastifyInstance, ctx: AppContext, pacts: Pac
     reply.header('Content-Type', e.mime).header('Cache-Control', 'private, max-age=3600').header('X-Content-Type-Options', 'nosniff');
     if (!e.mime.startsWith('image/')) reply.header('Content-Disposition', `attachment; filename="${e.filename}"`);
     return reply.send(readEvidence(e.path));
+  });
+
+  // --- live video proof ------------------------------------------------------------------------
+  const LiveToken = z.object({ token: z.string().regex(/^[0-9a-f]{32}$/) });
+  r({ method: 'GET', url: '/api/pacts/:id/live', summary: 'Live video proof state per milestone: requirement, capture sessions, instruction checks', tags: ['live proof'], params: PactId, handler: ({ params }) => liveOverview(ctx, params.id) });
+  r({
+    method: 'POST',
+    url: '/api/pacts/:id/milestones/:mid/live-proof',
+    summary: 'Buyer requires (or stops requiring) live video proof on a photo milestone: uploads are then refused',
+    tags: ['live proof'],
+    params: PactMilestone,
+    body: z.object({ required: z.boolean() }),
+    handler: ({ params, body, actor }) => setLiveRequired(ctx, pacts, params.id, params.mid, body.required, actor),
+  });
+  r({ method: 'POST', url: '/api/pacts/:id/milestones/:mid/live-sessions', summary: 'One-time capture link for the seller (valid 30 minutes)', tags: ['live proof'], params: PactMilestone, handler: ({ params, actor }) => createLiveSession(ctx, pacts, params.id, params.mid, actor) });
+  r({ method: 'GET', url: '/api/live/:token', summary: 'Capture page data (instructions stay hidden until the recording starts)', tags: ['live proof'], params: LiveToken, handler: ({ params }) => publicLiveSession(ctx, pacts, params.token) });
+  r({ method: 'POST', url: '/api/live/:token/start', summary: 'Start the 20-second recording: draws three random instructions now', tags: ['live proof'], params: LiveToken, handler: ({ params }) => startLiveSession(ctx, params.token) });
+  r({
+    method: 'POST',
+    url: '/api/live/:token/submit',
+    summary: 'Upload the recording and its timed frames; Muse checks each instruction, then the Verifier judges the milestone',
+    tags: ['live proof'],
+    params: LiveToken,
+    body: z.object({
+      video: z.string().min(16).max(17_000_000),
+      videoMime: z.string().max(80),
+      frames: z.array(z.object({ slot: z.string().max(8), atMs: z.number().int().min(0).max(60_000), data: z.string().max(2_800_000) })).max(12),
+    }),
+    handler: ({ params, body }) => submitLiveSession(ctx, pacts, params.token, body),
+  });
+  r({ method: 'POST', url: '/api/live/:token/retry', summary: 'New capture link with new instructions after a failed or expired recording', tags: ['live proof'], params: LiveToken, handler: ({ params }) => retryLiveSession(ctx, pacts, params.token) });
+  app.get('/api/live-sessions/:id/video', async (req, reply) => {
+    const { id } = req.params as { id: string };
+    const v = liveVideo(ctx, id);
+    reply.header('Content-Type', v.mime).header('Cache-Control', 'private, max-age=3600').header('X-Content-Type-Options', 'nosniff');
+    return reply.send(readEvidence(v.path));
   });
 
   // --- reputation -----------------------------------------------------------------------------

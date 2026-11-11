@@ -4,14 +4,16 @@
 import {
   ArbiterDecision,
   EvidenceDescription,
+  LiveCheck,
   ParseResult,
+  type LiveChallenge,
   validateContract,
   VerifierVerdict,
   type Contract,
   type Milestone,
 } from '@pact/core/browser';
 import type { ContentPart, LlmClient, StructuredResult } from './client';
-import { ARBITER_PROMPT, DESCRIBE_PROMPT, JUDGE_PROMPT, PARSER_PROMPT } from './prompts';
+import { ARBITER_PROMPT, DESCRIBE_PROMPT, JUDGE_PROMPT, LIVE_CHECK_PROMPT, PARSER_PROMPT } from './prompts';
 
 // --- Contract Parser ---------------------------------------------------------------------
 
@@ -190,4 +192,37 @@ export async function arbitrate(
   const releasePercent = v.decision === 'release' ? 100 : v.decision === 'refund' ? 0 : Math.min(99, Math.max(1, v.releasePercent));
   const known = new Set(input.evidence.map((e) => e.evidenceId));
   return { ...r, value: { ...v, releasePercent, citedEvidence: v.citedEvidence.filter((c) => known.has(c.evidenceId)) } };
+}
+
+// --- Live video proof ------------------------------------------------------------------------
+
+export interface LiveFrame {
+  slot: string;
+  atMs: number;
+  challenge: number | null; // index into challenges, null for the wide shot
+  sha256: string;
+  bytes: Buffer;
+}
+
+/** Did the seller perform each random instruction on camera? One call, all frames in time order. */
+export async function checkLiveChallenges(llm: LlmClient, input: { challenges: LiveChallenge[]; frames: LiveFrame[]; pactId?: string }) {
+  const parts: ContentPart[] = [
+    { type: 'text', text: `Instructions, in order:\n${input.challenges.map((c, i) => `${i + 1}. ${c.text}`).join('\n')}` },
+  ];
+  for (const f of input.frames) {
+    const label = f.challenge === null ? 'wide shot (no instruction)' : `instruction ${f.challenge + 1}: "${input.challenges[f.challenge].text}"`;
+    parts.push({ type: 'text', text: `Frame ${f.slot} at ${(f.atMs / 1000).toFixed(1)} s, during ${label}:` });
+    parts.push({ type: 'image', mime: 'image/jpeg', data: f.bytes, sha256: f.sha256 });
+  }
+  return llm.structured({
+    role: 'live.check',
+    schema: LiveCheck,
+    schemaName: 'pact_live_check',
+    reasoningEffort: 'medium',
+    pactId: input.pactId,
+    messages: [
+      { role: 'system', content: LIVE_CHECK_PROMPT },
+      { role: 'user', content: parts },
+    ],
+  });
 }

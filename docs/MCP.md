@@ -38,6 +38,10 @@ Enforcement is **server-side**, in `create_pact` (hard limits, before the pact e
 
 The local demo installs one mandate for `buyer-agent`: Ada, USD only, 1,000 per pact, 1,500 open, apparel / bags & textiles / printing, Ada approves above 500. The demo deal (450 USD of t-shirts) is within it. Try `POST /api/mandates/buyer-agent/check` with `{"title":"3 laptops","amount":2500}` (dry run, writes nothing) or the presets on the Agents page.
 
+## Live video proof
+
+When the buyer requires live video proof on a milestone, `submit_evidence` refuses photos for it (`LIVE_PROOF_REQUIRED`): the seller has to film the goods through a one-time capture link (`POST /api/pacts/{id}/milestones/{mid}/live-sessions`), performing three random instructions on camera. Tracking or documents for the same milestone are still accepted over MCP.
+
 ## The human in the loop: buyer approval
 
 An Orders `AUTHORIZE` flow needs the buyer to approve in PayPal checkout; an autonomous agent cannot (and should not) do that by itself. `fund_pact` returns the approval URL, the human approves once, and from then on the agents operate **inside** that authorization: they can release milestone shares, but never spend more than the human approved. That cap is a feature.

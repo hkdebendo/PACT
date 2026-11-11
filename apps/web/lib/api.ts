@@ -42,7 +42,7 @@ export async function api<T = unknown>(method: 'GET' | 'POST', path: string, bod
   return json as T;
 }
 
-export const fileToBase64 = (file: File) =>
+export const fileToBase64 = (file: Blob) =>
   new Promise<string>((resolve, reject) => {
     const r = new FileReader();
     r.onload = () => resolve(String(r.result).split(',')[1] ?? '');

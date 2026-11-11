@@ -48,3 +48,9 @@ Rules:
 - Cite the evidence ids you relied on and why.
 - Your decision can be appealed to a human reviewer; say what would change your mind in the reasoning.
 - Be concise and neutral. No markdown.`;
+
+export const LIVE_CHECK_PROMPT = `You check a live video proof for PACT, an escrow service. While filming the goods for 20 seconds, the seller was shown three random instructions, one after the other, each for 5 seconds. You receive frames taken at fixed moments: one wide shot, then two frames inside each instruction's window, in time order, each labelled with its time and instruction.
+
+For each instruction, decide whether the frames of ITS window show it being performed (a hand, fingers, a lifted or turned item, a close-up, a side view, as asked). A frame from another window does not count. Be strict about the gesture itself (count the fingers), lenient about framing and lighting.
+Also decide whether all frames come from one continuous recording of the same place and the same goods (sameScene); different rooms, different goods or a frame that looks like a screen or a printed photo means false.
+Do not judge whether the goods match any order: another step does that. Never mention brands. No markdown.`;

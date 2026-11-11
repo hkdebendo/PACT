@@ -211,3 +211,35 @@ export const mandateApprovals = sqliteTable('mandate_approvals', {
   decidedAt: text('decided_at'),
   decidedBy: text('decided_by'),
 });
+
+export const liveRequirements = sqliteTable(
+  'live_requirements',
+  {
+    pactId: text('pact_id').notNull(),
+    milestoneId: text('milestone_id').notNull(),
+    createdAt: text('created_at').notNull(),
+    createdBy: text('created_by').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.pactId, t.milestoneId] })],
+);
+
+export const liveSessions = sqliteTable('live_sessions', {
+  id: text('id').primaryKey(),
+  token: text('token').notNull(),
+  pactId: text('pact_id').notNull(),
+  milestoneId: text('milestone_id').notNull(),
+  status: text('status').notNull(),
+  challengesJson: text('challenges_json'),
+  createdAt: text('created_at').notNull(),
+  expiresAt: text('expires_at').notNull(),
+  startedAt: text('started_at'),
+  submittedAt: text('submitted_at'),
+  videoPath: text('video_path'),
+  videoMime: text('video_mime'),
+  videoSha256: text('video_sha256'),
+  evidenceIdsJson: text('evidence_ids_json').notNull().default('[]'),
+  checkJson: text('check_json'),
+  failuresJson: text('failures_json').notNull().default('[]'),
+  error: text('error'),
+  createdBy: text('created_by').notNull(),
+});

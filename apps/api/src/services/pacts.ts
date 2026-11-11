@@ -24,6 +24,7 @@ import { ServiceError } from './errors';
 import { readEvidence, storeEvidence, EvidenceRejected } from './evidence-store';
 import { buildPactView, getPactRow, ledger } from './views';
 import { snapshotReputation } from './reputation';
+import { isLiveRequired, liveEvidenceFailures } from './live';
 
 type PactRow = typeof tables.pacts.$inferSelect;
 type MilestoneRow = typeof tables.milestones.$inferSelect;
@@ -345,9 +346,14 @@ export class PactService {
     milestoneId: string,
     file: { filename: string; bytes: Buffer; type: EvidenceType; note?: string | null },
     actor: string,
+    opts: { live?: boolean } = {},
   ) {
     const row = this.row(pactId);
     const m = this.milestoneRow(pactId, milestoneId);
+    if (file.type === 'photo' && !opts.live && isLiveRequired(this.ctx, pactId, milestoneId)) {
+      this.audit(pactId, actor, 'evidence.rejected', { milestoneId, reason: 'live video proof required', filename: file.filename });
+      throw new ServiceError('LIVE_PROOF_REQUIRED', 'The buyer requires live video proof on this milestone: photos cannot be uploaded. Open a live capture link (POST /api/pacts/{id}/milestones/{mid}/live-sessions) and film the goods.', 409);
+    }
     let stored;
     try {
       stored = storeEvidence(this.ctx.evidenceDir, file.filename, file.bytes);
@@ -429,6 +435,8 @@ export class PactService {
       evidence.map((e) => ({ id: e.id, type: e.type as EvidenceType, mime: e.mime, size: e.size, sha256: e.sha256, createdAt: e.createdAt })),
       { milestone: def, milestoneDeadline: m.deadline, reusedIn, now: this.ctx.now() },
     );
+    // Live video proof (only on milestones where the buyer required it).
+    precheckFailures.push(...liveEvidenceFailures(this.ctx, pactId, milestoneId, evidence));
     this.audit(pactId, 'system:prechecks', 'verifier.prechecks', { milestoneId, evidenceIds: evidence.map((e) => e.id), failures: precheckFailures });
 
     let verdictPayload: Record<string, unknown>;
@@ -441,7 +449,10 @@ export class PactService {
     if (precheckFailures.length) {
       status = 'rejected';
       confidence = 1;
-      reasoning = `Rejected by deterministic pre-checks before any AI review: ${precheckFailures.join(' ')}`;
+      const liveOnly = precheckFailures.every((f) => f.startsWith('Live proof: '));
+      reasoning = liveOnly
+        ? `Rejected: the live video proof failed, so the goods were not judged. ${precheckFailures.map((f) => f.slice('Live proof: '.length)).join(' ')}`
+        : `Rejected by deterministic pre-checks before any AI review: ${precheckFailures.join(' ')}`;
       verdictPayload = { status, confidence, criteria: [], reasoning, missing: [], policyNotes: ['pre-check failure'] };
     } else {
       // Step 1: describe each piece of evidence without the criteria.

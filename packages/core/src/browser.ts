@@ -4,4 +4,5 @@ export * from './money';
 export * from './reputation';
 export * from './types';
 export * from './mandate';
+export * from './live';
 export type { AuditEntry, ChainVerification } from './audit';

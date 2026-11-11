@@ -26,7 +26,8 @@ An agent that pays another agent, a freelancer or a seller on a chat app pays bl
 8. **Audit**: append-only SHA-256 hash chain of every state change and AI decision, with a verify endpoint and a "chain verified" badge.
 9. **Real-time** everywhere via Server-Sent Events.
 10. **Agent mandates**: each agent's human owner sets a per-pact limit, a budget across open pacts, allowed purchase categories and an amount above which the owner must approve. Enforced on the server in `create_pact` and `fund_pact`, whatever the agent's prompt says; refusals and approvals are sealed in the audit chain. Agents page with a dry-run tester. [docs/MCP.md](docs/MCP.md#agent-mandates-limits-the-agent-cannot-talk-its-way-past)
-11. **PACT Sentinel**: nine deterministic anomaly rules (refund spikes, seller refund concentration, repeated rejections, low-confidence releases, expiring authorizations, …), an Anomaly Radar widget, and an agent with its own loop inside AG Studio's Agent Framework. [docs/SENTINEL.md](docs/SENTINEL.md)
+11. **Live video proof**: the buyer can require that a milestone is proven on camera instead of with uploaded photos. The seller opens a one-time link and films the goods for 20 seconds; when recording starts, PACT draws three random instructions (lift one item, show two fingers, film from the side…), 5 seconds each. Frames taken at those exact moments go to Muse, which checks every instruction before the goods are judged; the video stays in the pact for the Arbiter and human review. Uploads are refused on that milestone.
+12. **PACT Sentinel**: nine deterministic anomaly rules (refund spikes, seller refund concentration, repeated rejections, low-confidence releases, expiring authorizations, …), an Anomaly Radar widget, and an agent with its own loop inside AG Studio's Agent Framework. [docs/SENTINEL.md](docs/SENTINEL.md)
 
 ## The Control Tower (AG Studio)
 
@@ -47,8 +48,8 @@ An agent that pays another agent, a freelancer or a seller on a chat app pays bl
 | ![Dark mode](docs/screenshots/control-tower-dark.png) | ![Mobile](docs/screenshots/mobile-pacts.png) |
 | **Reputation leaderboard** (custom AG Grid widget, sparklines) | **Write a deal, Muse drafts the contract** |
 | ![Reputation](docs/screenshots/reputation.png) | ![Composer](docs/screenshots/composer.png) |
-| **Admin**: Muse usage and cost, jobs, PayPal calls | |
-| ![Admin](docs/screenshots/admin.png) | |
+| **Admin**: Muse usage and cost, jobs, PayPal calls | **Live video proof**: three random instructions while filming |
+| ![Admin](docs/screenshots/admin.png) | ![Live video proof](docs/screenshots/live-capture.png) |
 
 The pact room — every AI decision with per-criterion reasoning, confidence, the audit-chain seal and a human-appeal button (real PayPal sandbox captures):
 
@@ -106,6 +107,7 @@ npm run eval:verifier     # re-scores the 36-case Verifier evaluation from recor
 | Control Tower + PACT Auditor / Sentinel chat | ✅ | ✅ suggested prompts only | ✅ with watermark |
 | Anomaly Radar (Sentinel rules) | ✅ | ✅ (rules need no model; briefing replayed) | ✅ with watermark |
 | Agent mandates (limits, owner approval, dry run) | ✅ | ✅ (no model involved) | ✅ |
+| Live video proof (camera link, random instructions) | ✅ | ❌ each recording is new: needs `META_API_KEY` (the capture page works; the check says why) | ✅ |
 | Verifier evaluation report (`npm run eval:verifier`) | ✅ | ✅ recorded answers | ✅ |
 
 ## Environment variables
